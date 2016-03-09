@@ -98,9 +98,6 @@ class _HTML40(object):
             to elements (see class 'Element' definition below. E.g. 'h | ('abc', 'def')'
             creates a 'tagless' element with two children, each a string.
         """
-        # The following 'feature' gave more grief than real profit:
-        #if callable(other):
-        #    other = other()
         return _HTML40.Element(tag=None, separateClose=False,
                         children=[other,])
 
@@ -124,7 +121,7 @@ class _HTML40(object):
             'AttrDicts' is a (often empty) tuple of dictionaries. keys of each dictionary represent valid attributes for
             this element. The corresponding values are (in the current implementation) booleans indicating whether a value
             is associated with this attribute. False means that the value must not be supplied and will automatically be
-            derived from the attribute name. This will probalby be changed in a later release, e.g. to use a function or
+            derived from the attribute name. This will probably be changed in a later release, e.g. to use a function or
             class as a value; this will make validation and manipulation of numeric values easier. 
         """
         AttrDicts=(CoreAttrs, )
@@ -154,7 +151,7 @@ class _HTML40(object):
                 for d in self.AttrDicts:
                     self.okAttrs.update(d)
             sArgs = {}
-            for key, val in args.iteritems():
+            for key, val in args.items():
                 key=key.lower().replace('_', '-')
                 if not key in self.okAttrs.keys():
                     raise KeyError(key)
@@ -173,11 +170,15 @@ class _HTML40(object):
                 'h.h4 | <expression>', when converted to a string, results in
                 '<h4>expression</h4>'. Similarly 'h.a(href="myLink") | "text"'
                 becomes '<a href=myLink>text</a>'.
-                If 'other' is a 'callable' (usually meaning a function), it is
-                called without arguments and the result is used in its place.
             """
+            #if not other:
+            #    print "falsie!"
+            #    return self
             return self.__class__(tag=self.tag, separateClose=self.separateClose,
                             children=[other,], **self.sArgs)
+
+        def __ror__(self, other):
+            return self.__or__(other)
 
         def __ior__(self, other):
             """ member function '__ior__' facilitates adding more child elements to an
@@ -185,6 +186,12 @@ class _HTML40(object):
             """
             self.children.append(other)
             return self
+
+        def __and__(self, other):
+            return self if other else _html40
+
+        def __rand__(self, other):
+            return self.__and__(other)
 
         def __str__(self):
             """ __str__ is used to create a character representation of the element.
@@ -195,7 +202,7 @@ class _HTML40(object):
                 s = ''
             else:
                 s = "<%s" % self.tag
-                for key, val in self.sArgs.iteritems():
+                for key, val in self.sArgs.items():
                     if val is not None:
                         s += ' %s="%s"' %(key.lower(), val)
                 if not self.separateClose:
@@ -205,7 +212,7 @@ class _HTML40(object):
                 s += str(child)
             if self.separateClose:
                 s += '</%s>' % self.tag
-                if self.tag not in ('span','a'):
+                if self.tag not in ('span', 'a'):
                     s += '\n'
             return s
 
