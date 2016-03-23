@@ -231,7 +231,7 @@ class _HTML40(object):
                 sequence with the value 'None' are ignored completely
                 (but zero length strings are treated normally!)
             """
-            fs = filter(lambda x: x is not None, seq)
+            fs = list(filter(lambda x: x is not None, seq))
             return self.__class__(tag=None, separateClose=False, children=
                 fs[:1] + [(self, term) for term in fs[1:]])
 
