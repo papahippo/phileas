@@ -123,6 +123,4 @@ def putLines(el,  *lines):
 
 from .page import *
 from .invoice import *
-from .company import *
 from .quarter import *
-#print ("hurrah!")

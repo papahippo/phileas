@@ -67,7 +67,7 @@ class Invoice(Page, Entity):
         date:str = "42 Januari, 2099",
         StyleSheet:str = ".style/hippos.css",
         sequenceNumber:str = 'N2099/042', #stub
-        items:list = [InvoiceItem(),],
+        items:tuple = (InvoiceItem(),),
         description:str = '',
         client:Client = Client(), #stub for base class!
         deliveryHelp:str = '',
