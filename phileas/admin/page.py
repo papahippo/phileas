@@ -4,7 +4,7 @@ from __future__ import print_function
 import sys, os, time
 from phileas import _html40 as h
 
-#import cgitb
+import cgitb
 #cgitb.enable()
 
 from urllib.parse import urlparse, parse_qs
@@ -94,17 +94,18 @@ class Page(object):
 def main(pageClass,  localIndex=None):
     uri = os.environ.get('REQUEST_URI')
     if uri:
-        o = urlparse(uri)
-        path = os.environ['DOCUMENT_ROOT'] + o.path # geturl()
-        #print ("path=", path)
-        if not os.path.isdir(path):
-            path = os.path.split(path)[0]
-        os.chdir(path)
-        kw = parse_qs(o.query)
+        if 0:
+            kw= {}
+        else:
+            o = urlparse(uri)
+            path = os.environ['DOCUMENT_ROOT'] + o.path # geturl()
+            #print ("path=", path)
+            if not os.path.isdir(path):
+                path = os.path.split(path)[0]
+            os.chdir(path)
+            kw = parse_qs(o.query)
     else:
-        pairs = [p.split('=') for p in sys.argv[1:]]
-        #print (pairs)
-        kw = dict(pairs)
+        kw = dict([p.split('=') for p in sys.argv[1:]])
     page = pageClass(localIndex=localIndex, **kw)
     if 1: # uri:
         sys.stderr = page

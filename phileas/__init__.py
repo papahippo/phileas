@@ -7,7 +7,7 @@ I don't mind - just try to spell it properly!)
 See http://larry.myerscough.nl (n.b. no "www." up front) for an example of a site built using this module.
 Use the 'show source' button of the left-hand panel to view and/or capture the python source code.
 """
-#from __future__ import print_function
+from __future__ import print_function
 import sys
 
 def unravel(seq):
@@ -171,26 +171,35 @@ class _HTML40(object):
                 '<h4>expression</h4>'. Similarly 'h.a(href="myLink") | "text"'
                 becomes '<a href=myLink>text</a>'.
             """
-            #if not other:
-            #    print "falsie!"
-            #    return self
+            if not other:
+                # print("falsie!")
+                return self
             return self.__class__(tag=self.tag, separateClose=self.separateClose,
                             children=[other,], **self.sArgs)
 
         def __ror__(self, other):
+            """ This member function ensures (or at least tries to ensure?) that the
+            '|' operator (see above) is symmetrical"""
             return self.__or__(other)
 
         def __ior__(self, other):
             """ member function '__ior__' facilitates adding more child elements to an
-                already defined html element.
+                already defined html element, using  the '|=' in-place operator
             """
             self.children.append(other)
             return self
 
         def __and__(self, other):
+            """
+            This member function facilitates the use of & (usually a bit-wise 'and')
+            to conditionally apply HTML operators, e.g.:
+                (this_user==selected_user)&h.em | "text relating to selected user"
+            """
             return self if other else _html40
 
         def __rand__(self, other):
+            """ This member function ensures (or at least tries to ensure?) that the
+            '&' operator (see above) is symmetrical"""
             return self.__and__(other)
 
         def __str__(self):
@@ -231,13 +240,13 @@ class _HTML40(object):
                 sequence with the value 'None' are ignored completely
                 (but zero length strings are treated normally!)
             """
-            fs = filter(lambda x: x is not None, seq)
+            fs = list(filter(lambda x: x is not None, seq))
             return self.__class__(tag=None, separateClose=False, children=
                 fs[:1] + [(self, term) for term in fs[1:]])
 
     # we now define all legal HTML4.0 tags, all wth a leading underscore ('_').
     # Each of these represents a sub-class of _HTML40.element, but these aren't
-    # intended fo rexplicit use; constructions like e.g. 'h.h3' cause the class
+    # intended for explicit use; constructions like e.g. 'h.h3' cause the class
     # (same e.g.!) _HTML40._h3 to be initiated and given the tag value 'h3'.
     #
     class _bdo(Element): pass
