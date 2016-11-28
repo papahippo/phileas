@@ -1,22 +1,34 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-from admin import *
+from phileas.admin import *
 
 class InvoiceItem(Entity):
-
-    argd = dict(
-        project=(str, "<fictitious project>: "),
-        whatDone=(str, 'werk uitgevoerd door '),
-        whoBy=(str, 'Larry Myerscough'),
-        howMany=(float, 42), # stub!
-        timesWhat=(list, ['uur',  'uren']),
-        whenDone=(str, "St. Juttemas 2099"),
-        rate=(float, 54.0),
-        percentDiscount=(float, 0),
-        cost=(float, 0),
-        costBtw=(float, 0.0),
-        description=(str, ''),
-    )
+    def __init__(self,
+        project:str="<fictitious project>: ",
+        whatDone:str = 'werk uitgevoerd door ',
+        whoBy:str = 'Larry Myerscough',
+        howMany:float = 42, # stub!
+        timesWhat:list = ['uur',  'uren'],
+        whenDone:str = "St. Juttemas 2099",
+        rate:float = 54.0,
+        percentDiscount:float = 0,
+        cost:float = 0,
+        costBtw:float = 0.0,
+        description:str = '',
+    ):
+        Entity.__init__(self,
+                        project=project,
+                        whatDone=whatDone,
+                        whoBy=whoBy, #stub
+                        howMany=howMany,
+                        timesWhat=timesWhat,
+                        whenDone=whenDone,
+                        percentDiscount=percentDiscount,
+                        rate=rate,
+                        cost=cost,
+                        costBtw=costBtw,
+                        description=description,
+        )
 
     def resolveData(self):
         self.appliedCost = self.cost = self.howMany*self.rate
@@ -51,26 +63,37 @@ class InvoiceItem(Entity):
        
 
 class Invoice(Page, Entity):
-    def __init__(self, **kw):
-        Entity.__init__(self, **kw)
-        # print (self.client)
+    def __init__(self,
+        date:str = "42 Januari, 2099",
+        StyleSheet:str = ".style/hippos.css",
+        sequenceNumber:str = 'N2099/042', #stub
+        items:list = [InvoiceItem(),],
+        description:str = '',
+        client:Client = Client(), #stub for base class!
+        deliveryHelp:str = '',
+        supplier:Supplier = Supplier(), #stub for base class!
+        textSundries:str = '',
+        costSundries:float = 0.0,
+        percentBtw:float =  21,
+        chargeBtw:(type(None), bool) = None, # only applies for "rest of world"; currently always overruled!
+        paidFromPrivate:(type(None), bool) = None,
+    ):
+        Entity.__init__(self,
+            date=date,
+            StyleSheet=StyleSheet,
+            sequenceNumber=sequenceNumber, #stub
+            items=items,
+            description=description,
+            client=client,
+            deliveryHelp=deliveryHelp,
+            supplier=supplier,
+            textSundries=textSundries,
+            costSundries=costSundries,
+            percentBtw=percentBtw,
+            chargeBtw=chargeBtw,
+            paidFromPrivate=paidFromPrivate,
+        )
         Page.__init__(self)
-
-    argd = dict(
-        date=(str, "42 Januari, 2099"),
-        StyleSheet=(str, ".style/hippos.css"),
-        sequenceNumber=(str, 'N2099/042'), #stub
-        items=(list, [InvoiceItem(),]),
-        description=(str, ''),
-        client=(Client, Client()), #stub for base class!
-        deliveryHelp=(str, ''),
-        supplier=(Supplier, Supplier()), #stub for base class!
-        textSundries=(str, ''),
-        costSundries=(float, 0.0),
-        percentBtw=(float, 21),
-        chargeBtw = ((type(None), bool), 'None'), # only applies for "rest of world"; currently always overruled!
-        paidFromPrivate = ((type(None), bool), None),
-    )
 
     def h_tr(self):
         tr= h.tr | (

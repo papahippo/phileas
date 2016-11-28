@@ -1,19 +1,22 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
 from __future__ import print_function
-from phileas import _html40 as h
-from admin.page import ( Page, main )
-from admin.company import ( Supplier, Accountant, AdHoeks )
+from phileas.admin import *
 
-from admin.utils import ( money, euros, AccountsItem )
 
 class AccountingException(Exception):
     pass
 
+
+class AccountsItem:
+    pass
+
+
 class Common:
     prevOutgoingitem = None
 
-class OutgoingItem(AccountsItem):
+
+class OutgoingItem(Entity):
     
     expressExtra = {None: 'n.v.t', False: 'al gedaan'}
     
@@ -42,15 +45,13 @@ class OutgoingItem(AccountsItem):
                                                                                                                    %(amountBtw,       calcBtw      ))
         if paidFromPrivate is True:
             paidFromPrivate = amountNetto
-        self.setAttributes(date=date,  sequenceNumber=sequenceNumber,
+        Entity.__init__(self,
+                date=date,  sequenceNumber=sequenceNumber,
                 supplierName=supplierName,  description=description, amountBruto=amountBruto,
-                   percentBtw=percentBtw,  amountBtw=amountBtw,  amountNetto=amountNetto,
-                   paidFromPrivate=paidFromPrivate)
+                percentBtw=percentBtw,  amountBtw=amountBtw,  amountNetto=amountNetto,
+                paidFromPrivate=paidFromPrivate)
         Common.prevOutgoingitem = self
 
-    def setAttributes(self,  **kw):
-        for key,  val in kw.items():
-            setattr(self,  key,  val)
         # loose end: following allows table output to be quite generic but doesn't cater
         # for 'rest-of-the-world' - just Ned and other EU.
         #
@@ -64,6 +65,32 @@ class OutgoingItem(AccountsItem):
     def composeDescription(self):
         return self.description
         
+    def h_tr(self):
+        tr= h.tr | (
+            h.td(align='left')  | self.date[:6],
+            h.td(align='left')  | "%s" % self.sequenceNumber,
+            h.td(align='left')  | self.composeName(),
+            h.td(align='left')  | self.composeDescription(),
+            h.td(align='right') | "%s" % money(self.amountBruto),
+        )
+        if self.chargeBtw is None:
+            tr |= (
+                h.td(align='centre') | "n.v.t.",
+                h.td(align='right')  | " ",
+            )
+        else:
+            tr |= (
+                h.td(align='right') | "%s%%" % (self.percentBtw or 0),
+                h.td(align='right') | money(self.amountBtw),
+            )
+        tr |= (
+            h.td(align='right') | "%s" % money(self.amountNetto),
+        )
+        if self.paidFromPrivate is not None:
+            tr |= (h.td(align='right') |
+                   ((self.paidFromPrivate and money(self.paidFromPrivate)) or ''),
+            )
+        return tr
 
 class AccountingTable:
     totalBruto = 0.0
@@ -130,20 +157,36 @@ class ExpenditureTable(AccountingTable):
     headerName = 'Supplier'
     extraTitle = "te vergoeden"
 
-class Quarter(Page):
-    name = 'Accounts'
-    StyleSheet = ".style/hippos.css"
-    accountant  = AdHoeks #stub for base class!
-    deliveryHelp = """(betreft kwartaalgegevens)"""
-    supplier = Supplier #stub for base class!
-    year = 2012
-    quarter = 4
-    prevSeqNumber = 0
-    InvoiceModules = ()
-    rawUitgoings = ()
-    pageNo = 0
-
-    uitgoings= ()
+class Quarter(Entity, Page):
+    def __init__(self,
+                    name:str = 'Accounts',
+                    StyleSheet:str = ".style/hippos.css",
+                    accountant:Accountant  = Accountant(), #stub for base class!
+                    deliveryHelp:str = """(betreft kwartaalgegevens)""",
+                    supplier:Supplier = Supplier(), #stub for base class!
+                    year:int = 2012,
+                    quarter:int = 4,
+                    prevSeqNumber:int = 0,
+                    invoiceModules:tuple = (),
+                    rawUitgoings:tuple = (),
+                    pageNo:int = 0,
+                    uitgoings:tuple = (),
+                 ):
+        Entity.__init__(self,
+                        name=name,
+                        StyleSheet=StyleSheet,
+                        accountant=accountant,
+                        deliveryHelp=deliveryHelp,
+                        supplier=supplier,
+                        year=year,
+                        quarter=quarter,
+                        prevSeqNumber=prevSeqNumber,
+                        invoiceModules=invoiceModules,
+                        rawUitgoings=rawUitgoings,
+                        pageNo=pageNo,
+                        uitgoings=uitgoings,
+                        )
+        Page.__init__(self)
 
     def resolveData(self):
         self.incomeTables,  self.expenditureTables = [
@@ -161,10 +204,10 @@ class Quarter(Page):
         
         # determine which invoices are 'binnenland' which are EU (ICL) and which are rest-of-the-world
         for (content,  tableQuartet,  text, )   in (
-                ([invoiceModule.Invoice() for invoiceModule in self.InvoiceModules],
-                            self.incomeTables, 'income', ), 
+                ([invoiceModule.invoice for invoiceModule in self.invoiceModules],
+                            self.incomeTables, 'income', ),
                 ( self.uitgoings,
-                            self.expenditureTables, 'outgoing',  ), 
+                            self.expenditureTables, 'outgoing',  ),
                                          ):
             for item in content:
                 for  ix,  accountsTable in enumerate(tableQuartet):
@@ -265,6 +308,6 @@ href="http://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst
         )
 
 if __name__=="__main__":
-    main(Quarter)
+    quarter = Quarter()
+    quarter.present()
 
-    

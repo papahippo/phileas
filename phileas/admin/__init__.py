@@ -11,12 +11,9 @@ from phileas import _html40 as h
 
 class Entity(object):
     def __init__(self, **kw):
-        self.admit_args()
-
-    def admit_args(self, **kw):
         for _key, _val in kw.items():
-            print (_key, _val)
-            #_translator = self.admit_args.__annotations__.get(_key, eval)
+            # print (_key, _val)
+            #_translator = self.__init__.__annotations__.get(_key, eval)
             #print (_translator)
             self.__setattr__(_key, _val)  #  _translator(_val))
 
@@ -25,7 +22,7 @@ class Entity(object):
 
 
 class Car(Entity):
-    def admit_args(self,
+    def __init__(self,
         modelName:str = "<model name>",
         buildYear:int = 1066,
         originalNewPrice:int = 0,
@@ -34,7 +31,7 @@ class Car(Entity):
         dateRelinquished:str = '',
         kenteken:str = '??-??-??'
     ):
-        Entity.admit_args(self,
+        Entity.__init__(self,
             modelName=modelName,
             buildYear = buildYear,
             originalNewPrice=originalNewPrice,
@@ -72,7 +69,7 @@ money(yearBijTelling),  money(actualBijTelling), euros(actualBijTelling)),
 
 
 class Company(Entity):
-    def admit_args(self,
+    def __int__(self,
         number: int = 0,
         name : str = '<Default Company Name>',
         address:list = list(['<Default Address, line %u>' %(n+1) for n in range(4)]),
@@ -85,7 +82,7 @@ class Company(Entity):
         companyLogo:str = '',
         cars:list = [],
     ):
-        Entity.admit_args(self,
+        Entity.__int__(self,
             number=number,
             name = name,
             address=address,
@@ -124,6 +121,8 @@ def putLines(el,  *lines):
         el.br
 
 
-#from .page import *
-#from .invoice import *
-from company import *
+from .page import *
+from .invoice import *
+from .company import *
+from .quarter import *
+#print ("hurrah!")
