@@ -1,54 +1,33 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-##xx -*- coding: latin-1 -*-
-""" very old comment, left in purely for nostalgia:
-    Data structures representing companies etc. Initial stubby version
-    adequate for first invoice of 2013?
-"""
-import types
-from phileas import _html40 as h
-
-class Annotation:
-    def __init__(self, name, val):
-        self.name =  name
-        self.val =  val
 
 class Entity(object):
-    """ Class 'Entity' is not really concerned with admin as such; What makes entities special is that
-        (in general, i.e until I break my own 'rule') keywords supplied on entity creation are expected to
-         be annotated and they automatically become atributes of the entity instance.
-    """
+    argd = {}  # superclass accepts no args!
 
     def __init__(self, **kw):
-        for _key, _val in kw.items():
-            # print (_key, _val)
-            #_translator = self.__init__.__annotations__.get(_key, eval)
-            #print (_translator)
-            self.__setattr__(_key, _val)  #  _translator(_val))
-
+        self.kw = kw  # copy before pruning; dubious merit
+        for _key, (_type, _default) in self.argd.items():
+            _val = kw.pop(_key, _default)
+            if (not isinstance(_type, tuple)
+                and not isinstance(_val, _type)):
+                _val = _type(_val)
+            self.__setattr__(_key, _val)
+        if kw:
+            raise KeyError("arguments not allowed: %s" % kw)
     def pformat(self):  # obsolete?
         pass
 
 
 class Car(Entity):
-    def __init__(self,
-        modelName:str = "<model name>",
-        buildYear:int = 1066,
-        originalNewPrice:int = 0,
-        percentBijtelling: float = 2.7,
-        dateAcquired:str = '',
-        dateRelinquished:str = '',
-        kenteken:str = '??-??-??'
-    ):
-        Entity.__init__(self,
-            modelName=modelName,
-            buildYear = buildYear,
-            originalNewPrice=originalNewPrice,
-            percentBijtelling=percentBijtelling,
-            dateAcquired=dateAcquired,
-            dateRelinquished=dateRelinquished,
-            kenteken=kenteken,
-        )
+    argd = dict(
+        modelName=(str, "<model name>"),
+        buildYear=(int, 1066),
+        originalNewPrice=(int, 0),
+        percentBijtelling=(float, 2.7),
+        dateAcquired=(str, ''),
+        dateRelinquished=(str, ''),
+        kenteken=(str, '??-??-??'),
+    )
 
     def useInYear(self, year):
         daysInYear = 365 + ((year%4)==0)
@@ -76,31 +55,21 @@ money(yearBijTelling),  money(actualBijTelling), euros(actualBijTelling)),
             h.br,
         )
 
-
 class Company(Entity):
-    def __int__(self,
-        number: int = 0,
-        name : str = '<Default Company Name>',
-        address:list = list(['<Default Address, line %u>' %(n+1) for n in range(4)]),
-        btwNumber:str = '', # => don't show BTW number on factuur, do charge BTW
-        reference:str = '',
-        paymentTerms:list = [
+    argd = dict(
+        number=(int, 0),
+        name= (str, '<Default Company Name>'),
+        address=(list, ['<Default Address, line %u>' %(n+1) for n in range(4)]),
+        btwNumber=(str, ''), # => don't show BTW number on factuur, do charge BTW
+        reference=(str, ''),
+        paymentTerms=(list, [
                  "Betaling naar bankrekening (zie gegevens boven) binnen 30 dagen wordt op prijs gesteld.",
                  "Bij betaling svp factuurnummer vermelden.",
-        ],
-        companyLogo:str = '',
-        cars:list = [],
-    ):
-        Entity.__int__(self,
-            number=number,
-            name = name,
-            address=address,
-            btwNumber=btwNumber,
-            reference=reference,
-            paymentTerms=paymentTerms,
-            companyLogo=companyLogo,
-            cars=cars,
-        )
+        ]),
+        companyLogo=(str, ''),
+        cars=(list, []),
+    )
+
 
 class Supplier(Company):
     pass
@@ -128,7 +97,6 @@ def putLines(el,  *lines):
             continue
         el.text(line)
         el.br
-
 
 from .page import *
 from .invoice import *
