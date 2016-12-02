@@ -22,46 +22,47 @@ class OutgoingItem(Entity):
     
     argd = dict(
         date=(str, ''),
-        sequenceNumber=(str, ''),
+        sequenceNumber=((str, type(None)), None),
         supplierName=(str, "(unknown supplier)"),
         description=(str, "(no description)"),
-        amountBruto=(float, 0.0),
-        percentBtw=(float, 0.0),
-        amountBtw=(float, 0.0),
-        amountNetto=(float, 0.0),
+        amountBruto=((float, type(None)), 0.0),
+        percentBtw=((float, type(None)), 0.0),
+        amountBtw=((float, type(None)), 0.0),
+        amountNetto=((float, type(None)), 0.0),
         paidFromPrivate=((True, False, None), None),
     )
 
-    def __init__(self,  date=None,  sequenceNumber=None,  supplierName="(unknown supplier)",  description="(no description)",
+    def __init__(self,
+            date=None,  sequenceNumber=None,  supplierName="(unknown supplier)",  description="(no description)",
                  amountBruto=None, percentBtw=None,  amountBtw=None,  amountNetto=None, paidFromPrivate=False):
-        if sequenceNumber is None:
+
+        Entity.__init__(self,
+            date=date,  sequenceNumber=sequenceNumber,  supplierName=supplierName,  description=description,
+                amountBruto=amountBruto, percentBtw=percentBtw,  amountBtw=amountBtw,
+                amountNetto=amountNetto, paidFromPrivate=paidFromPrivate)
+
+        if not self.sequenceNumber:
             psn = Common.prevOutgoingitem.sequenceNumber
-            sequenceNumber = psn[:-3]+"%03u" % (eval('1'+psn[-3:]) - 999)
-        if amountBruto is None:
-            if amountNetto is None:
-                raise AccountingException("need so supply gross and/or net price")
-            else:
-                amountBruto = amountNetto * 100.0 /(100+(percentBtw or 0))
+            self.sequenceNumber = psn[:-3]+"%03u" % (eval('1'+psn[-3:]) - 999)
+        if not self.amountBruto:
+            if not self.amountNetto:
+                raise AccountingException("need to supply gross and/or net price")
+            self.amountBruto = self.amountNetto * 100.0 /(100 + self.percentBtw)
         else:
-            calcNetto = amountBruto * (100+(percentBtw or 0))/100.0
-            if amountNetto is None:
-                amountNetto = calcNetto
-            elif not (calcNetto-0.02) < amountNetto < (calcNetto+0.02):
+            calcNetto = self.amountBruto * (100+self.percentBtw)/100.0
+            if not self.amountNetto:
+                self.amountNetto = calcNetto
+            elif not (calcNetto-0.02) < self.amountNetto < (calcNetto+0.02):
                 raise AccountingException("discrepancy between supplied (%s) and calculated net price(%s)"
                                                                                                                 %(amountNetto,       calcNetto      ))
-        calcBtw = amountNetto - amountBruto
-        if amountBtw  is None:
-             amountBtw = calcBtw
-        elif not (calcBtw-0.02) < amountBtw < (calcBtw+0.02):
+        calcBtw = self.amountNetto - self.amountBruto
+        if not self.amountBtw:
+             self.amountBtw = calcBtw
+        elif not (calcBtw-0.02) < self.amountBtw < (calcBtw+0.02):
             raise AccountingException("discrepancy between supplied (%s) and calculated btw(%s)"
                                                                                                                    %(amountBtw,       calcBtw      ))
-        if paidFromPrivate is True:
-            paidFromPrivate = amountNetto
-        Entity.__init__(self,
-                date=date,  sequenceNumber=sequenceNumber,
-                supplierName=supplierName,  description=description, amountBruto=amountBruto,
-                percentBtw=percentBtw,  amountBtw=amountBtw,  amountNetto=amountNetto,
-                paidFromPrivate=paidFromPrivate)
+        if self.paidFromPrivate is True:
+            self.paidFromPrivate = self.amountNetto
         Common.prevOutgoingitem = self
 
         # loose end: following allows table output to be quite generic but doesn't cater
