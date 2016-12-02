@@ -8,8 +8,17 @@
 import types
 from phileas import _html40 as h
 
+class Annotation:
+    def __init__(self, name, val):
+        self.name =  name
+        self.val =  val
 
 class Entity(object):
+    """ Class 'Entity' is not really concerned with admin as such; What makes entities special is that
+        (in general, i.e until I break my own 'rule') keywords supplied on entity creation are expected to
+         be annotated and they automatically become atributes of the entity instance.
+    """
+
     def __init__(self, **kw):
         for _key, _val in kw.items():
             # print (_key, _val)
