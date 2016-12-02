@@ -140,11 +140,12 @@ class Invoice(Page, Entity):
             else:
                 self.percentBtw = 0
         self.amountNetto = self.amountBruto + self.amountBtw
+        self.missive_name = ('factuur', 'credit nota')[self.amountNetto<0]
 
     def clientDetails(self):
         return h.br.join(
              []*6 
-           + ['', self.client.name,  self.deliveryHelp]
+           + ['', self.client.name,  self.deliveryHelp or ("(betreft %s)" %  self.missive_name)]
            + self.client.address
         )
 
@@ -166,8 +167,8 @@ class Invoice(Page, Entity):
                 h.tr | (
                     h.td(width='50%',align='left') | h.br.join([  
                           "Datum:", 
-                          "Factuurnummer:",  
-                          "Cliëntnummer:", 
+                          "Notanummer:",
+                          "Cliëntnummer:",
                           self.client.btwNumber and "Cliënt BTW nummer:",  
                           "Cliënt Referentie:",  
                     ]),
@@ -248,7 +249,7 @@ class Invoice(Page, Entity):
                 ),
             ),
             h.p(style='font-family:Arial;font-size:20px;text-align:center') |
-                    (h.b  | "FACTUUR"), 
+                    (h.b  | self.missive_name.upper()),
             self.headerBlock(),
             self.detailBlock(), 
         )

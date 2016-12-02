@@ -378,10 +378,10 @@ class _HTML40(object):
     class _title(_html): pass
 
     class _body(Element):
-        AttrDicts=(CoreAttrs, {'background': 1, 'text': 1, 'link': 1, 'vlink': 1, 'alink': 1, 'BgColor': 1})
+        AttrDicts=(CoreAttrs, {'background': 1, 'text': 1, 'link': 1, 'vlink': 1, 'alink': 1, 'bgcolor': 1})
     class _iframe(Element):
         AttrDicts=(CoreAttrs, {'background': 1, 'text': 1,
-         'link': 1, 'vlink': 1, 'alink': 1, 'BgColor': 1, 'src': 1,
+         'link': 1, 'vlink': 1, 'alink': 1, 'bgcolor': 1, 'src': 1,
          'width': 1, 'height': 1, 'allowfullscreen': 0, 'frameborder': 1})
 
     class _img(Element):
