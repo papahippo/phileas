@@ -66,6 +66,10 @@ class Company(Entity):
                  "Betaling naar bankrekening (zie gegevens boven) binnen 30 dagen wordt op prijs gesteld.",
                  "Bij betaling svp factuurnummer vermelden.",
         ]),
+        restitutionTerms=(list, [
+             "Het positieve van de hierbovengenoemde negatieve totaal wordt vandaag overgeboekt ",
+             "volgens uw instructies.", 
+        ]),
         companyLogo=(str, ''),
         cars=(list, []),
     )

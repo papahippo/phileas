@@ -212,7 +212,7 @@ class Invoice(Page, Entity):
             h.br,
             h.hr,
             h.br,
-            h.p(style='font-size:12px;') |  h.br.join(self.client.paymentTerms),
+            h.p(style='font-size:12px;') |  h.br.join((self.amountNetto<0 and self.client.restitutionTerms) or self.client.paymentTerms),
         )
 
     def body(self):
