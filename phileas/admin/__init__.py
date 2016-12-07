@@ -2,31 +2,32 @@
 # -*- encoding: utf8 -*-
 
 class Entity(object):
-    argd = {}  # superclass accepts no args!
 
     def __init__(self, **kw):
-        self.kw = kw  # copy before pruning; dubious merit
-        for _key, (_type, _default) in self.argd.items():
-            _val = kw.pop(_key, _default)
-            if (not isinstance(_type, tuple)
-                and not isinstance(_val, _type)):
-                _val = _type(_val)
+        for _key, _val in kw.items():
             self.__setattr__(_key, _val)
-        if kw:
-            raise KeyError("arguments not allowed: %s" % kw)
-    def pformat(self):  # obsolete?
-        pass
+#    def pformat(self):  # obsolete?
+#        pass
 
 
 class Car(Entity):
-    argd = dict(
-        modelName=(str, "<model name>"),
-        buildYear=(int, 1066),
-        originalNewPrice=(int, 0),
-        percentBijtelling=(float, 2.7),
-        dateAcquired=(str, ''),
-        dateRelinquished=(str, ''),
-        kenteken=(str, '??-??-??'),
+    def __init__(self,
+        modelName:str="<model name>",
+        buildYear:int=1066,
+        originalNewPrice:int=0,
+        percentBijtelling:float=2.7,
+        dateAcquired:str='',
+        dateRelinquished:str='',
+        kenteken:str='??-??-??',
+    ):
+        Entity.__init__(self,
+            modelName=modelName,
+            buildYear=buildYear,
+            originalNewPrice=originalNewPrice,
+            percentBijtelling=percentBijtelling,
+            dateAcquired=dateAcquired,
+            dateRelinquished=dateRelinquished,
+            kenteken=kenteken,
     )
 
     def useInYear(self, year):
@@ -56,23 +57,34 @@ money(yearBijTelling),  money(actualBijTelling), euros(actualBijTelling)),
         )
 
 class Company(Entity):
-    argd = dict(
-        number=(int, 0),
-        name= (str, '<Default Company Name>'),
-        address=(list, ['<Default Address, line %u>' %(n+1) for n in range(4)]),
-        btwNumber=(str, ''), # => don't show BTW number on factuur, do charge BTW
-        reference=(str, ''),
-        paymentTerms=(list, [
+    def __init__(self,
+        number:int=0,
+        name:str='<Default Company Name>',
+        address:list=list(['<Default Address, line %u>' %(n+1) for n in range(4)]),
+        btwNumber:str='', # => don't show BTW number on factuur, do charge BTW
+        reference:str='',
+        paymentTerms:list=[
                  "Betaling naar bankrekening (zie gegevens boven) binnen 30 dagen wordt op prijs gesteld.",
                  "Bij betaling svp factuurnummer vermelden.",
-        ]),
-        restitutionTerms=(list, [
+        ],
+        restitutionTerms:list=[
              "Het positieve van de hierbovengenoemde negatieve totaal wordt vandaag overgeboekt ",
-             "volgens uw instructies.", 
-        ]),
-        companyLogo=(str, ''),
-        cars=(list, []),
-    )
+             "volgens uw instructies.",
+        ],
+        companyLogo:str='',
+        cars:list=[],
+    ):
+        Entity.__init__(self,
+            number=number,
+            name=name,
+            address=address,
+            btwNumber=btwNumber,
+            reference=reference,
+            paymentTerms=paymentTerms,
+            restitutionTerms=restitutionTerms,
+            companyLogo=companyLogo,
+            cars=cars,
+        )
 
 
 class Supplier(Company):

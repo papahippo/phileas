@@ -20,26 +20,28 @@ class OutgoingItem(Entity):
 # currently in transition to new Entity class , hence strange mix of arguments
     expressExtra = {None: 'n.v.t', False: 'al gedaan'}
     
-    argd = dict(
-        date=(str, ''),
-        sequenceNumber=((str, type(None)), None),
-        supplierName=(str, "(unknown supplier)"),
-        description=(str, "(no description)"),
-        amountBruto=((float, type(None)), 0.0),
-        percentBtw=((float, type(None)), 0.0),
-        amountBtw=((float, type(None)), 0.0),
-        amountNetto=((float, type(None)), 0.0),
-        paidFromPrivate=((True, False, None), None),
-    )
-
     def __init__(self,
-            date=None,  sequenceNumber=None,  supplierName="(unknown supplier)",  description="(no description)",
-                 amountBruto=None, percentBtw=None,  amountBtw=None,  amountNetto=None, paidFromPrivate=False):
-
+        date:str='',
+        sequenceNumber:(str, type(None))=None,
+        supplierName:str="(unknown supplier)",
+        description:str="(no description)",
+        amountBruto:(float, type(None))=None,
+        percentBtw:(float, type(None))=0.0,
+        amountBtw:(float, type(None))=None,
+        amountNetto:(float, type(None))=None,
+        paidFromPrivate:(True, False, None)=None,
+    ):
         Entity.__init__(self,
-            date=date,  sequenceNumber=sequenceNumber,  supplierName=supplierName,  description=description,
-                amountBruto=amountBruto, percentBtw=percentBtw,  amountBtw=amountBtw,
-                amountNetto=amountNetto, paidFromPrivate=paidFromPrivate)
+            date=date,
+            sequenceNumber=sequenceNumber,
+            supplierName=supplierName,
+            description=description,
+            amountBruto=amountBruto,
+            percentBtw=percentBtw,
+            amountBtw=amountBtw,
+            amountNetto=amountNetto,
+            paidFromPrivate=paidFromPrivate
+        )
 
         if not self.sequenceNumber:
             psn = Common.prevOutgoingitem.sequenceNumber
@@ -171,23 +173,35 @@ class ExpenditureTable(AccountingTable):
     extraTitle = "te vergoeden"
 
 class Quarter(Entity, Page):
-    argd = dict(
-        name=(str, 'Accounts'),
-        StyleSheet=(str, ".style/hippos.css"),
-        accountant=(Accountant,  Accountant()), #stub for base class!
-        deliveryHelp=(str, "(betreft kwartaalgegevens)"),
-        supplier=(Supplier, Supplier()), #stub for base class!
-        year=(int, 2012),
-        quarter=(int, 4),
-        prevSeqNumber=(int, 0),
-        invoiceModules=(tuple, ()),
-        rawUitgoings=(tuple, ()),
-        pageNo=(int,  0),
-        uitgoings=(tuple, ()),
-     )
 
-    def __init__(self, **kw):
-        Entity.__init__(self, **kw)
+    def __init__(self,
+        name:str='Accounts',
+        StyleSheet:str=".style/hippos.css",
+        accountant:Accountant=Accountant(), #stub for base class!
+        deliveryHelp:str="(betreft kwartaalgegevens)",
+        supplier:Supplier=Supplier(), #stub for base class!
+        year:int=1588,
+        quarter:int=0,
+        prevSeqNumber:int=0,
+        invoiceModules:tuple=(),
+        rawUitgoings:tuple=(),
+        pageNo:int=0,
+        uitgoings:tuple=(),
+     ):
+        Entity.__init__(self,
+            name=name,
+            StyleSheet=StyleSheet,
+            accountant=accountant, #stub for base class!
+            deliveryHelp=deliveryHelp,
+            supplier=supplier, #stub for base class!
+            year=year,
+            quarter=quarter,
+            prevSeqNumber=prevSeqNumber,
+            invoiceModules=invoiceModules,
+            rawUitgoings=rawUitgoings,
+            pageNo=pageNo,
+            uitgoings=uitgoings,
+        )
         Page.__init__(self)
 
     def resolveData(self):

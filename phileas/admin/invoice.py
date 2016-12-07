@@ -4,19 +4,32 @@ from phileas.admin import *
 
 class InvoiceItem(Entity):
 
-    argd = dict(
-        project=(str, "<fictitious project>: "),
-        whatDone=(str, 'werk uitgevoerd door '),
-        whoBy=(str, 'Larry Myerscough'),
-        howMany=(float, 42), # stub!
-        timesWhat=(list, ['uur',  'uren']),
-        whenDone=(str, "St. Juttemas 2099"),
-        rate=(float, 54.0),
-        percentDiscount=(float, 0),
+    def __init__(self,
+        project:str="<fictitious project>: ",
+        whatDone:str='werk uitgevoerd door ',
+        whoBy:str='Larry Myerscough',
+        howMany:float=42, # stub!
+        timesWhat:list=['uur',  'uren'],
+        whenDone:str="St. Juttemas 2099",
+        rate:float=54.0,
+        percentDiscount:float=0,
         cost=(float, 0),
-        costBtw=(float, 0.0),
-        description=(str, ''),
-    )
+        costBtw:float=0.0,
+        description:str='',
+    ):
+        Entity.__init__(self,
+            project=project,
+            whatDone=whatDone,
+            whoBy=whoBy,
+            howMany=howMany,
+            timesWhat=timesWhat,
+            whenDone=whenDone,
+            rate=rate,
+            percentDiscount=percentDiscount,
+            cost=cost,
+            costBtw=costBtw,
+            description=description,
+        )
 
     def resolveData(self):
         self.appliedCost = self.cost = self.howMany*self.rate
@@ -51,26 +64,38 @@ class InvoiceItem(Entity):
 
 
 class Invoice(Page, Entity):
-    def __init__(self, **kw):
-        Entity.__init__(self, **kw)
-        # print (self.client)
+    def __init__(self,
+        date:str="42 Januari, 2099",
+        StyleSheet:str=".style/hippos.css",
+        sequenceNumber:str='N2099/042', #stub
+        items:list=[InvoiceItem(),],
+        description:str='',
+        client:Client=Client(), #stub for base class!
+        deliveryHelp:str='',
+        supplier:Supplier=Supplier(), #stub for base class!
+        textSundries:str='',
+        costSundries:float=0.0,
+        percentBtw:float=21,
+        chargeBtw:(type(None), bool)=None, # only applies for "rest of world"; currently always overruled!
+        paidFromPrivate:(type(None), bool)=None,
+    ):
+        Entity.__init__(self,
+            date=date,
+            StyleSheet=StyleSheet,
+            sequenceNumber=sequenceNumber,
+            items=items,
+            description=description,
+            client=client,
+            deliveryHelp=deliveryHelp,
+            supplier=supplier,
+            textSundries=textSundries,
+            costSundries=costSundries,
+            percentBtw=percentBtw,
+            chargeBtw=chargeBtw,
+            paidFromPrivate=paidFromPrivate,
+        )
         Page.__init__(self)
 
-    argd = dict(
-        date=(str, "42 Januari, 2099"),
-        StyleSheet=(str, ".style/hippos.css"),
-        sequenceNumber=(str, 'N2099/042'), #stub
-        items=(list, [InvoiceItem(),]),
-        description=(str, ''),
-        client=(Client, Client()), #stub for base class!
-        deliveryHelp=(str, ''),
-        supplier=(Supplier, Supplier()), #stub for base class!
-        textSundries=(str, ''),
-        costSundries=(float, 0.0),
-        percentBtw=(float, 21),
-        chargeBtw = ((type(None), bool), 'None'), # only applies for "rest of world"; currently always overruled!
-        paidFromPrivate = ((type(None), bool), None),
-    )
 
     def h_tr(self):
         tr= h.tr | (
@@ -143,7 +168,7 @@ class Invoice(Page, Entity):
                 h.tr | (
                     h.td(width='50%',align='left') | h.br.join([
                           "Datum:",
-                          "Factuurnummer:",
+                          "Notanummer:",
                           "Cliëntnummer:",
                           self.client.btwNumber and "Cliënt BTW nummer:",
                           "Cliënt Referentie:",
@@ -225,7 +250,7 @@ class Invoice(Page, Entity):
                 ),
             ),
             h.p(style='font-family:Arial;font-size:20px;text-align:center') |
-                    (h.b  | "FACTUUR"),
+                    (h.b  | ((self.amountNetto<0 and "CREDIT NOTA") or "FACTUUR")),
             self.headerBlock(),
             self.detailBlock(), 
         )
