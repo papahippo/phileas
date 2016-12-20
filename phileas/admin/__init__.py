@@ -1,16 +1,22 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
 
-class Entity(object):
+class Grouping:
+    def __init__(self):
+        self.members= []
 
+class Entity(object):
+    grouping = None
     def __init__(self, **kw):
         for _key, _val in kw.items():
             self.__setattr__(_key, _val)
-#    def pformat(self):  # obsolete?
-#        pass
+        if self.grouping:
+            self.grouping.members.append(self)
 
+Cars = Grouping()
 
 class Car(Entity):
+    grouping = Cars
     def __init__(self,
         modelName:str="<model name>",
         buildYear:int=1066,
@@ -56,7 +62,11 @@ money(yearBijTelling),  money(actualBijTelling), euros(actualBijTelling)),
             h.br,
         )
 
+
+Companies =  Grouping()
+
 class Company(Entity):
+    grouping = Companies
     def __init__(self,
         number:int=0,
         name:str='<Default Company Name>',
@@ -87,11 +97,16 @@ class Company(Entity):
         )
 
 
+Suppliers = Grouping()
+
 class Supplier(Company):
-    pass
+    grouping = Suppliers
+
+
+Clients = Grouping()
 
 class Client(Company):
-    pass # for now!
+    grouping = Clients
 
 class Accountant(Company):
     pass # for now!
