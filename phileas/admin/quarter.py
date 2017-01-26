@@ -178,7 +178,7 @@ class Quarter(Entity, Page):
         name:str='Accounts',
         StyleSheet:str=".style/hippos.css",
         accountant:Accountant=Accountant(), #stub for base class!
-        deliveryHelp:str="(betreft kwartaalgegevens)",
+        deliveryHelp:str="",
         supplier:Supplier=Supplier(), #stub for base class!
         year:int=1588,
         quarter:int=0,
@@ -188,6 +188,8 @@ class Quarter(Entity, Page):
         pageNo:int=0,
         uitgoings:tuple=(),
      ):
+        if not deliveryHelp:
+            deliveryHelp = "(betreft kwartaalgegevens '%s')" %supplier.name
         Entity.__init__(self,
             name=name,
             StyleSheet=StyleSheet,

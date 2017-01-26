@@ -53,7 +53,7 @@ class Car(Entity):
             h.br,
             h.br,
 
-"€%s x %s = €%s"    %(self.originalNewPrice,  money(self.percentBijtelling),
+"€%s x %s%% = €%s"    %(self.originalNewPrice,  money(self.percentBijtelling),
                         money(yearBijTelling)),
             h.br,
             h.br,
