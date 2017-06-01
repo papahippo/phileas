@@ -11,12 +11,13 @@ class InvoiceItem(Entity):
         howMany:float=42, # stub!
         timesWhat:list=['uur',  'uren'],
         whenDone:str="St. Juttemas 2099",
-        rate:float=54.0,
+        rate:float=None,
         percentDiscount:float=0,
-        cost=(float, 0),
-        costBtw:float=0.0,
+        cost:float=None,
+        costBtw:float=None,
         description:str='',
-    ):
+        chargeBtw:float=21.,
+                 ):
         Entity.__init__(self,
             project=project,
             whatDone=whatDone,
@@ -29,10 +30,14 @@ class InvoiceItem(Entity):
             cost=cost,
             costBtw=costBtw,
             description=description,
-        )
+            chargeBtw=chargeBtw,
+                        )
 
     def resolveData(self):
-        self.appliedCost = self.cost = self.howMany*self.rate
+        if self.rate is not None:
+            self.cost = self.howMany*self.rate
+        self.appliedCost = self.cost
+        self.costBtw = (self.appliedCost * int(self.chargeBtw)) / 100.0
         if self.percentDiscount:
             self.amountDiscount = (self.cost * self.percentDiscount) / 100.0
             self.appliedCost -= self.amountDiscount
@@ -43,8 +48,8 @@ class InvoiceItem(Entity):
     def details(self):
         answer = h.tr | (    h.td(width='40%', align='left') | self.description,
             h.td(width='30%', align='center') | (
-                "%s %s x %s"
-                %(self.howMany,  self.timesWhat[self.howMany!=1],  money(self.rate))
+                                 (self.rate is None) and 'n.v.t.' or ("%s %s x %s"
+                %(self.howMany,  self.timesWhat[self.howMany!=1],  money(self.rate)))
             ),
             h.td(width='30%', align='right',  valign='top') | (
                 "%s" %(money(self.cost)), h.br,
@@ -66,9 +71,9 @@ class InvoiceItem(Entity):
 class Invoice(Page, Entity):
     def __init__(self,
         date:str="42 Januari, 2099",
-        StyleSheet:str=".style/hippos.css",
+        styleSheet:str="file:///home/gill/hippos.css",
         sequenceNumber:str='N2099/042', #stub
-        items:list=[InvoiceItem(),],
+        items:list=[InvoiceItem(cost=54.),],
         description:str='',
         client:Client=Client(), #stub for base class!
         deliveryHelp:str='',
@@ -81,7 +86,7 @@ class Invoice(Page, Entity):
     ):
         Entity.__init__(self,
             date=date,
-            StyleSheet=StyleSheet,
+            styleSheet=styleSheet,
             sequenceNumber=sequenceNumber,
             items=items,
             description=description,
@@ -126,6 +131,7 @@ class Invoice(Page, Entity):
 
     def resolveData(self):
         self.amountBruto = 0.0
+        self.amountTaxable = 0.0
         self.amountBtw = 0.0
         self.amountTeVergoeden = 0.0
         self.chargeBtw =  (self.client.btwNumber is None) or (self.client.btwNumber[0:2]==self.supplier.btwNumber[0:2])
@@ -136,11 +142,9 @@ class Invoice(Page, Entity):
                 if len(self.description) > 40:
                     self.description = self.description[:38]+'...'
             self.amountBruto += item.appliedCost
-            if self.chargeBtw:
-                item.costBtw = ( item.appliedCost*self.percentBtw) / 100.0
-                self.amountBtw += item.costBtw
-            else:
-                self.percentBtw = 0
+            self.amountBtw += item.costBtw
+            if item.chargeBtw is not False:
+                self.amountTaxable += item.appliedCost
         self.amountNetto = self.amountBruto + self.amountBtw
 
     def clientDetails(self):
@@ -190,7 +194,7 @@ class Invoice(Page, Entity):
                 h.td(width='30%', align='center') | h.br,
                 h.td(width='50%', align='right',  valign='top') | (
                         "BTW: %s%% x %s ="
-                        %(self.percentBtw,  money(self.amountBruto)),
+                        %(self.percentBtw,  money(self.amountTaxable)),
                 ),
                 h.td(width='20%', align='right',  valign='top') | (
                     "%s" %(money(self.amountBtw)),
