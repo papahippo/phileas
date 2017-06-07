@@ -225,24 +225,27 @@ Vroeger zat ik in een kwartet, en we maakten de mooiste muziek. Ik blies de note
 gouden Trombone. Maar dat is allemaal over nu. Het enige wat ik goed kan is blazen. Nu test ik
 ballonnen, maar de helft van de tijd knappen ze kapot in mijn gezicht.
 """),
-Song("LIED TROMBONE", """
-“Je kunt overal op blazen”
+Song('LIED TROMBONE “Je kunt overal op blazen”', """
 Je kunt overal op blazen, probeer het maar een keer
 Een ballon die vult met lucht, maar knapt een keer ook weer.
 Je kunt overal op blazen, blaas de wereld om.
 Maar niemand hoort het geluid van de trom, trom-bone
+
 Je kunt overal op blazen, blaas het hete eten koud.
 Blaas een kaars maar uit, en zie wat je over houd (niks!!)
 Je kunt overal op blazen, blaas het stof in het rond
 Maar niemand hoort het geluid van de trom, trom-bone
+
 En ik heb het geprobeerd, neem dat maar van me aan.
 ‘K heb er weken naar gezocht en jaren over gedaan.
 ‘K heb ‘t land afgereisd, en geblazen wat ik kon.
 Ik wil maar een ding, dat is de trom, trom-bone
+
 Je kunt overal op blazen, het heeft gewoon geen zin.
 Blaas het verhaal maar uit, daar zit geen muziek meer in.
 Je kunt overal op blazen, blaas maar in het rond
 Maar ik wil het geluid van de trom, trom-bone.
+
 En nu jij hier zo staat, nu wil ik het niet meer
 Blazen op van alles, ik leg de ballonnen neer
 Ik haal hem uit de kast, en zet hem aan mijn mond
