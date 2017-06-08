@@ -1,13 +1,14 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
 from __future__ import print_function
-import cgi, cgitb, urlparse
-cgitb.enable()
+#import cgi, cgitb
+#cgitb.enable()
 
 from orderedPage import OrderedPage, main, h
+import random
 
 class Moment:
-    Id = 0
+    Id = 2
     def __init__(self):
         Moment.Id += 1
         self.Id = Moment.Id
@@ -33,8 +34,12 @@ class Speech(Moment):
            Speech.per_role.setdefault(role, []).append(self.Id)
 
     def html(self, page):
-        if set(self._roles) & Speech.quizzing:
-            text = "???????????????"
+        if self.Id == page.hideId:
+            text = (h.a(href=page.uri+"&reveal=%u#%u" % (self.Id, self.Id-2))
+                        | "?? say the text then click here! ???")
+        elif self.Id==page.revealId:
+            text = (h.b |"should say:", h.br, self._text, h.br,
+                    h.a(href=page.uri.split('&reveal')[0]) | "ask me another", h.br,)
         else:
             text = self._text
         return ([(h.b(Id=self.Id)| role, h.em|'(%s)' % '/'.join(page._cast_dict[role]))
@@ -58,9 +63,17 @@ class Toneelstuk(OrderedPage):
     def __init__(self, **kw):
         OrderedPage.__init__(self, **kw)
         self._cast_dict = dict(self.cast)
-        Speech.quizzing = set(self.kw.get("quiz", ''))
+        self.revealId = int(self.kw.get("reveal", (-1,))[0])
+        quizzers = self.kw.get("quiz", ())
+        if self.revealId>=0 or not quizzers:
+            self.hideId = None
+        else:
+            rnd =random.Random()
+            scope = Speech.per_role[quizzers[rnd.randrange(len(quizzers))]]
+            self.hideId = scope[1]  # STUB for.. rnd.randrange(len(scope))]
+
     def upperText(self):
-        return (h.p | """
+        return (self.uri, h.p | """
     This section of the website represents a learning aid for the text of plays (drama). 
           """)
 
