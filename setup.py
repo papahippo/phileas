@@ -10,3 +10,4 @@ setup(
     author_email='hippostech@gmail.com',
     description='python & HTML integration; alternative approach'
 )
+

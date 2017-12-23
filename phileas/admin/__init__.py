@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
+import datetime
 
 class Grouping:
     def __init__(self):
         self.members= []
+
 
 class Entity(object):
     grouping = None
@@ -37,11 +39,18 @@ class Car(Entity):
     )
 
     def useInYear(self, year):
-        daysInYear = 365 + ((year%4)==0)
-        daysInUse = daysInYear #fudged!
+        start_of_year = datetime.date(year, 1, 1)
+        end_of_year = datetime.date(year, 12, 31)
+        start_date = self.dateAcquired and datetime.date(*self.dateAcquired) or start_of_year
+        end_date = self.dateRelinquished and datetime.date(*self.dateRelinquished) or end_of_year
+        if end_date < start_of_year or start_date>end_of_year:
+            return None
+        if start_date < start_of_year:
+            start_date = start_of_year
+        daysInYear = (end_of_year-start_of_year).days + 1
+        daysInUse = (end_date-start_date).days + 1
         yearBijTelling = self.originalNewPrice * self.percentBijtelling /100
         actualBijTelling = (yearBijTelling * daysInUse) / daysInYear
-
         return h.p | (
 "type auto:  %s"  % self.modelName,
             h.br,
@@ -51,6 +60,7 @@ class Car(Entity):
             h.br,
 "kenteken: %s"  % self.kenteken,
             h.br,
+            h.br, "in use %s t/m %s" %(start_date, end_date),
             h.br,
 
 "€%s x %s%% = €%s"    %(self.originalNewPrice,  money(self.percentBijtelling),
