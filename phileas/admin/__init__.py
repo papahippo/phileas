@@ -121,6 +121,40 @@ class Client(Company):
 class Accountant(Company):
     pass # for now!
 
+class Vereniging(Grouping):
+    pass
+class Lid(Entity):
+    grouping = Vereniging
+    def __init__(self,
+        number:int=0,
+        name:str='<Default Company Name>',
+        address:list=list(['<Default Address, line %u>' %(n+1) for n in range(4)]),
+        btwNumber:str='', # => don't show BTW number on factuur, do charge BTW
+        reference:str='',
+        paymentTerms:list=[
+                 "Betaling naar bankrekening (zie gegevens boven) binnen 30 dagen wordt op prijs gesteld.",
+                 "Bij betaling svp factuurnummer vermelden.",
+        ],
+        restitutionTerms:list=[
+             "Het positieve van de hierbovengenoemde negatieve totaal wordt vandaag overgeboekt ",
+             "volgens uw instructies.",
+        ],
+        companyLogo:str='',
+        cars:list=[],
+    ):
+        Entity.__init__(self,
+            number=number,
+            name=name,
+            address=address,
+            btwNumber=btwNumber,
+            reference=reference,
+            paymentTerms=paymentTerms,
+            restitutionTerms=restitutionTerms,
+            companyLogo=companyLogo,
+            cars=cars,
+        )
+
+
 def money(amount):
     l = list(("%.2f" % amount ).replace('.',  ','))
     i=len(l)-6
