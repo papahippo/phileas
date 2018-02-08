@@ -2,20 +2,22 @@
 # -*- encoding: utf8 -*-
 import datetime
 
-class Grouping:
-    def __init__(self):
-        self.members= []
-
-
 class Entity(object):
     grouping = None
     def __init__(self, **kw):
+        self.members = []
         for _key, _val in kw.items():
             self.__setattr__(_key, _val)
         if self.grouping:
             self.grouping.members.append(self)
 
+
+class Grouping(Entity):
+    pass
+
+
 Cars = Grouping()
+
 
 class Car(Entity):
     grouping = Cars
@@ -75,6 +77,7 @@ money(yearBijTelling),  money(actualBijTelling), euros(actualBijTelling)),
 
 Companies =  Grouping()
 
+
 class Company(Entity):
     grouping = Companies
     def __init__(self,
@@ -109,11 +112,13 @@ class Company(Entity):
 
 Suppliers = Grouping()
 
+
 class Supplier(Company):
     grouping = Suppliers
 
 
 Clients = Grouping()
+
 
 class Client(Company):
     grouping = Clients
@@ -121,37 +126,49 @@ class Client(Company):
 class Accountant(Company):
     pass # for now!
 
+
+Verenigingen = Grouping()
+
+
 class Vereniging(Grouping):
-    pass
-class Lid(Entity):
-    grouping = Vereniging
+    grouping = Verenigingen
     def __init__(self,
-        number:int=0,
-        name:str='<Default Company Name>',
-        address:list=list(['<Default Address, line %u>' %(n+1) for n in range(4)]),
-        btwNumber:str='', # => don't show BTW number on factuur, do charge BTW
-        reference:str='',
-        paymentTerms:list=[
-                 "Betaling naar bankrekening (zie gegevens boven) binnen 30 dagen wordt op prijs gesteld.",
-                 "Bij betaling svp factuurnummer vermelden.",
-        ],
-        restitutionTerms:list=[
-             "Het positieve van de hierbovengenoemde negatieve totaal wordt vandaag overgeboekt ",
-             "volgens uw instructies.",
-        ],
-        companyLogo:str='',
-        cars:list=[],
+        name:str='<Default Vereninging Name>',
+    ):
+        Grouping.__init__(self,
+            name=name,
+        )
+
+
+class MailGroups(Grouping):
+    pass
+
+
+class MailGroup_(Entity):
+    grouping = MailGroups()
+
+    def __init__(self,
+        name:str='<Default Mailgroup Name>',
     ):
         Entity.__init__(self,
-            number=number,
             name=name,
-            address=address,
-            btwNumber=btwNumber,
-            reference=reference,
-            paymentTerms=paymentTerms,
-            restitutionTerms=restitutionTerms,
-            companyLogo=companyLogo,
-            cars=cars,
+        )
+
+
+class Lid_(Entity):
+    grouping = Vereniging
+
+    def __init__(self,
+        name:str='<Default Member Name>',
+        knownAs:str='<Default roepnaam>',
+        instrument:str='<Default instrument name>',
+        mailGroups:list = [],
+    ):
+        Entity.__init__(self,
+            name=name,
+            knownAs=knownAs,
+            instrument=instrument,
+            mailGroups=mailGroups,
         )
 
 
