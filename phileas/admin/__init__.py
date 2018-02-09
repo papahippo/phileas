@@ -11,10 +11,13 @@ class Entity(object):
         if self.grouping:
             self.grouping.members.append(self)
 
+    def add_member(self, newbie):
+        self.members.append(newbie)
 
 class Grouping(Entity):
     pass
 
+empty_grouping_ = Grouping(name="[Emppty grouping]")
 
 Cars = Grouping()
 
@@ -143,6 +146,8 @@ class Vereniging(Grouping):
 class MailGroups(Grouping):
     pass
 
+no_mail_groups_ = MailGroups()  # for use in stubs only!
+
 
 class MailGroup_(Entity):
     grouping = MailGroups()
@@ -162,14 +167,18 @@ class Lid_(Entity):
         name:str='<Default Member Name>',
         knownAs:str='<Default roepnaam>',
         instrument:str='<Default instrument name>',
+        emailAddress:str='<Default email address>',
         mailGroups:list = [],
     ):
         Entity.__init__(self,
             name=name,
             knownAs=knownAs,
             instrument=instrument,
+            emailAddress=emailAddress,
             mailGroups=mailGroups,
-        )
+                        )
+        for mailGroup in self.mailGroups:
+            mailGroup.add_member(self)
 
 
 def money(amount):
@@ -193,3 +202,4 @@ def putLines(el,  *lines):
 from .page import *
 from .invoice import *
 from .quarter import *
+from .mailing import *

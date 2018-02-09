@@ -73,6 +73,7 @@ class Page(object):
     def html(self):
         return h.html | (
             h.head | self.head(),
+            #h.body | ( self.body())
             h.body | ( self.body(), h.pre | self.errOutput)
         )
 

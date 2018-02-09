@@ -24,7 +24,7 @@ MagicMailTreeName = 'MagicMailTree'
 class Mailing_:
 # start of stub settings
     sender = 'hippos@chello.nl'
-    title = "[dummy title]'  voor {roepnaam}"
+    title = "{grouping.name}: Mailing '{mailing_name}'  voor {mailGroup.name}"
     mailGroups = no_mail_groups_
     grouping = empty_grouping_
 # end of stub settings
@@ -44,11 +44,12 @@ van deze mail te zien.
         'NL': h.em | ("just a stub for Dutch HTML text!"),
     }
 
-    def plain_text(self, taal):
+    def plain_text(self, taal='NL'):
         return self._plain_text[taal]
 
 
-    def html_text(self, taal):
+    def html_text(self, taal='NL'):
+        # the html tagging probably doesn't belong here (musicraft..pyraft.html needs looking at!)
         return self._html_text[taal]
 
     def putmsg(self, this_verbosity, *pp, **kw):
@@ -62,9 +63,11 @@ van deze mail te zien.
         pass  # for now
 
     def main(self):
+
         script_filename = sys.argv.pop(0)
         script_shortname = os.path.split(script_filename)[1]
-        self.verbosity = sum([a in ('-v', '--verbose') for a in sys.argv])
+        # maling_name, _ext = os.path.splitext(script_shortname)
+        self.verbosity = 42 + sum([a in ('-v', '--verbose') for a in sys.argv])
         non_kw_args = [arg for arg in sys.argv if arg[0]!='-']
         ok_commands = ('check', 'send', 'quit')
         command = (non_kw_args and non_kw_args.pop(0))
@@ -82,15 +85,17 @@ van deze mail te zien.
                 print ("Content-type: text/html;charset=UTF-8\n\n") # the blank line really matters!
         cwd = os.getcwd()
         path_elements = cwd.split(os.sep)
-        mailing_id = path_elements.pop()
+        mailing_name = path_elements.pop()
         if path_elements.pop() != MagicMailTreeName:
-            self.putmsg(0, "warning: %s is not within a '%s' directory." %(mailing_id, MagicMailTreeName))
+            self.putmsg(0, "warning: %s is not within a '%s' directory." %(mailing_name, MagicMailTreeName))
             # sys.exit(997)
 
         # identify all possible attachments once only, before checking per-user.
         #
         # now look at each potential recipient in turn:
         #
+        grouping = self.grouping  # for benifit of text templates!
+
         self.putmsg(1, "Looking for subdirectories corresponding to mail groups...", self.mailGroups)
         for mailGroup in self.mailGroups.members:
             self.putmsg(1, "Dealing with mailgroup '%s'" % mailGroup.name)
@@ -150,13 +155,17 @@ van deze mail te zien.
             # the HTML message, is best and preferred.
             for template_text, subtype in (
                     (self.plain_text(), 'plain'),
-                    (self.htnl_text(),  'html'),
+                    (self.html_text(),  'html'),
             ):
-                text = template_text.format(**locals())
+                text = template_text # .format(**locals())
                 if subtype == stdouttype:
-                    print(str(text))
-
-                sub_part =  MIMEText(text, subtype)
+                    # Temporary? complication
+                    if subtype == 'text':
+                        print(str(text))
+                    else:
+                        print(h.html | str(text).format(**locals()))
+                        #print(h.html | ("humph", h.b | "bold"))
+                sub_part =  MIMEText(str(text), subtype)
                 textual_part.attach(sub_part)
 
             msg.attach(textual_part)
