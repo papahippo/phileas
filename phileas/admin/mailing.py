@@ -15,18 +15,18 @@ import email.utils
 from email.header import Header
 
 from phileas import _html40 as h
+from phileas.admin import no_mail_groups_, empty_grouping_
 
 MagicMailTreeName = 'MagicMailTree'
 # ok_exts = ('.pdf', '.jpg', '.jpeg')
 
 
 class Mailing_:
-    verbosity = 0
 # start of stub settings
     sender = 'hippos@chello.nl'
     title = "[dummy title]'  voor {roepnaam}"
-    members = []
-    mailGroups = []
+    mailGroups = no_mail_groups_
+    grouping = empty_grouping_
 # end of stub settings
 
     _plain_text = {
@@ -64,7 +64,7 @@ van deze mail te zien.
     def main(self):
         script_filename = sys.argv.pop(0)
         script_shortname = os.path.split(script_filename)[1]
-        verbosity = sum([a in ('-v', '--verbose') for a in sys.argv])
+        self.verbosity = sum([a in ('-v', '--verbose') for a in sys.argv])
         non_kw_args = [arg for arg in sys.argv if arg[0]!='-']
         ok_commands = ('check', 'send', 'quit')
         command = (non_kw_args and non_kw_args.pop(0))
@@ -91,8 +91,9 @@ van deze mail te zien.
         #
         # now look at each potential recipient in turn:
         #
-        self.putmsg(1, "Looking for subdirectories corresponding to mail groups...")
-        for mailGroup in self.mailGroups:
+        self.putmsg(1, "Looking for subdirectories corresponding to mail groups...", self.mailGroups)
+        for mailGroup in self.mailGroups.members:
+            self.putmsg(1, "Dealing with mailgroup '%s'" % mailGroup.name)
             try:
                 files_to_attach = os.listdir(mailGroup.name)
             except FileNotFoundError:
@@ -105,9 +106,9 @@ van deze mail te zien.
                         % mailGroup.name)
                 continue
             recipients = []
-            for member in self.members:
-                if mailGroup not in member.mailGroups:
-                    continue
+            for member in mailGroup.members:
+                #if mailGroup not in member.mailGroups:
+                #    continue
                 if not member.emailAddress:
                     self.putmsg (0, "We have no email address for %s."  % member.name)
                     self.putmsg (0, "perhaps you need to print the above would-be attachments?")
@@ -117,7 +118,8 @@ van deze mail te zien.
                 self.putmsg(1, "No-one needs to receive mail for mailgroup '%s'..." % mailGroup.name)
                 self.putmsg(1, "... so we won't send any!")
                 continue
-
+            field_To_as_string = ', '.join(recipients)
+            self.putmsg(1, '"%s" need to receive this particular mail' %field_To_as_string)
             # Create message container - the correct MIME type is multipart/alternative.
             msg = MIMEMultipart()
             subject = self.title.format(**locals())
@@ -127,7 +129,6 @@ van deze mail te zien.
                 sender = self.sender
             except AttributeError:
                 sender = "Gill and Larry Myerscough"
-            field_To_as_string = ', '.join(recipients)
             self.putmsg(1, 'preparing mail for mailgroup "%s"' % mailGroup.name)
             self.putmsg(1, '    mail subject will be "%s"' % subject)
             self.putmsg(1, '    mail will appear to come from "%s"' % sender)
