@@ -44,11 +44,11 @@ van deze mail te zien.
         'NL': h.em | ("just a stub for Dutch HTML text!"),
     }
 
-    def plain_text(self, taal='NL'):
+    def get_plain_text(self, recipients=[], mailGroup=None, file_list=[], taal='NL'):
         return self._plain_text[taal]
 
 
-    def html_text(self, taal='NL'):
+    def get_html_text(self, recipients=[], mailGroup=None, file_list=[], taal='NL'):
         # the html tagging probably doesn't belong here (musicraft..pyraft.html needs looking at!)
         return self._html_text[taal]
 
@@ -118,12 +118,13 @@ van deze mail te zien.
                     self.putmsg (0, "We have no email address for %s."  % member.name)
                     self.putmsg (0, "perhaps you need to print the above would-be attachments?")
                     continue
-                recipients.append(member.emailAddress)
+                recipients.append(member)
             if not recipients:
                 self.putmsg(1, "No-one needs to receive mail for mailgroup '%s'..." % mailGroup.name)
                 self.putmsg(1, "... so we won't send any!")
                 continue
-            field_To_as_string = ', '.join(recipients)
+            field_To_as_string = ', '.join([recipient.emailAddress
+                                            for recipient in recipients])
             self.putmsg(1, '"%s" need to receive this particular mail' %field_To_as_string)
             # Create message container - the correct MIME type is multipart/alternative.
             msg = MIMEMultipart()
@@ -153,15 +154,16 @@ van deze mail te zien.
             # Prepare both parts and insert them into the message container.
             # According to RFC 2046, the last part of a multipart message, in this case
             # the HTML message, is best and preferred.
-            for template_text, subtype in (
-                    (self.plain_text(), 'plain'),
-                    (self.html_text(),  'html'),
+            for text_getter, subtype in (
+                    (self.get_plain_text, 'plain'),
+                    (self.get_html_text,  'html'),
             ):
-                text = template_text # .format(**locals())
+                text = text_getter(recipients = recipients, mailGroup=mailGroup,
+                                   file_list=file_list, ) # .format(**locals())
                 if subtype == stdouttype:
                     # Temporary? complication
                     if subtype == 'text':
-                        print(str(text))
+                        print(str(text).format(**locals()))
                     else:
                         print(h.html | str(text).format(**locals()))
                         #print(h.html | ("humph", h.b | "bold"))

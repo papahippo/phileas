@@ -65,8 +65,8 @@ class Page(object):
             os.getcwd(),
             file=sys.stderr
         )
-        return ('€ default body of content',
-                h.br,
+        return ('!€ \U0001D11E default  body of content',
+                h.br, '\xf09d849e',
                 h.p | 'end of content'
         )
 

@@ -165,14 +165,14 @@ class Lid_(Entity):
 
     def __init__(self,
         name:str='<Default Member Name>',
-        knownAs:str='<Default roepnaam>',
+        roepnaam:str='<Default roepnaam>',
         instrument:str='<Default instrument name>',
         emailAddress:str='<Default email address>',
         mailGroups:list = [],
     ):
         Entity.__init__(self,
             name=name,
-            knownAs=knownAs,
+            roepnaam=roepnaam,
             instrument=instrument,
             emailAddress=emailAddress,
             mailGroups=mailGroups,
