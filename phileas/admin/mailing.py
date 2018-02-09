@@ -19,11 +19,9 @@ from phileas import _html40 as h
 MagicMailTreeName = 'MagicMailTree'
 # ok_exts = ('.pdf', '.jpg', '.jpeg')
 
-def putmsg(*pp, **kw):
-    print(*pp, **kw, file=sys.stderr)
 
-class _Mailshot:
-
+class Mailing_:
+    verbosity = 0
 # start of stub settings
     sender = 'hippos@chello.nl'
     title = "[dummy title]'  voor {roepnaam}"
@@ -31,7 +29,7 @@ class _Mailshot:
     mailGroups = []
 # end of stub settings
 
-_plain_text = {
+    _plain_text = {
         'EN': """
 Please enable HTML in your mail client in order to see the full text of this email.     
             """,
@@ -53,6 +51,9 @@ van deze mail te zien.
     def html_text(self, taal):
         return self._html_text[taal]
 
+    def putmsg(self, this_verbosity, *pp, **kw):
+        if self.verbosity >= this_verbosity:
+            return print(*pp, file=sys.stderr, **kw)
 
 # 'gather' functionality not yet(?) ported from music_mailer.py.
 # def gather(list_of_name_tuples, upper_dir): ..etc.
@@ -63,45 +64,60 @@ van deze mail te zien.
     def main(self):
         script_filename = sys.argv.pop(0)
         script_shortname = os.path.split(script_filename)[1]
-        ok_commands = ('show', 'take', 'check', 'send', 'quit')
-        command = (sys.argv and sys.argv.pop(0))
-        if sys.stdout.isatty():
-            if not command:
-                command = 'check'
-        else:
-            print ("Content-type: text/html;charset=UTF-8\n\n") # the blank line really matters!
-            command = 'show'
+        verbosity = sum([a in ('-v', '--verbose') for a in sys.argv])
+        non_kw_args = [arg for arg in sys.argv if arg[0]!='-']
+        ok_commands = ('check', 'send', 'quit')
+        command = (non_kw_args and non_kw_args.pop(0))
+        if not command:
+            command = 'check'
         if command not in ok_commands:
-            putmsg("error: %s is not one of %s." %(command, ok_commands))
+            self.putmsg(-1, "error: %s is not one of %s." %(command, ok_commands))
             sys.exit(999)
+        stdouttype = (non_kw_args and non_kw_args.pop(0))
+        if not stdouttype:
+            if sys.stdout.isatty():
+                stdouttype = 'plain'
+            else:
+                stdouttype = 'html'
+                print ("Content-type: text/html;charset=UTF-8\n\n") # the blank line really matters!
         cwd = os.getcwd()
         path_elements = cwd.split(os.sep)
         mailing_id = path_elements.pop()
         if path_elements.pop() != MagicMailTreeName:
-            putmsg("warning: %s is not within a '%s' directory." %(mailing_id, MagicMailTreeName))
+            self.putmsg(0, "warning: %s is not within a '%s' directory." %(mailing_id, MagicMailTreeName))
             # sys.exit(997)
 
         # identify all possible attachments once only, before checking per-user.
         #
         # now look at each potential recipient in turn:
         #
-        putmsg("Looking for subdirectories corresponding to mail groups...")
+        self.putmsg(1, "Looking for subdirectories corresponding to mail groups...")
         for mailGroup in self.mailGroups:
             try:
                 files_to_attach = os.listdir(mailGroup.name)
             except FileNotFoundError:
-                putmsg ("warning: no subdirectory for mail group '%s' " % mailGroup.name)
+                self.putmsg (0, "warning: no subdirectory for mail group '%s' " % mailGroup.name)
                 files_to_attach = None
 
             if not files_to_attach:
                 # message below can get in the way, so maybe suppress it?:
-                putmsg("I found nothing to attach so will not send mail at all to mailgroup '%s'"
+                self.putmsg(1, "I found nothing to attach so will not send mail at all to mailgroup '%s'"
                         % mailGroup.name)
                 continue
-            if not email_addr:
-                putmsg ("We have no email address for %s."  % name)
-                putmsg ("perhaps you need to putmsg the above would-be attachments?")
+            recipients = []
+            for member in self.members:
+                if mailGroup not in member.mailGroups:
+                    continue
+                if not member.emailAddress:
+                    self.putmsg (0, "We have no email address for %s."  % member.name)
+                    self.putmsg (0, "perhaps you need to print the above would-be attachments?")
+                    continue
+                recipients.append(member.emailAddress)
+            if not recipients:
+                self.putmsg(1, "No-one needs to receive mail for mailgroup '%s'..." % mailGroup.name)
+                self.putmsg(1, "... so we won't send any!")
                 continue
+
             # Create message container - the correct MIME type is multipart/alternative.
             msg = MIMEMultipart()
             subject = self.title.format(**locals())
@@ -111,22 +127,22 @@ van deze mail te zien.
                 sender = self.sender
             except AttributeError:
                 sender = "Gill and Larry Myerscough"
-            putmsg('preparing mail for intrument (group) "%s"' % name)
-            putmsg('    mail subject will be "%s"' % subject)
-            putmsg('    mail will appear to come from "%s"' % sender)
-            putmsg('    mail recipient(s) will be "%s"' % email_addr)
-            putmsg('    mail attachment(s) will be ...\n%s' % file_list)
+            field_To_as_string = ', '.join(recipients)
+            self.putmsg(1, 'preparing mail for mailgroup "%s"' % mailGroup.name)
+            self.putmsg(1, '    mail subject will be "%s"' % subject)
+            self.putmsg(1, '    mail will appear to come from "%s"' % sender)
+            self.putmsg(1, '    mail recipient(s) will be "%s"' % field_To_as_string)
+            self.putmsg(1, '    mail attachment(s) will be ...\n%s' % file_list)
             message_id_string = None
             msg['From'] = email.utils.formataddr((str(Header(sender, 'utf-8')), 'hippos@chello.nl'))
             msg['Subject'] = subject
-            msg['To'] = email_addr
+            msg['To'] = field_To_as_string
             utc_from_epoch = time.time()
             msg['Date'] = email.utils.formatdate(utc_from_epoch, localtime=True)
             msg['Messsage-Id'] = email.utils.make_msgid(message_id_string)
             msg.preamble = 'You will not see this in a MIME-aware mail reader.\n'
 
             textual_part = MIMEMultipart('alternative')
-                          h.p | ([(name, h.br) for name in files_to_attach]),
 
             # Prepare both parts and insert them into the message container.
             # According to RFC 2046, the last part of a multipart message, in this case
@@ -135,14 +151,17 @@ van deze mail te zien.
                     (self.plain_text(), 'plain'),
                     (self.htnl_text(),  'html'),
             ):
-                text = layout.format(**locals())
+                text = template_text.format(**locals())
+                if subtype == stdouttype:
+                    print(str(text))
+
                 sub_part =  MIMEText(text, subtype)
                 textual_part.attach(sub_part)
 
             msg.attach(textual_part)
 
             for filename in files_to_attach:
-                rel_name = os.path.join(name, filename)
+                rel_name = os.path.join(mailGroup.name, filename)
                 # Guess the content type based on the file's extension.  Encoding
                 # will be ignored, although we should check for simple things like
                 # gzip'd or compressed files.
@@ -160,16 +179,14 @@ van deze mail te zien.
                 encoders.encode_base64(part)
                 part.add_header('Content-Disposition', 'attachment', filename=os.path.basename(rel_name))
                 msg.attach(part)
-            putmsg ("length of message is %u bytes" % len(bytes(msg)))
-            if command in ('show',):
-                print(str(html_layout))
-            elif command in ('q', 'quit'):
+            self.putmsg (1, "length of message is %u bytes" % len(bytes(msg)))
+            if command in ('q', 'quit', 'htlm' 'plain'):
                 sys.exit(0)
             elif command in ('s', 'send',): # 'send' in sys.argv:
                 with smtplib.SMTP('smtp.upcmail.nl') as s:
                     s.send_message(msg)
-                    putmsg ("mail has been sent to '%s'." % email_addr)
+                    self.putmsg (0, "mail has been sent to '%s'." % field_To_as_string)
 
 
 if __name__ == '__main__':
-    _Mailshot().main()
+    Mailing_().main()
