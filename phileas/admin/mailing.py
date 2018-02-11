@@ -15,7 +15,7 @@ import email.utils
 from email.header import Header
 
 from phileas import _html40 as h
-from phileas.admin import no_mail_groups_, empty_grouping_
+from phileas.admin import Vereniging, MailGroups
 
 MagicMailTreeName = 'MagicMailTree'
 # ok_exts = ('.pdf', '.jpg', '.jpeg')
@@ -25,8 +25,7 @@ class Mailing_:
 # start of stub settings
     sender = 'hippos@chello.nl'
     title = "{grouping.name}: Mailing '{mailing_name}'  voor {mailGroup.name}"
-    mailGroups = no_mail_groups_
-    grouping = empty_grouping_
+    grouping = Vereniging()
 # end of stub settings
 
     _plain_text = {
@@ -96,8 +95,8 @@ van deze mail te zien.
         #
         grouping = self.grouping  # for benifit of text templates!
 
-        self.putmsg(1, "Looking for subdirectories corresponding to mail groups...", self.mailGroups)
-        for mailGroup in self.mailGroups.members:
+        self.putmsg(1, "Looking for subdirectories corresponding to mail groups...", self.mailingList)
+        for mailGroup in self.mailingList.members:
             self.putmsg(1, "Dealing with mailgroup '%s'" % mailGroup.name)
             try:
                 files_to_attach = os.listdir(mailGroup.name)
@@ -112,7 +111,7 @@ van deze mail te zien.
                 continue
             recipients = []
             for member in mailGroup.members:
-                #if mailGroup not in member.mailGroups:
+                #if mailGroup not in member.mailingList:
                 #    continue
                 if not member.emailAddress:
                     self.putmsg (0, "We have no email address for %s."  % member.name)

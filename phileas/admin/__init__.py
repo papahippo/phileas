@@ -3,27 +3,36 @@
 import datetime
 
 class Entity(object):
-    grouping = None
+    Admissible = True  # = anything goes!
+    keyFields = ('name',)
+
     def __init__(self, **kw):
-        self.members = []
+        self.contents = []
         for _key, _val in kw.items():
             self.__setattr__(_key, _val)
-        if self.grouping:
-            self.grouping.members.append(self)
+        self.keyLookup = dict([(k_, {}) for k_ in self.keyFields])
 
-    def add_member(self, newbie):
-        self.members.append(newbie)
+#    def __getitem__(self, key_spec):
 
-class Grouping(Entity):
-    pass
-
-empty_grouping_ = Grouping(name="[Emppty grouping]")
-
-Cars = Grouping()
-
+    def admit(self, newbie, **kw):
+        if not (self.Admissible is True or isinstance(newbie, self.Admissible)):
+            raise TypeError("'%s' can only admit objects of type '%s' thus not a '%s'"
+                            %     (self.__class__,  self.Admissible, newbie.__class__))
+        for k_ in self.keyFields:
+            self.keyLookup[k_][getattr(newbie, k_)] = newbie
+        self.contents.append(newbie)
+        print ("setattr(newbie,")
+        for related_entity, key_specs in kw.items():
+            for key_spec in key_specs:
+                if not isinstance(key_spec, (tuple, list)):
+                    key_spec = 'name', key_spec
+                k_, v_ = key_spec
+                print('key_spec=', key_spec)
+                grouping = getattr(self, related_entity).keyLookup[k_][v_]
+                grouping.admit(newbie)
 
 class Car(Entity):
-    grouping = Cars
+
     def __init__(self,
         modelName:str="<model name>",
         buildYear:int=1066,
@@ -77,12 +86,20 @@ money(yearBijTelling),  money(actualBijTelling), euros(actualBijTelling)),
             h.br,
         )
 
+class MailGroup(Entity):
+    def __init__(self,
+        name:str='<Default Mailgroup Name>',
+    ):
+        Entity.__init__(self,
+            name=name,
+        )
 
-Companies =  Grouping()
+class MailGroups(Entity):
+    Admissible = MailGroup,
+    pass
 
 
 class Company(Entity):
-    grouping = Companies
     def __init__(self,
         number:int=0,
         name:str='<Default Company Name>',
@@ -113,72 +130,49 @@ class Company(Entity):
         )
 
 
-Suppliers = Grouping()
-
-
 class Supplier(Company):
-    grouping = Suppliers
-
-
-Clients = Grouping()
+    pass
 
 
 class Client(Company):
-    grouping = Clients
-
-class Accountant(Company):
-    pass # for now!
-
-
-Verenigingen = Grouping()
-
-
-class Vereniging(Grouping):
-    grouping = Verenigingen
-    def __init__(self,
-        name:str='<Default Vereninging Name>',
-    ):
-        Grouping.__init__(self,
-            name=name,
-        )
-
-
-class MailGroups(Grouping):
     pass
 
-no_mail_groups_ = MailGroups()  # for use in stubs only!
+
+class Accountant(Company):
+    pass
 
 
-class MailGroup_(Entity):
-    grouping = MailGroups()
+class Business(Entity):
+    Admissible = [Company]
+
+
+class Vereniging(Entity):
 
     def __init__(self,
-        name:str='<Default Mailgroup Name>',
+        name:str='<Default Vereninging Name>',
+        mailGroups=MailGroups()
     ):
         Entity.__init__(self,
-            name=name,
-        )
+                        name=name,
+                        mailGroups=mailGroups,
+                        )
 
 
-class Lid_(Entity):
-    grouping = Vereniging
+class Lid(Entity):
 
     def __init__(self,
         name:str='<Default Member Name>',
-        roepnaam:str='<Default roepnaam>',
+        called:str='<Default roepnaam>',
         instrument:str='<Default instrument name>',
         emailAddress:str='<Default email address>',
         mailGroups:list = [],
     ):
         Entity.__init__(self,
-            name=name,
-            roepnaam=roepnaam,
-            instrument=instrument,
-            emailAddress=emailAddress,
-            mailGroups=mailGroups,
+                        name=name,
+                        called=called,
+                        instrument=instrument,
+                        emailAddress=emailAddress,
                         )
-        for mailGroup in self.mailGroups:
-            mailGroup.add_member(self)
 
 
 def money(amount):
