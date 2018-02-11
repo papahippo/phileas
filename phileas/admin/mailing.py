@@ -95,8 +95,8 @@ van deze mail te zien.
         #
         grouping = self.grouping  # for benifit of text templates!
 
-        self.putmsg(1, "Looking for subdirectories corresponding to mail groups...", self.mailingList)
-        for mailGroup in self.mailingList.members:
+        self.putmsg(1, "Looking for subdirectories corresponding to mail groups...", self.mailGroups)
+        for mailGroup in self.mailGroups.contents:
             self.putmsg(1, "Dealing with mailgroup '%s'" % mailGroup.name)
             try:
                 files_to_attach = os.listdir(mailGroup.name)
@@ -110,7 +110,7 @@ van deze mail te zien.
                         % mailGroup.name)
                 continue
             recipients = []
-            for member in mailGroup.members:
+            for member in mailGroup.contents:
                 #if mailGroup not in member.mailingList:
                 #    continue
                 if not member.emailAddress:

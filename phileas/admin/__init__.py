@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-import datetime
+from phileas import _html40 as h
+# import datetime
 
 class Entity(object):
     Admissible = True  # = anything goes!
@@ -12,7 +13,11 @@ class Entity(object):
             self.__setattr__(_key, _val)
         self.keyLookup = dict([(k_, {}) for k_ in self.keyFields])
 
-#    def __getitem__(self, key_spec):
+    def __getitem__(self, key_spec):
+        if not isinstance(key_spec, (list, tuple)):
+            key_spec = "name", key_spec
+        field_name, field_value = key_spec
+        return self.keyLookup[field_name][field_value]
 
     def admit(self, newbie, **kw):
         if not (self.Admissible is True or isinstance(newbie, self.Admissible)):
@@ -21,13 +26,12 @@ class Entity(object):
         for k_ in self.keyFields:
             self.keyLookup[k_][getattr(newbie, k_)] = newbie
         self.contents.append(newbie)
-        print ("setattr(newbie,")
         for related_entity, key_specs in kw.items():
             for key_spec in key_specs:
                 if not isinstance(key_spec, (tuple, list)):
                     key_spec = 'name', key_spec
                 k_, v_ = key_spec
-                print('key_spec=', key_spec)
+                # print('key_spec=', key_spec)
                 grouping = getattr(self, related_entity).keyLookup[k_][v_]
                 grouping.admit(newbie)
 
@@ -147,7 +151,7 @@ class Business(Entity):
 
 
 class Vereniging(Entity):
-
+    keyFields = ('name', 'called')
     def __init__(self,
         name:str='<Default Vereninging Name>',
         mailGroups=MailGroups()
@@ -159,6 +163,7 @@ class Vereniging(Entity):
 
 
 class Lid(Entity):
+#    keyFields = ('name', 'called')
 
     def __init__(self,
         name:str='<Default Member Name>',

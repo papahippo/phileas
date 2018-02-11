@@ -1,9 +1,9 @@
 from Euphonia import *
-
+print(euphonia["called", "Larry"])
 
 class ThisMailing(Mailing):
     def get_html_text(self, recipients=[], mailGroup=None, file_list=[], taal='NL'):
-        names = [recipient.roepnaam for recipient in recipients]
+        names = [recipient.called for recipient in recipients]
         name_str = ', '.join(names[:-1])
         if name_str:
             name_str += names[-1]
