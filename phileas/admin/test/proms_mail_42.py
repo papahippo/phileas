@@ -1,5 +1,5 @@
 from Euphonia import *
-print(euphonia["called", "Larry"])
+#print(euphonia.membershipList["called", "Larry"].name)
 
 class ThisMailing(Mailing):
     def get_html_text(self, recipients=[], mailGroup=None, file_list=[], taal='NL'):

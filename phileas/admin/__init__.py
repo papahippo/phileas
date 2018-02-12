@@ -1,16 +1,16 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
 from phileas import _html40 as h
-# import datetime
+import datetime
 
 class Entity(object):
-    Admissible = True  # = anything goes!
     keyFields = ('name',)
+    grouping = None
 
     def __init__(self, **kw):
-        self.contents = []
         for _key, _val in kw.items():
             self.__setattr__(_key, _val)
+        self.contents = []
         self.keyLookup = dict([(k_, {}) for k_ in self.keyFields])
 
     def __getitem__(self, key_spec):
@@ -20,20 +20,28 @@ class Entity(object):
         return self.keyLookup[field_name][field_value]
 
     def admit(self, newbie, **kw):
-        if not (self.Admissible is True or isinstance(newbie, self.Admissible)):
-            raise TypeError("'%s' can only admit objects of type '%s' thus not a '%s'"
-                            %     (self.__class__,  self.Admissible, newbie.__class__))
+        #if not (self.Admissible is True or isinstance(newbie, self.Admissible)):
+        #    raise TypeError("'%s' can only admit objects of type '%s' thus not a '%s'"
+        #                    %     (self.__class__,  self.Admissible, newbie.__class__))
         for k_ in self.keyFields:
             self.keyLookup[k_][getattr(newbie, k_)] = newbie
         self.contents.append(newbie)
         for related_entity, key_specs in kw.items():
+            setattr(newbie, related_entity, [])
             for key_spec in key_specs:
                 if not isinstance(key_spec, (tuple, list)):
                     key_spec = 'name', key_spec
                 k_, v_ = key_spec
                 # print('key_spec=', key_spec)
-                grouping = getattr(self, related_entity).keyLookup[k_][v_]
+                # grouping = getattr(self.grouping, related_entity).keyLookup[k_][v_]
+                grouping = getattr(self.grouping, 'mailingList').keyLookup[k_][v_]
                 grouping.admit(newbie)
+                getattr(newbie, related_entity).append(grouping)
+
+
+class Grouping(Entity):
+    pass  # need to untangle this stuff one day!
+
 
 class Car(Entity):
 
@@ -90,19 +98,6 @@ money(yearBijTelling),  money(actualBijTelling), euros(actualBijTelling)),
             h.br,
         )
 
-class MailGroup(Entity):
-    def __init__(self,
-        name:str='<Default Mailgroup Name>',
-    ):
-        Entity.__init__(self,
-            name=name,
-        )
-
-class MailGroups(Entity):
-    Admissible = MailGroup,
-    pass
-
-
 class Company(Entity):
     def __init__(self,
         number:int=0,
@@ -150,21 +145,30 @@ class Business(Entity):
     Admissible = [Company]
 
 
-class Vereniging(Entity):
-    keyFields = ('name', 'called')
+class MailGroup(Entity):
     def __init__(self,
-        name:str='<Default Vereninging Name>',
-        mailGroups=MailGroups()
+        name:str='<Default Mailgroup Name>',
     ):
         Entity.__init__(self,
-                        name=name,
-                        mailGroups=mailGroups,
-                        )
+            name=name,
+        )
+        if self.grouping:
+            self.grouping.admit(self)
+
+
+class MailingList(Entity):
+    def __init__(self,
+        name:str='<Default Mailing ListName>',
+    ):
+        Entity.__init__(self,
+            name=name,
+        )
+        self.mailGroups = Grouping()  # MailGroup)
+        if self.grouping:
+            self.grouping.admit(self)
 
 
 class Lid(Entity):
-#    keyFields = ('name', 'called')
-
     def __init__(self,
         name:str='<Default Member Name>',
         called:str='<Default roepnaam>',
@@ -178,7 +182,22 @@ class Lid(Entity):
                         instrument=instrument,
                         emailAddress=emailAddress,
                         )
+        if self.grouping:
+            self.grouping.admit(self, mailGroups=mailGroups)
 
+class MemembershipList(Grouping):
+    keyFields = ('name', 'called')
+
+class Vereniging(Entity):
+
+    def __init__(self,
+        name:str='<Default Vereninging Name>',
+    ):
+        Entity.__init__(self,
+                        name=name,
+                        )
+        self.mailingList = Grouping() # MailGroup)
+        self.membershipList = MemembershipList() # Lid)
 
 def money(amount):
     l = list(("%.2f" % amount ).replace('.',  ','))
