@@ -2,6 +2,7 @@
 # -*- encoding: utf8 -*-
 from phileas import _html40 as h
 import datetime
+from .awhere import Awhere
 
 class Entity(object):
     keyFields = ('name',)
@@ -98,7 +99,7 @@ money(yearBijTelling),  money(actualBijTelling), euros(actualBijTelling)),
             h.br,
         )
 
-class Company(Entity):
+class Company(Awhere, Entity):
     def __init__(self,
         number:int=0,
         name:str='<Default Company Name>',
@@ -116,6 +117,7 @@ class Company(Entity):
         companyLogo:str='',
         cars:list=[],
     ):
+        Awhere.__init__(self)
         Entity.__init__(self,
             number=number,
             name=name,
@@ -145,10 +147,11 @@ class Business(Entity):
     Admissible = [Company]
 
 
-class MailGroup(Entity):
+class MailGroup(Awhere, Entity):
     def __init__(self,
         name:str='<Default Mailgroup Name>',
     ):
+        Awhere.__init__(self)
         Entity.__init__(self,
             name=name,
         )
@@ -168,7 +171,7 @@ class MailingList(Entity):
             self.grouping.admit(self)
 
 
-class Lid(Entity):
+class Lid(Awhere, Entity):
     def __init__(self,
         name:str='<Default Member Name>',
         called:str='<Default roepnaam>',
@@ -176,6 +179,7 @@ class Lid(Entity):
         emailAddress:str='<Default email address>',
         mailGroups:list = [],
     ):
+        Awhere.__init__(self)
         Entity.__init__(self,
                         name=name,
                         called=called,
