@@ -2,6 +2,7 @@
 # -*- encoding: utf8 -*-
 from phileas import _html40 as h
 import datetime
+import inspect
 from .awhere import Awhere
 
 
@@ -36,6 +37,13 @@ class Entity(object):
     by_key = classmethod(by_key)
 
 
+    def __str__(self):
+        s = '\n' + self.__class__.__name__+'(\n    '
+        fAS = inspect.getfullargspec(self.__init__)
+        for name_ in fAS.args[1:]:
+            s += (name_ + '=' + fAS.annotations[name_].__str__(getattr(self, name_)) + ',\n')
+        s += ')\n'
+        return s
 
 class MailGroup(Entity):
 
