@@ -37,13 +37,16 @@ class Entity(object):
     by_key = classmethod(by_key)
 
 
-    def __str__(self):
-        s = '\n' + self.__class__.__name__+'(\n    '
+    def __repr__(self):
         fAS = inspect.getfullargspec(self.__init__)
-        for name_ in fAS.args[1:]:
-            s += (name_ + '=' + fAS.annotations[name_].__str__(getattr(self, name_)) + ',\n')
-        s += ')\n'
-        return s
+        return(
+            '\n' + self.__class__.__name__ + '(\n    '
+          + ',\n    '.join(
+                [(name_ + '=' + fAS.annotations[name_].__repr__(getattr(self, name_)))
+                 for name_ in fAS.args[1:]]
+            )
+          + '\n)\n'
+        )
 
 class MailGroup(Entity):
 
@@ -72,12 +75,13 @@ class Lid(Entity):
                         called=called,
                         instrument=instrument,
                         emailAddress=emailAddress,
+                        mailGroups=mailGroups,
                         )
-        self.mailGroups = []
+        self.mailGroups_ = []
         for mGName in mailGroups:
             mg = MailGroup.by_key(mGName)
             mg.admit(self)
-            self.mailGroups.append(mg)
+            self.mailGroups_.append(mg)
 
 class Vereniging(Entity):
 
