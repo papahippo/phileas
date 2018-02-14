@@ -4,44 +4,81 @@ from phileas import _html40 as h
 import datetime
 from .awhere import Awhere
 
+
+#!/usr/bin/python
+# -*- encoding: utf8 -*-
+# temporary incubation area for simplification of classes relating to societies.
+from phileas import _html40 as h
+import datetime
+
 class Entity(object):
     keyFields = ('name',)
-    grouping = None
+    keyLookup = None
 
     def __init__(self, **kw):
         for _key, _val in kw.items():
             self.__setattr__(_key, _val)
-        self.contents = []
-        self.keyLookup = dict([(k_, {}) for k_ in self.keyFields])
+        cls = self.__class__
+        if cls.keyLookup is None:
+            cls.keyLookup = {}
+        for k_ in self.keyFields:
+            try:
+                cls.keyLookup.setdefault(k_, {})[getattr(self, k_)] = self
+            except AttributeError:
+                pass
+        pass  # for breakpoint debugging!
 
-    def __getitem__(self, key_spec):
+    def by_key(cls, key_spec):
         if not isinstance(key_spec, (list, tuple)):
             key_spec = "name", key_spec
         field_name, field_value = key_spec
-        return self.keyLookup[field_name][field_value]
-
-    def admit(self, newbie, **kw):
-        #if not (self.Admissible is True or isinstance(newbie, self.Admissible)):
-        #    raise TypeError("'%s' can only admit objects of type '%s' thus not a '%s'"
-        #                    %     (self.__class__,  self.Admissible, newbie.__class__))
-        for k_ in self.keyFields:
-            self.keyLookup[k_][getattr(newbie, k_)] = newbie
-        self.contents.append(newbie)
-        for related_entity, key_specs in kw.items():
-            setattr(newbie, related_entity, [])
-            for key_spec in key_specs:
-                if not isinstance(key_spec, (tuple, list)):
-                    key_spec = 'name', key_spec
-                k_, v_ = key_spec
-                # print('key_spec=', key_spec)
-                # grouping = getattr(self.grouping, related_entity).keyLookup[k_][v_]
-                grouping = getattr(self.grouping, 'mailingList').keyLookup[k_][v_]
-                grouping.admit(newbie)
-                getattr(newbie, related_entity).append(grouping)
+        return cls.keyLookup[field_name][field_value]
+    by_key = classmethod(by_key)
 
 
-class Grouping(Entity):
-    pass  # need to untangle this stuff one day!
+
+class MailGroup(Entity):
+
+    def __init__(self,
+        name:str='<Default Mailgroup Name>',
+    ):
+        Entity.__init__(self,
+            name=name,
+        )
+        self.members = []
+
+    def admit(self, member):
+        self.members.append(member)
+
+
+class Lid(Entity):
+    def __init__(self,
+        name:str='<Default Member Name>',
+        called:str='<Default roepnaam>',
+        instrument:str='<Default instrument name>',
+        emailAddress:str='<Default email address>',
+        mailGroups:list = [],
+    ):
+        Entity.__init__(self,
+                        name=name,
+                        called=called,
+                        instrument=instrument,
+                        emailAddress=emailAddress,
+                        )
+        self.mailGroups = []
+        for mGName in mailGroups:
+            mg = MailGroup.by_key(mGName)
+            mg.admit(self)
+            self.mailGroups.append(mg)
+
+class Vereniging(Entity):
+
+    def __init__(self,
+        name:str='<Default Vereninging Name>',
+    ):
+        Entity.__init__(self,
+                        name=name,
+                        )
 
 
 class Car(Entity):
@@ -146,62 +183,6 @@ class Accountant(Company):
 class Business(Entity):
     Admissible = [Company]
 
-
-class MailGroup(Awhere, Entity):
-    def __init__(self,
-        name:str='<Default Mailgroup Name>',
-    ):
-        Awhere.__init__(self)
-        Entity.__init__(self,
-            name=name,
-        )
-        if self.grouping:
-            self.grouping.admit(self)
-
-
-class MailingList(Entity):
-    def __init__(self,
-        name:str='<Default Mailing ListName>',
-    ):
-        Entity.__init__(self,
-            name=name,
-        )
-        self.mailGroups = Grouping()  # MailGroup)
-        if self.grouping:
-            self.grouping.admit(self)
-
-
-class Lid(Awhere, Entity):
-    def __init__(self,
-        name:str='<Default Member Name>',
-        called:str='<Default roepnaam>',
-        instrument:str='<Default instrument name>',
-        emailAddress:str='<Default email address>',
-        mailGroups:list = [],
-    ):
-        Awhere.__init__(self)
-        Entity.__init__(self,
-                        name=name,
-                        called=called,
-                        instrument=instrument,
-                        emailAddress=emailAddress,
-                        )
-        if self.grouping:
-            self.grouping.admit(self, mailGroups=mailGroups)
-
-class MemembershipList(Grouping):
-    keyFields = ('name', 'called')
-
-class Vereniging(Entity):
-
-    def __init__(self,
-        name:str='<Default Vereninging Name>',
-    ):
-        Entity.__init__(self,
-                        name=name,
-                        )
-        self.mailingList = Grouping() # MailGroup)
-        self.membershipList = MemembershipList() # Lid)
 
 def money(amount):
     l = list(("%.2f" % amount ).replace('.',  ','))

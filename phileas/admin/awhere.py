@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import inspect
-print ("so far so good!")
 
 
 class Awhere:

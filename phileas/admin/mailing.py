@@ -15,17 +15,20 @@ import email.utils
 from email.header import Header
 
 from phileas import _html40 as h
-from phileas.admin import Vereniging
+from phileas.admin import MailGroup
 MagicMailTreeName = 'MagicMailTree'
 # ok_exts = ('.pdf', '.jpg', '.jpeg')
 
 
-class Mailing_:
+class Mailing:
 # start of stub settings
     sender = 'hippos@chello.nl'
-    title = "{grouping.name}: Mailing '{mailing_name}'  voor {mailGroup.name}"
-    grouping = Vereniging()
 # end of stub settings
+
+    _title = {
+        'EN': "something for group {mailGroup.name}",
+        'NL':   "iets voor groep {mailGroup.name}",
+    }
 
     _plain_text = {
         'EN': """
@@ -36,11 +39,16 @@ Gelieve HTML weergave in te stellen in uw email client om de vollige tekst
 van deze mail te zien.
         """,
     }
+
     _html_text = {  # ultimately need to include something like....
 # ...  h.p | ([(name, h.br) for name in files_to_attach]),
         'EN': h.em | ("just a stub for English HTML text!"),
         'NL': h.em | ("just a stub for Dutch HTML text!"),
     }
+
+    def get_title(self, recipients=[], mailGroup=None, file_list=[], taal='NL'):
+        return self._title[taal]
+
 
     def get_plain_text(self, recipients=[], mailGroup=None, file_list=[], taal='NL'):
         return self._plain_text[taal]
@@ -92,11 +100,9 @@ van deze mail te zien.
         #
         # now look at each potential recipient in turn:
         #
-        grouping = self.grouping  # for benifit of text templates!
-
-        self.putmsg(1, "Looking for subdirectories corresponding to mail groups...", self.mailGroups)
-        for mailGroup in self.mailGroups.contents:
-            self.putmsg(1, "Dealing with mailgroup '%s'" % mailGroup.name)
+        self.putmsg(1, "Looking for subdirectories corresponding to mail groups...")
+        for mgName, mailGroup in MailGroup.keyLookup['name'].items():
+            self.putmsg(1, "Dealing with mailgroup '%s' = '%s'" % (mgName, mailGroup.name))
             try:
                 files_to_attach = os.listdir(mailGroup.name)
             except FileNotFoundError:
@@ -109,7 +115,7 @@ van deze mail te zien.
                         % mailGroup.name)
                 continue
             recipients = []
-            for member in mailGroup.contents:
+            for member in mailGroup.members:
                 #if mailGroup not in member.mailingList:
                 #    continue
                 if not member.emailAddress:
@@ -126,9 +132,10 @@ van deze mail te zien.
             self.putmsg(1, '"%s" need to receive this particular mail' %field_To_as_string)
             # Create message container - the correct MIME type is multipart/alternative.
             msg = MIMEMultipart()
-            subject = self.title.format(**locals())
             files_to_attach.sort()
             file_list = ",\n".join(['      %s' %filename for filename in files_to_attach])
+            subject = str(self.get_title(recipients = recipients, mailGroup=mailGroup,
+                                   file_list=file_list, )).format(**locals())
             try:
                 sender = self.sender
             except AttributeError:
@@ -199,4 +206,4 @@ van deze mail te zien.
 
 
 if __name__ == '__main__':
-    Mailing_().main()
+    Mailing().main()

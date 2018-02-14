@@ -1,7 +1,11 @@
 from Euphonia import *
-#print(euphonia.membershipList["called", "Larry"].name)
 
 class ThisMailing(Mailing):
+    _title = {
+        'EN': "Euphonia: Sheet for group {mailGroup.name}",
+        'NL': "Euphonia: Bladmuziek voor groep {mailGroup.name}",
+    }
+
     def get_html_text(self, recipients=[], mailGroup=None, file_list=[], taal='NL'):
         names = [recipient.called for recipient in recipients]
         name_str = ', '.join(names[:-1])
