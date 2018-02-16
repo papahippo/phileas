@@ -64,15 +64,21 @@ class MailGroup(Entity):
 
 class Lid(Entity):
     def __init__(self,
-        name:str='<Default Member Name>',
-        called:str='<Default roepnaam>',
-        instrument:str='<Default instrument name>',
-        emailAddress:str='<Default email address>',
+        name:str='',
+        initials:str='',
+        called:str='',
+        address:list=[],
+        instrument:str='',
+        emailAddress:str='',
         mailGroups:list = [],
     ):
+        if not called:
+            called = name.split(', ')[-1].split(' ')[0]
         Entity.__init__(self,
                         name=name,
+                        initials=initials,
                         called=called,
+                        address=address,
                         instrument=instrument,
                         emailAddress=emailAddress,
                         mailGroups=mailGroups,
