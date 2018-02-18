@@ -11,10 +11,10 @@ class InvoiceItem(Entity):
         howMany:float=42, # stub!
         timesWhat:list=['uur',  'uren'],
         whenDone:str="St. Juttemas 2099",
-        rate:float=None,
+        rate:float=0,
         percentDiscount:float=0,
-        cost:float=None,
-        costBtw:float=None,
+        cost:float=0,
+        costBtw:float=0,
         description:str='',
         chargeBtw:float=21.,
                  ):

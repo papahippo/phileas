@@ -1,20 +1,24 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- encoding: utf8 -*-
 from __future__ import print_function
 import sys, os, time
 from phileas import _html40 as h
 
 #import cgitb
+
 #cgitb.enable()
 
 from urllib.parse import urlparse, parse_qs
 
+
 def text2modulename(text):
-    prefix = ('_','')[text[0].isalpha()]
-    return prefix+text.replace(' ','_').replace("'","__")
-    
+    prefix = ('_', '')[text[0].isalpha()]
+    return prefix + text.replace(' ', '_').replace("'", "__")
+
+
 def modulename2text(name):
-    return (name.lstrip('_')).replace('__',"'").replace("_"," ")
+    return (name.lstrip('_')).replace('__', "'").replace("_", " ")
+
 
 class Page(object):
     topDir = os.path.split(__file__)[0]
@@ -23,8 +27,8 @@ class Page(object):
     dateTimeFormat = "%Y %b %d %a %H:%M"
     dateTime = None
     name = os.path.splitext(os.path.basename(__file__))[0]
-    metaDict = {'http-equiv':"content-type", 'content':"text/html; charset=utf-8"}
-    _title = None # => use basename of page as page title - unless overruled.
+    metaDict = {'http-equiv': "content-type", 'content': "text/html; charset=utf-8"}
+    _title = None  # => use basename of page as page title - unless overruled.
 
     def __init__(self, localIndex=None):
         self.localIndex = localIndex
@@ -36,7 +40,7 @@ class Page(object):
         )
         self.resolveData();
 
-    def resolveData(self): #just a 'hook' at this level
+    def resolveData(self):  # just a 'hook' at this level
         pass
 
     def title(self):
@@ -48,7 +52,7 @@ class Page(object):
     def head(self):
         return h.meta(**self.metaDict) | (
             (self.styleSheet and
-                h.link(type="text/css", rel="stylesheet",
+             h.link(type="text/css", rel="stylesheet",
                     href=self.styleSheet)),
             h.title | (h | self.title()),
         )
@@ -60,27 +64,29 @@ class Page(object):
         self.errOutput.append(str(s))
 
     def body(self):
-        print (
-"(gratuitous 'error' output) current directory is:",
+        print(
+            "(gratuitous 'error' output) current directory is:",
             os.getcwd(),
             file=sys.stderr
         )
-        return ('!€ \U0001D11E default  body of content',
-                h.br, '\xf09d849e',
+        return ('default body of content',
+                h.br,
                 h.p | 'end of content'
-        )
+                )
 
     def html(self):
         return h.html | (
             h.head | self.head(),
-            #h.body | ( self.body())
-            h.body | ( self.body(), h.pre | self.errOutput)
+            h.body(bgcolor='white') | (self.body(), h.pre | self.errOutput)
         )
 
+    def configure(self, **kw):
+        self.kw = kw  # stub / base class version
+
     def present(self):
-        #sys.stderr = self
-        print ("Content-type: text/html;charset=UTF-8\n\n") # the blank line really matters!
-        print (self.html())
+        sys.stderr = self
+        print("Content-type: text/html;charset=UTF-8\n\n")  # the blank line really matters!
+        print(self.html())
 
     def asFileName(self, path):
         if path[0] != '/':
@@ -92,25 +98,27 @@ class Page(object):
             return fileName
         return fileName[len(self.topDir):]
 
-def main(pageClass,  localIndex=None):
-    uri = os.environ.get('REQUEST_URI')
-    if uri:
-        o = urlparse(uri)
-        path = os.environ['DOCUMENT_ROOT'] + o.path # geturl()
-        #print ("path=", path)
-        if not os.path.isdir(path):
-            path = os.path.split(path)[0]
-        os.chdir(path)
-        kw = parse_qs(o.query)
-    else:
-        pairs = [p.split('=') for p in sys.argv[1:]]
-        #print (pairs)
-        kw = dict(pairs)
-    page = pageClass(localIndex=localIndex, **kw)
-    if 1: # uri:
-        sys.stderr = page
-        print ("Content-type: text/html;charset=UTF-8\n\n") # the blank line really matters!
-    print (page.html())
+    def main(self):
+        uri = os.environ.get('REQUEST_URI')
+        if uri:
+            o = urlparse(uri)
+            path = os.environ['DOCUMENT_ROOT'] + o.path  # geturl()
+            if not os.path.isdir(path):
+                path = os.path.split(path)[0]
+            os.chdir(path)
+            kw = parse_qs(o.query)
+        else:
+            kw = dict([p.split('=') for p in sys.argv[1:]])
+        self.configure(**kw)
+        self.present()
 
-if __name__=="__main__":
-    main(Page)
+
+def main(pageClass, localIndex=None):
+    # the use of this outer level main function is deprecated... but some pages (including my
+    # entire business administration!) currently depend on it.
+    pageClass(localIndex=localIndex).main()
+
+
+if __name__ == "__main__":
+    # old style...    main(Page)
+    Page().main()

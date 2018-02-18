@@ -2,8 +2,28 @@
 # -*- encoding: utf8 -*-
 from MEW import *
 import csv
+import locale
+
+def figure_out_date(s):
+    for fmt_str in  (
+        '%m-%d-%Y',
+        '%d/%B/%Y',
+        '%d/%b/%Y',
+        '%d-%b-%Y',
+        '%d-%bt-%Y', # catger for Sept instead of Sep
+
+    ):
+        try:
+            dt = datetime.datetime.strptime(s, fmt_str)
+            return datetime.datetime.date(dt)
+        except ValueError:
+            continue
+    if s:
+        print("can't crack date %s" %s)
+    return None
 
 def main():
+    locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
     instruments = set()
     with open("members.py", 'w') as output:
         with open("members.csv", 'r') as csvfile:
@@ -17,6 +37,8 @@ def main():
                 address = [Hoofddadres, "%s  %s" % (Postcode, Plaats)]
                 instrument = Functie
                 instruments.add(instrument)
+                beginDate = figure_out_date(Begindatum)
+                birthDate  = figure_out_date(Geboortedatum)
                 lid = Lid(name=Naam,
                           initials=Initialen,
                           address = address,

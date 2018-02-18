@@ -6,19 +6,31 @@ import inspect
 from .awhere import Awhere
 
 
-#!/usr/bin/python
-# -*- encoding: utf8 -*-
-# temporary incubation area for simplification of classes relating to societies.
-from phileas import _html40 as h
-import datetime
+class dateOrNone:
+    fmt_str = '%d-%b-%Y'
+
+    def __init__(self, s):
+        if not s:
+            self.date_ = ''
+        else:
+            dt  = datetime.datetime.strptime(s, self.fmt_str)
+            self.date  = datetime.datetime.date(dt)
+
+    def __repr__(self):
+        if not self.date:
+            return ''
+        else:
+            return repr(self.date.strftime(self.fmt_str))
 
 class Entity(object):
     keyFields = ('name',)
     keyLookup = None
 
     def __init__(self, **kw):
+        annos = self.__init__.__annotations__
+        #print(annos)
         for _key, _val in kw.items():
-            self.__setattr__(_key, _val)
+            self.__setattr__(_key, annos[_key](_val))
         cls = self.__class__
         if cls.keyLookup is None:
             cls.keyLookup = {}
@@ -220,7 +232,12 @@ def putLines(el,  *lines):
         el.text(line)
         el.br
 
-from .page import *
+from ..page import *
 from .invoice import *
 from .quarter import *
 from .mailing import *
+
+
+if __name__ == "__main__":
+    lid = Lid(name='test')
+    print(lid)
