@@ -79,9 +79,14 @@ class Lid(Entity):
         name:str='',
         initials:str='',
         called:str='',
-        address:list=[],
-        instrument:str='',
+        streetAddress:str='',
+        postCode:str='',
+        cityAddress:str='',
         emailAddress:str='',
+        altEmailAddress:str='',
+        birthDate:str='',
+        memberSince:str='',
+        instrument:str='',
         mailGroups:list = [],
     ):
         if not called:
@@ -90,9 +95,14 @@ class Lid(Entity):
                         name=name,
                         initials=initials,
                         called=called,
-                        address=address,
-                        instrument=instrument,
+                        streetAddress=streetAddress,
+                        postCode=postCode,
+                        cityAddress=cityAddress,
                         emailAddress=emailAddress,
+                        altEmailAddress=altEmailAddress,
+                        birthDate=birthDate,
+                        memberSince=memberSince,
+                        instrument=instrument,
                         mailGroups=mailGroups,
                         )
         self.mailGroups_ = []

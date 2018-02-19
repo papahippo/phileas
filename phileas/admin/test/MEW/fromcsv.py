@@ -10,7 +10,8 @@ def figure_out_date(s):
         '%d/%B/%Y',
         '%d/%b/%Y',
         '%d-%b-%Y',
-        '%d-%bt-%Y', # catger for Sept instead of Sep
+        '%d-%bt-%Y', # cater for Sept instead of Sep
+        '%d-%m-%y',  # only use if mm-dd gives impossible result!
 
     ):
         try:
@@ -30,20 +31,26 @@ def main():
             header_line = csvfile.readline()
             reader = csv.reader(csvfile, delimiter=',', dialect=csv.excel)
             for row in reader:
-                print(len(row) , row)
+                # print(len(row) , row)
                 (Lidcode, Naam, Initialen, Hoofddadres, Postcode, Plaats, Telefoon, Mobiele ,
                  Begindatum, Geboortedatum, Functie, Catgorie, Email  , AltEmail,
                  ) = row
-                address = [Hoofddadres, "%s  %s" % (Postcode, Plaats)]
                 instrument = Functie
                 instruments.add(instrument)
-                beginDate = figure_out_date(Begindatum)
+                memberSince = figure_out_date(Begindatum)
                 birthDate  = figure_out_date(Geboortedatum)
                 lid = Lid(name=Naam,
                           initials=Initialen,
-                          address = address,
+                          streetAddress = Hoofddadres,
+                          postCode=Postcode,
+                          cityAddress=Plaats,
+                          emailAddress=Email,
+                          altEmailAddress=AltEmail,
+                          birthDate=birthDate,
+                          memberSince=memberSince,
                           instrument=instrument,
-                          emailAddress=Email)
+                          mailGroups= ['Musicians',]
+                          )
                 print(lid)
     print(instruments)
 if __name__=='__main__':

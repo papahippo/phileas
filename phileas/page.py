@@ -22,7 +22,7 @@ def modulename2text(name):
 
 class Page(object):
     topDir = os.path.split(__file__)[0]
-    styleSheet = "/.style/papa.css"
+    styleSheet = "/.style/mew.css"
     errOutput = []
     dateTimeFormat = "%Y %b %d %a %H:%M"
     dateTime = None
