@@ -47,6 +47,8 @@ def main():
                           streetAddress = Hoofddadres,
                           postCode=Postcode,
                           cityAddress=Plaats,
+                          phone=Telefoon,
+                          mobile=Mobiele,
                           emailAddress=Email,
                           altEmailAddress=AltEmail,
                           birthDate=birthDate,

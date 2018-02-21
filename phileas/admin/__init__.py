@@ -18,11 +18,16 @@ class dateOrNone:
             dt  = datetime.datetime.strptime(s, self.fmt_str)
             self.date_  = datetime.datetime.date(dt)
 
-    def __repr__(self):
+    def __str__(self):
         if not self.date_:
-            return "''"
+            return ""
         else:
-            return repr(self.date_.strftime(self.fmt_str))
+            return self.date_.strftime(self.fmt_str)
+
+
+    def __repr__(self):
+            return "'%s'" % self.__str__()
+
 
 class Entity(object):
     keyFields = ('name',)
@@ -85,6 +90,8 @@ class Lid(Entity, Awhere):
         streetAddress:str='',
         postCode:str='',
         cityAddress:str='',
+        phone:str='',
+        mobile: str = '',
         emailAddress:str='',
         altEmailAddress:str='',
         birthDate:dateOrNone='',
@@ -102,6 +109,8 @@ class Lid(Entity, Awhere):
                         streetAddress=streetAddress,
                         postCode=postCode,
                         cityAddress=cityAddress,
+                        phone=phone,
+                        mobile=mobile,
                         emailAddress=emailAddress,
                         altEmailAddress=altEmailAddress,
                         birthDate=birthDate,
