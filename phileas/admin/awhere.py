@@ -6,8 +6,9 @@ class Awhere:
     prev_lineno = -1
 
     def __init__(self, *pp):
-        # print ( inspect.getsourcelines(self))
-        last_lineno = inspect.getouterframes(inspect.currentframe())[-1].lineno
+        frames = inspect.getouterframes(inspect.currentframe())
+        last_lineno = frames[2].lineno
+        # print(last_lineno)
         self.lineno_range = (Awhere.prev_lineno+1, last_lineno + 1)
         Awhere.prev_lineno = last_lineno
 

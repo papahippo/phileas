@@ -12,15 +12,17 @@ class dateOrNone:
     def __init__(self, s):
         if not s:
             self.date_ = ''
+        elif isinstance(s, datetime.date):
+            self.date_ = s
         else:
             dt  = datetime.datetime.strptime(s, self.fmt_str)
-            self.date  = datetime.datetime.date(dt)
+            self.date_  = datetime.datetime.date(dt)
 
     def __repr__(self):
-        if not self.date:
-            return ''
+        if not self.date_:
+            return "''"
         else:
-            return repr(self.date.strftime(self.fmt_str))
+            return repr(self.date_.strftime(self.fmt_str))
 
 class Entity(object):
     keyFields = ('name',)
@@ -74,7 +76,8 @@ class MailGroup(Entity):
         self.members.append(member)
 
 
-class Lid(Entity):
+class Lid(Entity, Awhere):
+    keyFields = ('name', 'called')
     def __init__(self,
         name:str='',
         initials:str='',
@@ -84,11 +87,12 @@ class Lid(Entity):
         cityAddress:str='',
         emailAddress:str='',
         altEmailAddress:str='',
-        birthDate:str='',
-        memberSince:str='',
+        birthDate:dateOrNone='',
+        memberSince:dateOrNone='',
         instrument:str='',
         mailGroups:list = [],
     ):
+        Awhere.__init__(self)
         if not called:
             called = name.split(', ')[-1].split(' ')[0]
         Entity.__init__(self,

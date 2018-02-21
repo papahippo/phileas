@@ -108,7 +108,10 @@ class Page(object):
             os.chdir(path)
             kw = parse_qs(o.query)
         else:
-            kw = dict([p.split('=') for p in sys.argv[1:]])
+            kw = {}
+            for p in sys.argv[1:]:
+                key_, vals_ = p.split('=')
+                kw[key_] = vals_.split(',')
         self.configure(**kw)
         self.present()
 

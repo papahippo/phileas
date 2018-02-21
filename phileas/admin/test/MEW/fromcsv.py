@@ -16,7 +16,10 @@ def figure_out_date(s):
     ):
         try:
             dt = datetime.datetime.strptime(s, fmt_str)
+            if '%Y' not in fmt_str and dt.year > (1 + datetime.datetime.now().year):
+                dt.replace(year=dt.year-100)
             return datetime.datetime.date(dt)
+
         except ValueError:
             continue
     if s:
