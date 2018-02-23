@@ -5,6 +5,15 @@ import datetime
 import inspect
 from .awhere import Awhere
 
+class EntityError(Exception):
+    def __init__(self, key_, val_, exc_):
+        self.key_ = key_
+        self.val_ = val_
+        self.exc_ = exc_
+
+    def __str__(self):
+        return ("%s was raised when trying to set %s=%s "
+            % (self.exc_, self.key_, self.val_))
 
 class dateOrNone:
     fmt_str = '%d-%b-%Y'
@@ -37,7 +46,10 @@ class Entity(object):
         annos = self.__init__.__annotations__
         #print(annos)
         for _key, _val in kw.items():
-            self.__setattr__(_key, annos[_key](_val))
+            try:
+                self.__setattr__(_key, annos[_key](_val))
+            except ValueError as _exc:
+                raise EntityError(_key, _val, _exc)
         cls = self.__class__
         if cls.keyLookup is None:
             cls.keyLookup = {}
