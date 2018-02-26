@@ -5,7 +5,6 @@ import sys, os, time
 from phileas import _html40 as h
 
 #import cgitb
-
 #cgitb.enable()
 
 from urllib.parse import urlparse, parse_qs
@@ -40,7 +39,11 @@ class Page(object):
         )
         self.resolveData();
 
-    def resolveData(self):  # just a 'hook' at this level
+    def resolveData(self):
+        """
+'resolveData'is just a 'hook' at this level. Furthermore, its role has been largely taken over
+by 'validate'.
+"""
         pass
 
     def title(self):
@@ -80,8 +83,14 @@ class Page(object):
             h.body(bgcolor='white') | (self.body(), h.pre | self.errOutput)
         )
 
-    def configure(self, **kw):
+    def validate(self, **kw):
+        """
+'validate' interprets the 'keywords' (actually cgi-parameters) passed to the page. It returns
+True if this page is be presented. Alternatively it may cause some other page to be presented
+and return False.
+        """
         self.kw = kw  # stub / base class version
+        return True  # =>  # go ahead an prsent this page.
 
     def present(self):
         sys.stderr = self
@@ -112,8 +121,9 @@ class Page(object):
             for p in sys.argv[1:]:
                 key_, vals_ = p.split('=')
                 kw[key_] = vals_.split(',')
-        self.configure(**kw)
-        self.present()
+
+        if self.validate(**kw):
+            self.present()
 
 
 def main(pageClass, localIndex=None):
