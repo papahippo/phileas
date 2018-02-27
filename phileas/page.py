@@ -4,8 +4,8 @@ from __future__ import print_function
 import sys, os, time
 from phileas import _html40 as h
 
-#import cgitb
-#cgitb.enable()
+import cgitb
+cgitb.enable()
 
 from urllib.parse import urlparse, parse_qs
 
@@ -95,7 +95,7 @@ and return False.
     def present(self):
         sys.stderr = self
         print("Content-type: text/html;charset=UTF-8\n\n")  # the blank line really matters!
-        print(self.html())
+        print(str(self.html()))  # .encode('utf-8'))
 
     def asFileName(self, path):
         if path[0] != '/':

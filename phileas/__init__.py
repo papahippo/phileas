@@ -260,7 +260,6 @@ class _HTML40(object):
     class _i(Element): pass
     class _isindex(Element): pass
     class _kbd(Element): pass
-    class _label(Element): pass
     class _li(Element): pass
     class _map(Element): pass
     class _object(Element): pass
@@ -395,7 +394,7 @@ class _HTML40(object):
                             'readonly': 0, 'size': 1, 'maxlength': 1, 'src': 1,
                             'usemap': 1, 'accept': 1, 'border': 1})
     class _label(Element):
-        AttrDicts=(CoreAttrs, {'label-for': 1})
+        AttrDicts=(CoreAttrs, {'label-for': 1, 'for': 1})
 
     class _ul(Element):
         AttrDicts=(CoreAttrs, {'compact': 0})
