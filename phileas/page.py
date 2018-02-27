@@ -67,12 +67,13 @@ by 'validate'.
         self.errOutput.append(str(s))
 
     def body(self):
+        #return "abcdé".encode('ascii','xmlcharrefreplace').decode('ascii')
         print(
             "(gratuitous 'error' output) current directory is:",
             os.getcwd(),
             file=sys.stderr
         )
-        return ('default body of content',
+        return ('default body of content... abcdéf',
                 h.br,
                 h.p | 'end of content'
                 )
@@ -95,7 +96,7 @@ and return False.
     def present(self):
         sys.stderr = self
         print("Content-type: text/html;charset=UTF-8\n\n")  # the blank line really matters!
-        print(str(self.html()))  # .encode('utf-8'))
+        print(str(self.html()).encode('ascii','xmlcharrefreplace').decode('ascii'))
 
     def asFileName(self, path):
         if path[0] != '/':

@@ -49,7 +49,8 @@ class MEW_AdminEditPage(Page):
                 # pg = MEW_AdminIndexPage()
                 # pg.main()
                 # sys.exit(0)
-                subprocess.run('./index.py')
+                #subprocess.run('./index.py')
+                print("Location: index.py#%s\n\n" % self.line_[0])
                 return None
         else:
             item_string = ''.join(self.all_lines[slice(*self.line_)])
@@ -69,6 +70,7 @@ class MEW_AdminEditPage(Page):
             value = getattr(self.lid_, attr_name)
         return (h.label(For='%s' %attr_name)|displayed_name, '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
                 % (colour, attr_name, value))
+
     def body(self):
         #print(lid_, file=sys.stderr)
         return (
@@ -87,12 +89,12 @@ class MEW_AdminEditPage(Page):
                  ('geboortedatum', 'birthDate', 'e.g. 15-mrt-1963'),
                  ('lidmaatschap datum', 'memberSince', 'e.g. 15-okt-2003'),
             )],
-            [(h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
-             for val_, colour in (
+            [(ix_<2 or self.lid_.called!='(new member)')and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
+             for ix_, (val_, colour) in enumerate((
                 ("Cancel", "green"),
                 ("Submit", "orange"),
                 ("Delete", "red"),
-            )],
+            ))],
 
             h.a(STYLE="color:#ff0000;") | self.ee
         ))

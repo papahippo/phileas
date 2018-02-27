@@ -7,7 +7,7 @@ import MEW.members
 
 class MEW_AdminIndexPage(Page):
     def one_offs(self):
-        return h.p | "placeholder for one-off fields"
+        return h.p | u"placeholder for one-off é fields"
     
     def rows_per_lid(self, ix, lid):
         #print (lid.name, '...', lid.__init__.__annotations__)
@@ -17,7 +17,7 @@ class MEW_AdminIndexPage(Page):
                     ('roepnaam', 'naam', 'adres', 'telefoon', 'email', 'geboortedatum', 'lidmaatschap datum',
                      'instrument', 'mailgroepen')]),
             h.tr |(
-                h.td | (h.a(href='edit.py?line_=%u&line_=%u;' %lid.lineno_range) |lid.called),
+                h.td | (h.a(id='%s' %lid.lineno_range[0], href='edit.py?line_=%u&line_=%u;' %lid.lineno_range) |lid.called),
                 h.td | lid.name,
                 h.td | (lid.streetAddress, h.br, lid.postCode, '&nbsp;'*2, lid.cityAddress),
                 h.td | (lid.phone, h.br, lid.mobile),
