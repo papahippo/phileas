@@ -1,31 +1,41 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
-from page import *
+from page import Page, h
 from phileas.admin import Lid
 import MEW.members
 
 
-class MEW_AdminIndexPage(Page):
+class MEW_MembersIndexPage(Page):
+    admin = 0
+
     def one_offs(self):
         return h.p | u"placeholder for one-off é fields"
     
     def rows_per_lid(self, ix, lid):
-        #print (lid.name, '...', lid.__init__.__annotations__)
-        #return
         return (
-            (ix % 10 == 0) and (h.tr | [h.th | fieldName for fieldName in
-                    ('roepnaam', 'naam', 'adres', 'telefoon', 'email', 'geboortedatum', 'lidmaatschap datum',
-                     'instrument', 'mailgroepen')]),
+            (ix % 10 == 0) and h.tr | (
+                    h.th | 'roepnaam',
+                    h.th | 'naam',
+                    h.th | 'adres',
+                    h.th | 'telefoon',
+                    h.th | 'email',
+                    h.th | 'geboortedatum',
+                    self.admin and h.th | 'lidmaatschap datum',
+                    h.th | 'instrument',
+                    self.admin and h.th | 'mailgroepen',
+               ),
             h.tr |(
-                h.td | (h.a(id='%s' %lid.lineno_range[0], href='edit.py?line_=%u&line_=%u;' %lid.lineno_range) |lid.called),
+                self.admin and
+                    h.td |  (h.a(id='%s' %lid.lineno_range[0], href='edit.py?line_=%u&line_=%u;' %lid.lineno_range) |lid.called)
+                or  h.td |  lid.called,
                 h.td | lid.name,
                 h.td | (lid.streetAddress, h.br, lid.postCode, '&nbsp;'*2, lid.cityAddress),
                 h.td | (lid.phone, h.br, lid.mobile),
                 h.td | (lid.emailAddress, h.br, lid.altEmailAddress),
                 h.td | lid.birthDate,
-                h.td | lid.memberSince,
+                self.admin and h.td | lid.memberSince,
                 h.td | lid.instrument,
-                h.td | (lid.mailGroups)
+                self.admin and h.td | (lid.mailGroups)
             )
         )
     def body(self):
@@ -34,10 +44,10 @@ class MEW_AdminIndexPage(Page):
         #print(Lid.keyLookup['name'].items())
         return (self.one_offs(),
                 h.table(id="members") | [self.rows_per_lid(ix, lid) for ix, (name, lid) in
-                enumerate (sorted(Lid.keyLookup['called'].items()))]
+                enumerate (sorted(Lid.keyLookup['called'].items())[not self.admin:])]
         )
 
 if __name__ == "__main__":
     # print ("hello Larry")
-    MEW_AdminIndexPage().main()
+    MEW_MembersIndexPage().main()
     

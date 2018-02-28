@@ -89,7 +89,7 @@ class MEW_AdminEditPage(Page):
                  ('geboortedatum', 'birthDate', 'e.g. 15-mrt-1963'),
                  ('lidmaatschap datum', 'memberSince', 'e.g. 15-okt-2003'),
             )],
-            [(ix_<2 or self.lid_.called!='(new member)')and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
+            [(ix_<2 or self.ee or self.lid_.called!='(new member)')and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
              for ix_, (val_, colour) in enumerate((
                 ("Cancel", "green"),
                 ("Submit", "orange"),
