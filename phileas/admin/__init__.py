@@ -37,9 +37,22 @@ class dateOrNone:
     def __repr__(self):
             return "'%s'" % self.__str__()
 
+class StringList:
+    def __init__(self, sl):
+        if isinstance(sl, list):
+            self.list_ = sl
+        else:
+            self.list_  = [s.strip() for s in sl.split(',') if s]
+
+    def __str__(self):
+        return ', '.join(self.list_)
+
+    def __repr__(self):
+        return '[%s]' % ', '.join(['"%s"' % s for s in self.list_])
+
 
 class Entity(object):
-    keyFields = ('name',)
+    keyFields = ()
     keyLookup = None
 
     def __init__(self, **kw):
@@ -48,23 +61,28 @@ class Entity(object):
         for _key, _val in kw.items():
             try:
                 self.__setattr__(_key, annos[_key](_val))
-            except ValueError as _exc:
+            except (ValueError, KeyError) as _exc:
                 raise EntityError(_key, _val, _exc)
         cls = self.__class__
         if cls.keyLookup is None:
             cls.keyLookup = {}
         for k_ in self.keyFields:
+            key_dict = cls.keyLookup.setdefault(k_, {})
             try:
-                cls.keyLookup.setdefault(k_, {})[getattr(self, k_)] = self
+                key_ = getattr(self, k_)
             except AttributeError:
-                pass
-        pass  # for breakpoint debugging!
+                continue
+            #if key_ in key_dict:
+            #    raise EntityError(k_, key_, "not unique")
+
+            key_dict[key_] = self
 
     def by_key(cls, key_spec):
         if not isinstance(key_spec, (list, tuple)):
             key_spec = "name", key_spec
         field_name, field_value = key_spec
         return cls.keyLookup[field_name][field_value]
+
     by_key = classmethod(by_key)
 
 
@@ -80,7 +98,7 @@ class Entity(object):
         )
 
 class MailGroup(Entity):
-
+    keyFields = ('name',)
     def __init__(self,
         name:str='<Default Mailgroup Name>',
     ):
@@ -109,7 +127,7 @@ class Lid(Entity, Awhere):
         birthDate:dateOrNone='',
         memberSince:dateOrNone='',
         instrument:str='',
-        mailGroups:list = [],
+        mailGroups:StringList = [],
     ):
         Awhere.__init__(self)
         if not called:
@@ -130,9 +148,12 @@ class Lid(Entity, Awhere):
                         instrument=instrument,
                         mailGroups=mailGroups,
                         )
-        self.mailGroups_ = []
-        for mGName in mailGroups:
-            mg = MailGroup.by_key(mGName)
+        self.mailGroups_ = [] # note the _!
+        for mGName in self.mailGroups.list_:  # note no _! ... TODO: make mailGroups iterable?
+            try:
+                mg = MailGroup.by_key(mGName)
+            except KeyError as _exc:
+                raise EntityError('mailgroup', mGName, _exc)
             mg.admit(self)
             self.mailGroups_.append(mg)
 
@@ -274,5 +295,7 @@ from .mailing import *
 
 
 if __name__ == "__main__":
-    lid = Lid(name='test')
+    # This is of (very?) limited value owing to use of relative includes; see .../admin/test/veri.py.
+    mailGroup = MailGroup('tryers')
+    lid = Lid(name='test', mailGroups='asdf')
     print(lid)
