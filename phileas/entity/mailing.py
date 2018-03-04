@@ -15,7 +15,7 @@ import email.utils
 from email.header import Header
 
 from phileas import _html40 as h
-from phileas.admin import MailGroup
+from phileas.entity import MailGroup
 MagicMailTreeName = 'MagicMailTree'
 # ok_exts = ('.pdf', '.jpg', '.jpeg')
 

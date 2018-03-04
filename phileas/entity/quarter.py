@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
 from __future__ import print_function
-from phileas.admin import *
+from phileas.entity import *
 
 
 class AccountingException(Exception):

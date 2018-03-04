@@ -6,7 +6,7 @@ cgitb.enable()
 import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
-from phileas.admin import Member, EntityError
+from phileas.entity import Member, EntityError
 import mailgroups
 
 from page import *

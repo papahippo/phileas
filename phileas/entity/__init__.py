@@ -64,8 +64,8 @@ class Entity(object):
         annos = self.__init__.__annotations__
         for _key, _val in kw.items():
             try:
-                self.__setattr__(_key, annos[_key](_val))
-            except (ValueError, KeyError) as _exc:
+                self.__setattr__(_key, annos.get(_key, lambda x:x)(_val))
+            except (ValueError) as _exc:
                 raise EntityError(_key, _val, _exc)
         if cls.keyLookup is None:
             cls.keyLookup = {}
@@ -93,7 +93,8 @@ class Entity(object):
         return(
             '\n' + self.__class__.__name__ + '(\n    '
           + ',\n    '.join(
-                [(name_ + '=' + fAS.annotations[name_].__repr__(getattr(self, name_)))
+                #[(name_ + '=' + fAS.annotations[name_].__repr__(getattr(self, name_)))
+                 [(name_ + '=' + repr(getattr(self, name_)))
                  for name_ in fAS.args[1:]]
             )
           + '\n)\n'

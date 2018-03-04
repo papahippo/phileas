@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-from phileas.admin import *
+from phileas.entity import *
 
 class InvoiceItem(Entity):
 
@@ -11,7 +11,7 @@ class InvoiceItem(Entity):
         howMany:float=42, # stub!
         timesWhat:list=['uur',  'uren'],
         whenDone:str="St. Juttemas 2099",
-        rate:float=0,
+        rate=0,
         percentDiscount:float=0,
         cost:float=0,
         costBtw:float=0,
@@ -75,14 +75,14 @@ class Invoice(Page, Entity):
         sequenceNumber:str='N2099/042', #stub
         items:list=[InvoiceItem(cost=54.),],
         description:str='',
-        client:Client=Client(), #stub for base class!
+        client=Client(-1), #stub for base class!
         deliveryHelp:str='',
-        supplier:Supplier=Supplier(), #stub for base class!
+        supplier=Supplier(-1), #stub for base class!
         textSundries:str='',
         costSundries:float=0.0,
         percentBtw:float=21,
-        chargeBtw:(type(None), bool)=None, # only applies for "rest of world"; currently always overruled!
-        paidFromPrivate:(type(None), bool)=None,
+        chargeBtw=None, # only applies for "rest of world"; currently always overruled!
+        paidFromPrivate=None,
     ):
         Entity.__init__(self,
             date=date,
