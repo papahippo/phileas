@@ -3,7 +3,6 @@
 from phileas import _html40 as h
 import datetime
 import inspect
-from .awhere import Awhere
 
 class EntityError(Exception):
     def __init__(self, key_, val_, exc_):
@@ -54,16 +53,20 @@ class StringList:
 class Entity(object):
     keyFields = ()
     keyLookup = None
+    prev_lineno = -1
 
     def __init__(self, **kw):
+        cls = self.__class__
+        frames = inspect.getouterframes(inspect.currentframe())
+        last_lineno = frames[2].lineno
+        self.lineno_range = (cls.prev_lineno+1, last_lineno + 1)
+        cls.prev_lineno = last_lineno
         annos = self.__init__.__annotations__
-        #print(annos)
         for _key, _val in kw.items():
             try:
                 self.__setattr__(_key, annos[_key](_val))
             except (ValueError, KeyError) as _exc:
                 raise EntityError(_key, _val, _exc)
-        cls = self.__class__
         if cls.keyLookup is None:
             cls.keyLookup = {}
         for k_ in self.keyFields:
@@ -85,7 +88,6 @@ class Entity(object):
 
     by_key = classmethod(by_key)
 
-
     def __repr__(self):
         fAS = inspect.getfullargspec(self.__init__)
         return(
@@ -96,6 +98,9 @@ class Entity(object):
             )
           + '\n)\n'
         )
+
+    def __delete__(self):
+        pass
 
 class MailGroup(Entity):
     keyFields = ('name',)
@@ -111,7 +116,7 @@ class MailGroup(Entity):
         self.members.append(member)
 
 
-class Lid(Entity, Awhere):
+class Member(Entity):
     keyFields = ('name', 'called')
     def __init__(self,
         name:str='',
@@ -129,7 +134,6 @@ class Lid(Entity, Awhere):
         instrument:str='',
         mailGroups:StringList = [],
     ):
-        Awhere.__init__(self)
         if not called:
             called = name.split(', ')[-1].split(' ')[0]
         Entity.__init__(self,
@@ -222,7 +226,7 @@ money(yearBijTelling),  money(actualBijTelling), euros(actualBijTelling)),
             h.br,
         )
 
-class Company(Awhere, Entity):
+class Company(Entity):
     def __init__(self,
         number:int=0,
         name:str='<Default Company Name>',
@@ -240,7 +244,6 @@ class Company(Awhere, Entity):
         companyLogo:str='',
         cars:list=[],
     ):
-        Awhere.__init__(self)
         Entity.__init__(self,
             number=number,
             name=name,
@@ -297,5 +300,5 @@ from .mailing import *
 if __name__ == "__main__":
     # This is of (very?) limited value owing to use of relative includes; see .../admin/test/veri.py.
     mailGroup = MailGroup('tryers')
-    lid = Lid(name='test', mailGroups='asdf')
-    print(lid)
+    member = Member(name='test', mailGroups='asdf')
+    print(member)

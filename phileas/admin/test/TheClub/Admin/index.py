@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
 from page import Page, h
-from phileas.admin import Lid
+from phileas.admin import Member
 import MEW.members
 
 
@@ -44,7 +44,7 @@ class MEW_MembersIndexPage(Page):
         #print(Lid.keyLookup['name'].items())
         return (self.one_offs(),
                 h.table(id="members") | [self.rows_per_lid(ix, lid) for ix, (name, lid) in
-                enumerate (sorted(Lid.keyLookup['called'].items())[not self.admin:])]
+                                         enumerate (sorted(Member.keyLookup['called'].items())[not self.admin:])]
         )
 
 if __name__ == "__main__":

@@ -6,21 +6,21 @@ cgitb.enable()
 import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
-from phileas.admin import Lid, EntityError
-import MEW.mailgroups
+from phileas.admin import Member, EntityError
+import mailgroups
 
 from page import *
-MEW_members_file = './MEW/members.py'
+Club_members_file = './members.py'
 import subprocess
 
-class MEW_AdminEditPage(Page):
+class ClubAdminEditPage(Page):
 
     def validate(self, line_=(-1, -1), **kw):
         self.ee = None
         self.line_= list(map(int, line_))
 
         # we usually need the following so let's get it done now.
-        with open(MEW_members_file, 'r') as module_src:
+        with open(Club_members_file, 'r') as module_src:
             self.all_lines = module_src.readlines()
         #print(self.all_lines, file=sys.stderr)
         # the following method of dermining whether we're here as a from validator
@@ -29,33 +29,33 @@ class MEW_AdminEditPage(Page):
         if self.submitting:
             self.form = cgi.FieldStorage()
             requested_action = self.form.getfirst('button_')
-            if requested_action == 'Submit':
+            if requested_action in ('Add', 'Modify'):
                 answers = [(mfs.name, mfs.value) for mfs in self.form.list if not mfs.name.endswith('_')]
-                #print(answers, file=sys.stderr)
+                # print('ff', file=sys.stderr)
                 try:
-                    self.lid_ = Lid(**dict(answers))
+                    self.member_ = Member(**dict(answers))
                 except EntityError as ee:
                     print(ee, file=sys.stderr)
                     self.ee = ee
             if self.ee is None:
                 # incorporate the updated entry into the module:
                 if requested_action != 'Cancel':
-                    with open(MEW_members_file, 'w') as module_src:
-                        module_src.writelines(self.all_lines[:self.line_[0]])
+                    with open(Club_members_file, 'w') as module_src:
+                        module_src.writelines(self.all_lines[:self.line_[requested_action=='Add']])
                         if requested_action != 'Delete':
-                            module_src.write(str(self.lid_))
+                            module_src.write(str(self.member_))
                         module_src.writelines(self.all_lines[self.line_[1]:])
-                # from index import MEW_AdminIndexPage
-                # pg = MEW_AdminIndexPage()
+                # from index import Club_AdminIndexPage
+                # pg = Club_AdminIndexPage()
                 # pg.main()
                 # sys.exit(0)
                 #subprocess.run('./index.py')
-                print("Location: index.py#%s\n\n" % self.line_[0])
+                print("Location: editable_list.py#%s\n\n" % self.line_[0])
                 return None
         else:
             item_string = ''.join(self.all_lines[slice(*self.line_)])
             #print(item_string, file=sys.stderr)
-            self.lid_ = eval(item_string)
+            self.member_ = eval(item_string)
 
         return Page.validate(self, **kw)
 
@@ -67,39 +67,41 @@ class MEW_AdminEditPage(Page):
             if self.ee and attr_name == self.ee.key_:
                 colour = '#ff0000'  # red = place of error
         else:
-            value = getattr(self.lid_, attr_name)
+            value = getattr(self.member_, attr_name)
         return (h.label(For='%s' %attr_name)|displayed_name, '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
                 % (colour, attr_name, value))
 
     def body(self):
-        #print(lid_, file=sys.stderr)
+        existing = self.member_.called!='(new member)'
+        #print(sef.member_.called, file=sys.stderr)
         return (
             h.form(action='edit.py?'+os.environ.get("QUERY_STRING"), method='post')| (
             [self.entry_line(displayed_name, attr_name, placeholder)
              for (displayed_name, attr_name, placeholder) in (
-                 ('roepnaam', 'called', 'bekend binnen MEW als...'),
-                 ('naam', 'name', 'surname, initials'),
-                 ('huisadres', 'streetAddress', 'e.g. Rechtstraat 42'),
+                 ('known as', 'called', 'bekend binnen MEW als...'),
+                 ('full name', 'name', 'surname, initials'),
+                 ('street address', 'streetAddress', 'e.g. Rechtstraat 42'),
                  ('postcode', 'postCode', 'e.g. 1234 XY'),
-                 ('gemeente', 'cityAddress', 'e.g. Eindhoven'),
-                 ('telefoon', 'phone', 'e.g. 040-2468135'),
-                 ('mobiel', 'mobile', 'e.g. 06-24681357'),
-                 ('1e emailadres', 'emailAddress', 'e.g. fred@backofthe.net'),
-                 ('evt. 2e emailadress', 'altEmailAddress', 'optional'),
-                 ('geboortedatum', 'birthDate', 'e.g. 15-mrt-1963'),
-                 ('lidmaatschap datum', 'memberSince', 'e.g. 15-okt-2003'),
+                 ('Town/City', 'cityAddress', 'e.g. Eindhoven'),
+                 ('telephome', 'phone', 'e.g. 040-2468135'),
+                 ('mobile', 'mobile', 'e.g. 06-24681357'),
+                 ('1st email address', 'emailAddress', 'e.g. fred@backofthe.net'),
+                 ('opt. 2nd email address', 'altEmailAddress', 'optional'),
+                 ('date of birth', 'birthDate', 'e.g. 15-mrt-1963'),
+                 ('date of joining', 'memberSince', 'e.g. 15-okt-2003'),
+                 ('instrument', 'instrument', 'e.g. Klarinet'),
+                 ('mail groups', 'mailGroups', 'e.g. Musicians, Hoorns'),
             )],
-            [(ix_<2 or self.ee or self.lid_.called!='(new member)')and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
+            [(ix_<2 or self.ee or existing) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
              for ix_, (val_, colour) in enumerate((
                 ("Cancel", "green"),
-                ("Submit", "orange"),
+                (existing and "Modify" or "Add", "orange"),
                 ("Delete", "red"),
             ))],
-
-            h.a(STYLE="color:#ff0000;") | self.ee
+            h.br*2, 
+            h.a(STYLE="color:#ff0000;") | self.ee,
         ))
-        # return (h | 'stub for body of MEW_AdminEditPage')
 if __name__ == "__main__":
     # print ("hello Larry")
-    MEW_AdminEditPage().main()
+    ClubAdminEditPage().main()
     
