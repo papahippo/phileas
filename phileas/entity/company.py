@@ -125,11 +125,8 @@ def putLines(el,  *lines):
 from ..page import *
 from .invoice import *
 from .quarter import *
-from .mailing import *
+# from .mailing import *
 
 
-if __name__ == "__main__":
-    # This is of (very?) limited value owing to use of relative includes; see .../admin/test/veri.py.
-    mailGroup = MailGroup('tryers')
-    member = Member(name='test', mailGroups='asdf')
-    print(member)
+#if __name__ == "__main__":
+#    pass

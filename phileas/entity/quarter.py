@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
 from __future__ import print_function
-from phileas.entity import *
-
+from phileas.entity.company import *
+from phileas.page import Page, h
 
 class AccountingException(Exception):
     pass
@@ -177,9 +177,9 @@ class Quarter(Entity, Page):
     def __init__(self,
         name:str='Accounts',
         StyleSheet:str=".style/hippos.css",
-        accountant:Accountant=Accountant(), #stub for base class!
+        accountant=Accountant(-1), #stub for base class!
         deliveryHelp:str="",
-        supplier:Supplier=Supplier(), #stub for base class!
+        supplier=Supplier(-1), #stub for base class!
         year:int=1588,
         quarter:int=0,
         prevSeqNumber:int=0,
