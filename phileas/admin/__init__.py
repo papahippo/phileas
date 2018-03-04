@@ -99,8 +99,6 @@ class Entity(object):
           + '\n)\n'
         )
 
-    def __delete__(self):
-        pass
 
 class MailGroup(Entity):
     keyFields = ('name',)
@@ -153,7 +151,7 @@ class Member(Entity):
                         mailGroups=mailGroups,
                         )
         self.mailGroups_ = [] # note the _!
-        for mGName in self.mailGroups.list_:  # note no _! ... TODO: make mailGroups iterable?
+        for mGName in self.mailGroups.list_:  # note no _!
             try:
                 mg = MailGroup.by_key(mGName)
             except KeyError as _exc:
@@ -268,9 +266,6 @@ class Client(Company):
 class Accountant(Company):
     pass
 
-
-class Business(Entity):
-    Admissible = [Company]
 
 
 def money(amount):
