@@ -1,10 +1,20 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-from phileas import _html40 as h
+"""
+module 'entity' is housed within package 'phileas' but the connection between the two is tenuous; they were developed
+roughly over the same time frame and represent rather off-beat approaches to pythn-html integration (phileas') and
+minimalistic database definition (entity) respectively.
+"""
 import datetime
 import inspect
 
+
 class EntityError(Exception):
+    """
+The purpose of EntityError is to intercept exceptions that occur while creating an Entity object and add information do
+that a higher-level exception handler can pinpoint which of the arguments supplied on object creation is responsible
+for the exception.
+    """
     def __init__(self, key_, val_, exc_):
         self.key_ = key_
         self.val_ = val_
@@ -12,19 +22,28 @@ class EntityError(Exception):
 
     def __str__(self):
         return ("%s was raised when trying to set %s=%s "
-            % (self.exc_, self.key_, self.val_))
+                % (self.exc_, self.key_, self.val_))
 
-class dateOrNone:
+
+class DateOrNone:
+    """
+Objects of Class 'DateOrNone' are essentially datetime.datetime.date objects except that a value
+of '' (the empty string) is allowed.
+    """
     fmt_str = '%d-%b-%Y'
 
     def __init__(self, s):
+        """
+The date may be supplied as '' (or equivalently None), as a ready-made datetime.datetime.date instance, or as a
+string representing a date in the format '%d-%b-%Y'. (refer to pythn docs to see what this means!)
+        """
         if not s:
             self.date_ = ''
         elif isinstance(s, datetime.date):
             self.date_ = s
         else:
             dt  = datetime.datetime.strptime(s, self.fmt_str)
-            self.date_  = datetime.datetime.date(dt)
+            self.date_ = datetime.datetime.date(dt)
 
     def __str__(self):
         if not self.date_:
@@ -37,7 +56,14 @@ class dateOrNone:
             return "'%s'" % self.__str__()
 
 class StringList:
+    """
+A 'StringList' is - as the name suggests a list of strings (hmmm... list of names might be more accurate!).
+    """
     def __init__(self, sl):
+        """
+The initial value may be supplies a a read-made lsit of strings or as a string comma-separated list of strings(names)
+        :param sl:
+        """
         if isinstance(sl, list):
             self.list_ = sl
         else:
@@ -50,43 +76,59 @@ class StringList:
         return '[%s]' % ', '.join(['"%s"' % s for s in self.list_])
 
 
+def get_next_lineno(depth):
+    """
+This returns the line number following
+    """
+    frames = inspect.getouterframes(inspect.currentframe())
+    return 1 + frames[depth].lineno
+
+
 class Entity(object):
+    """
+Class 'Entity' is the start of module 'entity'. Some features of enity obects are:
+    (1) initialization values are more stringently checked than is usual within python.
+    (2) The statement which created an enity can be effectively recreated.
+    (3) The position within a python (module) source file where the entity is created is
+        remembered along with the object provided that a few constraints on
+        source code layout are adhered to:
+        (a) All entities of a particular must be declared consecutively.
+        (b) The first such entity must be preceded by a call to [EntityName].begin().
+    """
     keyFields = ()
     keyLookup = None
-    prev_lineno = -1
+    rangeLookup = None
+    next_lineno = -1
+
 
     def __init__(self, **kw):
         cls = self.__class__
-        frames = inspect.getouterframes(inspect.currentframe())
-        last_lineno = frames[2].lineno
-        self.lineno_range = (cls.prev_lineno+1, last_lineno + 1)
-        cls.prev_lineno = last_lineno
+        next_lineno = get_next_lineno(3)
+        self.lineno_range = (cls.next_lineno, next_lineno)
+        cls.next_lineno = next_lineno
         annos = self.__init__.__annotations__
         for _key, _val in kw.items():
             try:
                 self.__setattr__(_key, annos.get(_key, lambda x:x)(_val))
             except (ValueError) as _exc:
                 raise EntityError(_key, _val, _exc)
+
         if cls.keyLookup is None:
+            cls.rangeLookup = {}
             cls.keyLookup = {}
+        cls.rangeLookup[self.lineno_range] = self
         for k_ in self.keyFields:
             key_dict = cls.keyLookup.setdefault(k_, {})
             try:
                 key_ = getattr(self, k_)
             except AttributeError:
                 continue
-            #if key_ in key_dict:
-            #    raise EntityError(k_, key_, "not unique")
+            if not key_:
+                continue
+            if key_ in key_dict:
+                raise EntityError(k_, key_, "not unique")
 
             key_dict[key_] = self
-
-    def by_key(cls, key_spec):
-        if not isinstance(key_spec, (list, tuple)):
-            key_spec = "name", key_spec
-        field_name, field_value = key_spec
-        return cls.keyLookup[field_name][field_value]
-
-    by_key = classmethod(by_key)
 
     def __repr__(self):
         fAS = inspect.getfullargspec(self.__init__)
@@ -100,6 +142,27 @@ class Entity(object):
           + '\n)\n'
         )
 
+    def detach(self):
+        cls = self.__class__
+        del cls.rangeLookup[self.lineno_range]
+        for k_ in self.keyFields:
+            key_dict = cls.keyLookup.setdefault(k_, {})
+            del key_dict[getattr(self, k_)]
+
+    def by_key(cls, key_spec):
+        if not isinstance(key_spec, (list, tuple)):
+            key_spec = "name", key_spec
+        field_name, field_value = key_spec
+        return cls.keyLookup[field_name][field_value]
+    by_key = classmethod(by_key)
+
+    def by_range(cls, line_range):
+        return cls.rangeLookup[tuple(line_range)]
+    by_range = classmethod(by_range)
+
+    def begin(cls):
+        cls.next_lineno = get_next_lineno(2)
+    begin = classmethod(begin)
 
 def money(amount):
     l = list(("%.2f" % amount ).replace('.',  ','))

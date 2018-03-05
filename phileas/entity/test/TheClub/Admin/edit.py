@@ -8,6 +8,7 @@ locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
 from phileas.entity.club import Member, EntityError
 import mailgroups
+import members
 
 from page import *
 Club_members_file = './members.py'
@@ -18,7 +19,7 @@ class ClubAdminEditPage(Page):
     def validate(self, line_=(-1, -1), **kw):
         self.ee = None
         self.line_= list(map(int, line_))
-
+        Member.by_range(self.line_).detach()
         # we usually need the following so let's get it done now.
         with open(Club_members_file, 'r') as module_src:
             self.all_lines = module_src.readlines()
@@ -53,6 +54,7 @@ class ClubAdminEditPage(Page):
                 print("Location: editable_list.py#%s\n\n" % self.line_[0])
                 return None
         else:
+            #Member.by_range(self.line_).detach()
             item_string = ''.join(self.all_lines[slice(*self.line_)])
             #print(item_string, file=sys.stderr)
             self.member_ = eval(item_string)
@@ -72,7 +74,7 @@ class ClubAdminEditPage(Page):
                 % (colour, attr_name, value))
 
     def body(self):
-        existing = self.member_.called!='(new member)'
+        existing = self.ee or self.member_.called!='(new member)'
         #print(sef.member_.called, file=sys.stderr)
         return (
             h.form(action='edit.py?'+os.environ.get("QUERY_STRING"), method='post')| (
@@ -92,7 +94,7 @@ class ClubAdminEditPage(Page):
                  ('instrument', 'instrument', 'e.g. Klarinet'),
                  ('mail groups', 'mailGroups', 'e.g. Musicians, Hoorns'),
             )],
-            [(ix_<2 or self.ee or existing) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
+            [(ix_<2 or existing) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
              for ix_, (val_, colour) in enumerate((
                 ("Cancel", "green"),
                 (existing and "Modify" or "Add", "orange"),

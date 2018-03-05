@@ -29,22 +29,22 @@ class MailGroup(Entity):
 class Member(Entity):
     keyFields = ('name', 'called')
     def __init__(self,
-        name:str='',
-        initials:str='',
-        called:str='',
-        streetAddress:str='',
-        postCode:str='',
-        cityAddress:str='',
-        phone:str='',
-        mobile: str = '',
-        emailAddress:str='',
-        altEmailAddress:str='',
-        birthDate:dateOrNone='',
-        memberSince:dateOrNone='',
-        instrument='',
-        mailGroups:StringList = [],
-    ):
-        if not called:
+                 name:str='',
+                 initials:str='',
+                 called:str='',
+                 streetAddress:str='',
+                 postCode:str='',
+                 cityAddress:str='',
+                 phone:str='',
+                 mobile: str = '',
+                 emailAddress:str='',
+                 altEmailAddress:str='',
+                 birthDate:DateOrNone= '',
+                 memberSince:DateOrNone= '',
+                 instrument='',
+                 mailGroups:StringList = [],
+                 ):
+        if (not called) and (not name.startswith('(')):
             called = name.split(', ')[-1].split(' ')[0]
         Entity.__init__(self,
                         name=name,
