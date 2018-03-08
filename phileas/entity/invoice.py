@@ -12,12 +12,12 @@ class InvoiceItem(Entity):
         howMany:float=42, # stub!
         timesWhat:list=['uur',  'uren'],
         whenDone:str="St. Juttemas 2099",
-        rate=0,
+        rate:float=0,
         percentDiscount:float=0,
         cost:float=0,
         costBtw:float=0,
         description:str='',
-        chargeBtw:float=21.,
+        chargeBtw:float=21,
                  ):
         Entity.__init__(self,
             project=project,
@@ -76,9 +76,9 @@ class Invoice(Page, Entity):
         sequenceNumber:str='N2099/042', #stub
         items:list=[InvoiceItem(cost=54.),],
         description:str='',
-        client=Client(-1), #stub for base class!
+        client:Client=Client(-1), #stub for base class!
         deliveryHelp:str='',
-        supplier=Supplier(-1), #stub for base class!
+        supplier:Supplier=Supplier(-1), #stub for base class!
         textSundries:str='',
         costSundries:float=0.0,
         percentBtw:float=21,

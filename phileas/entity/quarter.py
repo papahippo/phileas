@@ -29,7 +29,7 @@ class OutgoingItem(Entity):
         percentBtw:(float, type(None))=0.0,
         amountBtw:(float, type(None))=None,
         amountNetto:(float, type(None))=None,
-        paidFromPrivate:(True, False, None)=None,
+        paidFromPrivate:(bool, type(None))=None,
     ):
         Entity.__init__(self,
             date=date,

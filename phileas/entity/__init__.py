@@ -15,6 +15,7 @@ The purpose of EntityError is to intercept exceptions that occur while creating 
 that a higher-level exception handler can pinpoint which of the arguments supplied on object creation is responsible
 for the exception.
     """
+
     def __init__(self, key_, val_, exc_):
         self.key_ = key_
         self.val_ = val_
@@ -25,35 +26,31 @@ for the exception.
                 % (self.exc_, self.key_, self.val_))
 
 
-class DateOrNone:
+class DateOrNone(datetime.date):
     """
 Objects of Class 'DateOrNone' are essentially datetime.datetime.date objects except that a value
 of '' (the empty string) is allowed.
     """
     fmt_str = '%d-%b-%Y'
 
-    def __init__(self, s):
+    def __new__(cls, wild):
         """
 The date may be supplied as '' (or equivalently None), as a ready-made datetime.datetime.date instance, or as a
 string representing a date in the format '%d-%b-%Y'. (refer to pythn docs to see what this means!)
         """
-        if not s:
-            self.date_ = ''
-        elif isinstance(s, datetime.date):
-            self.date_ = s
-        else:
-            dt  = datetime.datetime.strptime(s, self.fmt_str)
-            self.date_ = datetime.datetime.date(dt)
+        if not wild:
+            return ''
+        elif not isinstance(wild, tuple):
+            dt  = datetime.datetime.strptime(wild, cls.fmt_str)
+            wild = (dt.year, dt.month, dt.day)
+        return datetime.date.__new__(cls, *wild)
 
     def __str__(self):
-        if not self.date_:
-            return ""
-        else:
-            return self.date_.strftime(self.fmt_str)
+        return datetime.date.strftime(self, self.fmt_str)
 
 
     def __repr__(self):
-            return "'%s'" % self.__str__()
+        return "'%s'" % self.__str__()
 
 class StringList:
     """
@@ -108,8 +105,16 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
         cls.next_lineno = next_lineno
         annos = self.__init__.__annotations__
         for _key, _val in kw.items():
+            reqd_class = annos.get(_key)
+            if (reqd_class is not None) and not isinstance(_val, reqd_class):
+                if isinstance(reqd_class, tuple):
+                    reqd_class = reqd_class[0]
+                cast_val = reqd_class(_val)
+            else:
+                cast_val = _val
+            # cast_val = (((reqd_class is not None) and not isinstance(_val, reqd_class)) and  ) or _val
             try:
-                self.__setattr__(_key, annos.get(_key, lambda x:x)(_val))
+                self.__setattr__(_key, cast_val)
             except (ValueError) as _exc:
                 raise EntityError(_key, _val, _exc)
 

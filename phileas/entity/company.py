@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
 from phileas import _html40 as h
-from phileas.entity import Entity
+from phileas.entity import Entity, DateOrNone
 import datetime
 
 
@@ -55,8 +55,8 @@ class Car(Entity):
         buildYear:int=1066,
         originalNewPrice:int=0,
         percentBijtelling:float=2.7,
-        dateAcquired:str='',
-        dateRelinquished:str='',
+        dateAcquired:DateOrNone='',
+        dateRelinquished:DateOrNone='',
         kenteken:str='??-??-??',
     ):
         Entity.__init__(self,
@@ -72,8 +72,8 @@ class Car(Entity):
     def useInYear(self, year):
         start_of_year = datetime.date(year, 1, 1)
         end_of_year = datetime.date(year, 12, 31)
-        start_date = self.dateAcquired and datetime.date(*self.dateAcquired) or start_of_year
-        end_date = self.dateRelinquished and datetime.date(*self.dateRelinquished) or end_of_year
+        start_date = self.dateAcquired or start_of_year
+        end_date = self.dateRelinquished or end_of_year
         if end_date < start_of_year or start_date>end_of_year:
             return None
         if start_date < start_of_year:
