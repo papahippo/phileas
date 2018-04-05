@@ -208,7 +208,7 @@ a name alias; i.e. 'mytable = h.table()' is kind of analogous to the following '
     Member function '__ior__' facilitates adding more child _HTML40.Elements to an already defined html _HTML40.Element, using
     the '|=' in-place operator
             """
-            self.children.extend(self._as_children(self, other))
+            self.children.extend(self._as_children(other))
             return self
     
         def __and__(self, other):
