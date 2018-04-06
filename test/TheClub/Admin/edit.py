@@ -6,13 +6,11 @@ cgitb.enable()
 import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
-from phileas.entity.club import Member, EntityError
-import mailgroups
-import members
+from entity import Member, EntityError
 
 from page import *
 Club_members_file = './members.py'
-import subprocess
+
 
 class ClubAdminEditPage(Page):
 

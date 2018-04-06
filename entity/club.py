@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-from phileas.entity import *
+from entity import *
 
 
 class Club(Entity):

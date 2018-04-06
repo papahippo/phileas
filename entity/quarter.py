@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
 from __future__ import print_function
-from phileas.entity.company import *
+from entity import *
 from phileas.page import Page, h
 
 class AccountingException(Exception):

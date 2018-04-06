@@ -3,21 +3,22 @@
 This is the one essential file of the 'phileas' package.
 Phileas stands for  Python/HTML Integration - Larry's Elegant Alternative Solution.
 (For 'Elegant' you may wish to substitute e.g. 'Eccentric' or 'Excruciating' -
-I don't mind - just try to spell it properly!)
-See http://larry.myerscough.nl (n.b. no "www." up front) for an example of a site built using this module.
-Use the 'show source' button of the left-hand panel to view and/or capture the python source code.
+I don't mind - just try to spell it properly!) See http://larry.myerscough.nl
+(n.b. no "www." up front) for an example of a site built using this module.
+Use the 'show source' button of the left-hand panel to view and/or capture the
+python source code.
 """
-from __future__ import print_function
 import sys
 
 
 def unravel(seq):
     """
-Unravel/flatten a sequence of HTML _HTML40.Elements. This is necessary because concatenations
-of _HTML40.Elements may be coded as tuples or lists. The unravelling happens when the top level _HTML40.Element is
-stringified. In other words, sequencing is a form of deferred concatenation. Earlier versons of phileas didn't
-support the use of '+' to 'concatenate as you go' so many levels of unravelling could be required.
-As one might guess, 'unravel' is a recursive function.
+Unravel/flatten a sequence of HTML _HTML40.Elements. This is necessary because
+concatenations of _HTML40.Elements may be coded as tuples or lists.
+The unravelling happens when the top level _HTML40.Element is stringified. In other words,
+sequencing is a form of deferred concatenation. Earlier versons of phileas didn't
+support the use of '+' to 'concatenate as you go' so many levels of unravelling could
+be required. As one might guess, 'unravel' is a recursive function.
     """
     ans = []
     for it in seq:
@@ -63,22 +64,24 @@ BordersAndRules = {'frame': 1, 'rules': 1, 'border': 1}
 
 
 class _HTML40(object):
-    """ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
-        The leading _ is appropriate because it is not intended for direct use by
-        external code. A single instance of this class this created within this
-        module. This is conventionally imported by other modules by the construction
-        'from phileas._HTML40 import _html40 as h'. html can be generated via terms
-        like 'h.h1', 'h.p' etc. See the 'main' within this module for an example of
-        its use.
+    """
+This class is called _HTML40 because its members correspond to HTML 4.0 tags.
+The leading _ is appropriate because it is not intended for direct use by
+external code. A single instance of this class this created within this
+module. This is conventionally imported by other modules by the construction
+'from phileas._HTML40 import _html40 as h'. html can be generated via terms
+like 'h.h1', 'h.p' etc. See the 'main' within this module for an example of
+its use.
     """
 
     def __getattr__(self, attr_name):
         """
-This handles the first call of the form h.tag for a particular tag where h is a (usually THE) instance of class _HTML40.
-It effectively return a instance of class _HTML40._tag, supplying the actual tag value (e.g. 'br', 'p', 'h4') as
-an argument to the __init__. (release 0.6 change ...) This function will only be called once per _HTML40.Element type.
-This is because the instance will be remembered under the tag name and hence automatically returned by the standard
-'getattribute' handler on subsequent calls.
+This handles the first call of the form h.tag for a particular tag where h is
+a (usually THE) instance of class _HTML40. It effectively return a instance of
+class _HTML40._tag, supplying the actual tag value (e.g. 'br', 'p', 'h4') as an argument
+to the __init__. (release 0.6 change ...) This function will only be called once per
+_HTML40.Element type. This is because the instance will be remembered under the tag name
+and hence automatically returned by the standard 'getattribute' handler on subsequent calls.
         """
         if attr_name.startswith('__'):
             return object.__getattribute__(self, attr_name)
@@ -122,21 +125,23 @@ This is because the instance will be remembered under the tag name and hence aut
     class Element:
     
         """
-Each possible HTML tag is defined  as a class which inherits this '_HTML40.Element' class. The name of the class
-is the lower case tag string with a leading underscore added, e.g. '_h3' or '_br'.
-When no attributes are associated with a tag, it can be expressed simply by e.g. 'h.br' or 'h.h4' (without
-the quotes). Such references are 'corrected' (by HTML40.__getattr__ - see above) to return an instance
-of the corresponding class.
-When, however, attributes are required, it must be expressed as e.g. 'h.a(href='somewhere')'. Note that this
-calls - not creates - an instance (see member function '__call__' below).
-Differences of the 'rules of use' of various html tags are handled by the attribute 'AttrDicts'.
-'AttrDicts' is a (often empty) tuple of dictionaries. keys of each dictionary represent valid attributes for
-this _HTML40.Element. The corresponding values are (in the current implementation) booleans indicating whether a value
-is associated with this attribute. False means that the value must not be supplied and will automatically be
-derived from the attribute name. This will probably be changed in a later release, e.g. to use a function or
-class as a value; this will make validation and manipulation of numeric values easier.
-N.B. class Element must be declared within class _HTML40. This ensures that e.g. h._h4 where h is obtained by
-e.g. 'h = _HTML40()' is a valid attribute reference (see __getattr__ above).
+Each possible HTML tag is defined  as a class which inherits this '_HTML40.Element' class.
+The name of the class is the lower case tag string with a leading underscore added,
+e.g. '_h3' or '_br'. When no attributes are associated with a tag, it can be expressed
+simply by e.g. 'h.br' or 'h.h4' (without the quotes). Such references are 'corrected'
+(by HTML40.__getattr__ - see above) to return an instance of the corresponding class.
+When, however, attributes are required, it must be expressed as e.g.
+ 'h.a(href='somewhere')'. Note that this calls - not creates - an instance (see
+member function '__call__' below). Differences of the 'rules of use' of various html tags
+are handled by the attribute 'AttrDicts'. 'AttrDicts' is a (often empty) tuple of
+dictionaries. keys of each dictionary represent valid attributes for this _HTML40.Element.
+The corresponding values are (in the current implementation) booleans indicating
+whether a value is associated with this attribute. False means that the value must not be
+supplied and will automatically be derived from the attribute name. This will probably be
+changed in a later release, e.g. to use a function or class as a value; this will make
+validation and manipulation of numeric values easier. N.B. class Element must be declared
+within class _HTML40. This ensures that e.g. h._h4 where h is obtained by e.g.
+'h = _HTML40()' is a valid attribute reference (see __getattr__ above).
         """
         AttrDicts = (CoreAttrs,)
         okAttrs = None
@@ -155,12 +160,13 @@ e.g. 'h = _HTML40()' is a valid attribute reference (see __getattr__ above).
     
         def __call__(self, **args):
             """
-This functions makes it possible to derive tags with attributes by calling the tag with arguments,
-e.g. 'h.img(src='pickie.jpg')'. Beware: this looks like a simple instance creation but isn't;
-h.img already returns an instance so the bracketed construction gets routed to this function.
-This construction can be used with empty brackets to force a copy operation as opposed to just
-a name alias; i.e. 'mytable = h.table()' is kind of analogous to the following 'trick' for lists:
-'my_list = precious_list[:]'.
+This functions makes it possible to derive tags with attributes by calling the tag with
+arguments, e.g. 'h.img(src='pickie.jpg')'.
+Beware: this looks like a simple instance creation but isn't; h.img already returns an
+instance so the bracketed construction gets routed to this function.
+This construction can be used with empty brackets to force a copy operation as opposed
+to just a name alias; i.e. 'mytable = h.table()' is kind of analogous to the following
+'trick' for lists: 'my_list = precious_list[:]'.
             """
             if self.okAttrs is None:
                 self.okAttrs = {}
@@ -183,38 +189,40 @@ a name alias; i.e. 'mytable = h.table()' is kind of analogous to the following '
     
         def _as_children(self, other):
             """
-    Function '_as_children' is used internally by several public customization member function.
-    Its purpose is to avoid unnecessary nesting of _HTML40.Elements when the child _HTML40.Element is tagless;
-    in this case, its children can be taken on board by its parent.
+Function '_as_children' is used internally by several public customization member function.
+Its purpose is to avoid unnecessary nesting of _HTML40.Elements when the child
+_HTML40.Element is tagless; in this case, its children can be taken on board by its parent.
             """
             return ((other is self or isinstance(other, _HTML40.Element)) and other.tag is None
                     and other.children or [other,])
     
         def __or__(self, other):
             """
-    member function '__or__' ensures that code like e.g. 'h.h4 | <expression>', when converted to a string, results in
-    '<h4>expression</h4>'. Similarly 'h.a(href="myLink") | "text"' becomes '<a href=myLink>text</a>'.
+member function '__or__' ensures that code like e.g. 'h.h4 | <expression>',
+when converted to a string, results in '<h4>expression</h4>'.
+Similarly 'h.a(href="myLink") | "text"' becomes '<a href=myLink>text</a>'.
             """
             return self.__class__(tag=self.tag, separateClose=self.separateClose,
                                   children=self._as_children(other), **self.sArgs)
     
         __ror__ = __or__
         """ 
-    The above definition ensures  that the '|' operator (see above) is symmetrical.
+The above definition ensures  that the '|' operator (see above) is symmetrical.
         """
     
         def __ior__(self, other):
             """
-    Member function '__ior__' facilitates adding more child _HTML40.Elements to an already defined html _HTML40.Element, using
-    the '|=' in-place operator
+Member function '__ior__' facilitates adding more child _HTML40.Elements to an
+already defined html _HTML40.Element, using the '|=' in-place operator
             """
             self.children.extend(self._as_children(self, other))
             return self
     
         def __and__(self, other):
             """
-    This member function facilitates the use of & (usually a bit-wise 'and') to conditionally apply HTML operators, e.g.:
-    '(this_user==selected_user)&h.em | "this text is highlighted when it relates to selected user"'.
+This member function facilitates the use of & (usually a bit-wise 'and') to conditionally
+apply HTML operators, e.g.:
+'(this_user==selected_user)&h.em | "this is highlighted when it relates to selected user"'.
             """
             return self if other else _html40
     
@@ -224,7 +232,8 @@ a name alias; i.e. 'mytable = h.table()' is kind of analogous to the following '
             """
 This custom function was introduced very late in the development in order to
 facilitate the use of '+' instead of ',' for concatenating _HTML40.Elements. This will
-drastically reduce the amount of 'unravelling' when stringifying complex nested HTML objects.
+drastically reduce the amount of 'unravelling' when stringifying complex nested
+HTML objects.
             """
             if not other:
                 return self()  # just return clone of self!
@@ -245,8 +254,8 @@ drastically reduce the amount of 'unravelling' when stringifying complex nested 
     
         def __str__(self):
             """
-__str__ is used to create a character representation of the _HTML40.Element. For example this is used by 'print'.
-The character representation in our case is valid HTML.
+__str__ is used to create a character representation of the _HTML40.Element. For example,
+this is used by 'print'. The character representation in our case is valid HTML.
             """
             if self.children is None:
                 return ''
@@ -650,8 +659,8 @@ def main():
              h.br * 2 +
              h.br + "abc " * 3 + 4 * 'xyz ' + '\n' +
              3 * h.br +
-             """ If you're viewing this output in a browser, you can get to some (possibly not 100% up to date!)
-             background info on 'phileas' by clicking """ +
+             """ If you're viewing this output in a browser, you can get to some (possibly not
+              100% up to date!) background info on 'phileas' by clicking """ +
              h.br + (h.a(href="http://larry.myerscough.nl/phileas_project/") | 'this text') +
              '.' +
              (False & h.em | 'plain ') + (True & h.em | "italic")

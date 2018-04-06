@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
-from phileas.entity.club import *
 
 
 if __name__ == "__main__":

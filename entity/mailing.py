@@ -3,19 +3,18 @@
 music_mailer.py has a symbiotic relationship with 'subscribers.py'; either may play the role of
 main script.
 """
-import sys, os, re, time, smtplib
+import sys, os, time, smtplib
 
 from email import encoders
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
 from email.mime.base import MIMEBase
 import mimetypes
 import email.utils
 from email.header import Header
 
 from phileas import _html40 as h
-from phileas.entity import MailGroup
+from entity import MailGroup
 MagicMailTreeName = 'MagicMailTree'
 # ok_exts = ('.pdf', '.jpg', '.jpeg')
 
