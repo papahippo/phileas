@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
-from phileas.entity.club import MailGroup
+from entity.club import MailGroup
 import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 

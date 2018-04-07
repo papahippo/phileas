@@ -2,7 +2,7 @@
 # -*- encoding: utf8 -*-
 import sys
 from membersPage import ClubMembersPage, h
-from phileas.entity.club import Member
+from entity.club import Member
 import members
 
 

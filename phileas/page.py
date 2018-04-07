@@ -5,7 +5,7 @@ import sys, os, time
 from phileas import _html40 as h
 
 import cgitb
-cgitb.enable()
+#cgitb.enable()
 
 from urllib.parse import urlparse, parse_qs
 
@@ -37,7 +37,7 @@ class Page(object):
         self.nameToPrint = modulename2text(
             os.path.splitext(os.path.split(sys.argv[0])[1])[0]
         )
-        self.resolveData();
+        self.resolveData()
 
     def resolveData(self):
         """
@@ -49,8 +49,17 @@ by 'validate'.
     def title(self):
         return self._title or self.nameToPrint
 
-    def href(self, url, text=None):
-        return h.a(href=url) | (text or os.path.split(url)[1])
+    def href(self, url=None, new_kw={}, hashtag=''):
+        total_dict = {}
+        total_dict.update(self.kw)
+        total_dict.update(new_kw)
+        if not url:
+            url = self.script_name
+        return (url + '?' +
+                '&'.join(sum([([(key_+'='+val_) for val_ in val_list])
+                         for key_, val_list in total_dict.items()], []))
+                + hashtag
+                )
 
     def head(self):
         return h.meta(**self.metaDict) | (
@@ -71,6 +80,7 @@ by 'validate'.
         print(
             "(gratuitous 'error' output) current directory is:",
             os.getcwd(),
+            self.href("index.py", {'line_':['48', '53']}, '#42'),
             file=sys.stderr
         )
         return ('default body of content... abcdéf',
@@ -84,14 +94,18 @@ by 'validate'.
             h.body(bgcolor='white') | (self.body(), h.pre | self.errOutput)
         )
 
-    def validate(self, **kw):
+    def validate(self, language=('NL',), **kw):
         """
 'validate' interprets the 'keywords' (actually cgi-parameters) passed to the page. It returns
 True if this page is be presented. Alternatively it may cause some other page to be presented
 and return False.
         """
+        kw['language'] = self.language = list(language)
         self.kw = kw  # stub / base class version
         return True  # =>  # go ahead an prsent this page.
+
+    def gloss(self, dikkie, sep='/'):
+        return '/'.join([dikkie[taal] for taal in self.language])
 
     def present(self):
         sys.stderr = self
@@ -111,6 +125,7 @@ and return False.
     def main(self):
         uri = os.environ.get('REQUEST_URI')
         if uri:
+            self.script_name = os.environ['SCRIPT_NAME']
             o = urlparse(uri)
             path = os.environ['DOCUMENT_ROOT'] + o.path  # geturl()
             if not os.path.isdir(path):
@@ -118,6 +133,7 @@ and return False.
             os.chdir(path)
             kw = parse_qs(o.query)
         else:
+            self.script_name = sys.argv[0]
             kw = {}
             for p in sys.argv[1:]:
                 key_, vals_ = p.split('=')
