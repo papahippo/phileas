@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
 from page import Page, h
-from entity import Member
+from phileas.entity import Member
+import MEW.members
 
 
 class MEW_MembersIndexPage(Page):

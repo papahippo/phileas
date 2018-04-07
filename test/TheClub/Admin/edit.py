@@ -6,11 +6,13 @@ cgitb.enable()
 import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
-from entity import Member, EntityError
+from phileas.entity.club import Member, EntityError
+import mailgroups
+import members
 
 from page import *
 Club_members_file = './members.py'
-
+import subprocess
 
 class ClubAdminEditPage(Page):
 
@@ -21,7 +23,6 @@ class ClubAdminEditPage(Page):
         # we usually need the following so let's get it done now.
         with open(Club_members_file, 'r') as module_src:
             self.all_lines = module_src.readlines()
-        #print(self.all_lines, file=sys.stderr)
         # the following method of dermining whether we're here as a from validator
         # is a bit stange but works.
         self.submitting = os.environ.get("REQUEST_METHOD") == "POST"
@@ -49,7 +50,9 @@ class ClubAdminEditPage(Page):
                 # pg.main()
                 # sys.exit(0)
                 #subprocess.run('./index.py')
-                print("Location: editable_list.py#%s\n\n" % self.line_[0])
+                Page.validate(self, **kw)
+                print("Location: " + self.href("editable_list.py", {}, "#%s" % self.line_[0]) + "\n\n")
+                #print("Location: editable_list.py#%s\n\n" % self.line_[0])
                 return None
         else:
             #Member.by_range(self.line_).detach()
@@ -73,9 +76,11 @@ class ClubAdminEditPage(Page):
 
     def body(self):
         existing = self.ee or self.member_.called!='(new member)'
-        #print(sef.member_.called, file=sys.stderr)
+        print('edit.py?'+os.environ.get("QUERY_STRING"), file=sys.stderr)
+        print(self.href('edit.py', {'line_': map(str, self.line_)}), file=sys.stderr)
         return (
             h.form(action='edit.py?'+os.environ.get("QUERY_STRING"), method='post')| (
+            #h.form(action=self.href('edit.py', {'line_': map(str, self.line_)}), method='post')| (
             [self.entry_line(displayed_name, attr_name, placeholder)
              for (displayed_name, attr_name, placeholder) in (
                  ('known as', 'called', 'bekend binnen MEW als...'),
