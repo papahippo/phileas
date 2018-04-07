@@ -125,16 +125,16 @@ and hence automatically returned by the standard 'getattribute' handler on subse
     class Element:
     
         """
-Each possible HTML tag is defined  as a class which inherits this '_HTML40.Element' class.
+Each possible HTML tag is defined  as a lcass inheriting this class.
 The name of the class is the lower case tag string with a leading underscore added,
 e.g. '_h3' or '_br'. When no attributes are associated with a tag, it can be expressed
 simply by e.g. 'h.br' or 'h.h4' (without the quotes). Such references are 'corrected'
-(by HTML40.__getattr__ - see above) to return an instance of the corresponding class.
+(by __getattr__ - see above) to return an instance of the corresponding class.
 When, however, attributes are required, it must be expressed as e.g.
  'h.a(href='somewhere')'. Note that this calls - not creates - an instance (see
 member function '__call__' below). Differences of the 'rules of use' of various html tags
 are handled by the attribute 'AttrDicts'. 'AttrDicts' is a (often empty) tuple of
-dictionaries. keys of each dictionary represent valid attributes for this _HTML40.Element.
+dictionaries. keys of each dictionary represent valid attributes for this _Element.
 The corresponding values are (in the current implementation) booleans indicating
 whether a value is associated with this attribute. False means that the value must not be
 supplied and will automatically be derived from the attribute name. This will probably be
@@ -145,7 +145,7 @@ within class _HTML40. This ensures that e.g. h._h4 where h is obtained by e.g.
         """
         AttrDicts = (CoreAttrs,)
         okAttrs = None
-        # 'separateClose' is True for most _HTML40.Elements but False for tags like 'br' which are
+        # 'separateClose' is True for most Elements but False for tags like 'br' which are
         # self-contatined and so don't require a separate closing tag.
         #
         separateClose = True
@@ -190,8 +190,8 @@ to just a name alias; i.e. 'mytable = h.table()' is kind of analogous to the fol
         def _as_children(self, other):
             """
 Function '_as_children' is used internally by several public customization member function.
-Its purpose is to avoid unnecessary nesting of _HTML40.Elements when the child
-_HTML40.Element is tagless; in this case, its children can be taken on board by its parent.
+Its purpose is to avoid unnecessary nesting of Elements when the child
+Element is tagless; in this case, its children can be taken on board by its parent.
             """
             return ((other is self or isinstance(other, _HTML40.Element)) and other.tag is None
                     and other.children or [other,])
@@ -212,8 +212,8 @@ The above definition ensures  that the '|' operator (see above) is symmetrical.
     
         def __ior__(self, other):
             """
-Member function '__ior__' facilitates adding more child _HTML40.Elements to an
-already defined html _HTML40.Element, using the '|=' in-place operator
+Member function '__ior__' facilitates adding more child Elements to an
+already defined html Element, using the '|=' in-place operator
             """
             self.children.extend(self._as_children(self, other))
             return self
@@ -231,7 +231,7 @@ apply HTML operators, e.g.:
         def __add__(self, other):
             """
 This custom function was introduced very late in the development in order to
-facilitate the use of '+' instead of ',' for concatenating _HTML40.Elements. This will
+facilitate the use of '+' instead of ',' for concatenating Elements. This will
 drastically reduce the amount of 'unravelling' when stringifying complex nested
 HTML objects.
             """
@@ -254,12 +254,12 @@ HTML objects.
     
         def __str__(self):
             """
-__str__ is used to create a character representation of the _HTML40.Element. For example,
+__str__ is used to create a character representation of the Element. For example,
 this is used by 'print'. The character representation in our case is valid HTML.
             """
             if self.children is None:
                 return ''
-            if self.tag is None:  # special case for 'orphan' _HTML40.Elements
+            if self.tag is None:  # special case for 'orphan' Elements
                 s = ''
             else:
                 s = "<%s" % self.tag
@@ -288,7 +288,7 @@ sequence with the value 'None' are ignored completely
             return _HTML40.Element( tag=None, separateClose=False , children=(seq[:1] + [(self+term) for term in seq[1:]]))
     
 # we now define all legal HTML4.0 tags, all wth a leading underscore ('_').
-# Each of these represents a sub-class of _HTML40.Element, but these aren't
+# Each of these represents a sub-class of Element, but these aren't
 # intended for explicit use; constructions like e.g. 'h.h3' cause the class
 # (same e.g.!) _HTML40._h3 to be initiated and given the tag value 'h3'.
 #
@@ -667,8 +667,8 @@ def main():
              ) +
 
             h.br.join(sys.path[:3]), h.br * 2,
-            # let's check the creation of 'deliberately orphaned html _HTML40.Elements:
-            h | ("\n[orphaned _HTML40.Elements' text should look just like any other text.]"
+            # let's check the creation of 'deliberately orphaned html Elements:
+            h | ("\n[orphaned Elements' text should look just like any other text.]"
             + "... even when using the '+' operator!")
 
         )
