@@ -9,7 +9,7 @@ Use the 'show source' button of the left-hand panel to view and/or capture the
 python source code.
 """
 import sys
-from element import Element
+from .element import Element
 
 
 class HTML_Error(Exception):
