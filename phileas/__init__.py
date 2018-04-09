@@ -6,14 +6,14 @@ import sys
 # having to refactor lots of stuff!). Then html element creation can use the compact form
 # (e.g.) "h.h4 ..." etc. (html40.h4 ... would soon get cumbersome!)
 
-_html40 = html_40 = HTML40()
+_html40 = html40_ = HTML40()
 # I recommend that this is imported under a much shorter name, e.g.:
 # 'from phileas import html40 as h'. This usage will be assumed and
 # 'h' referred to as 'the HTML generator' in this code.
 
 def main():
 
-    h = html_40  # the local equivalent of 'from phileas import html40 as h'.
+    h = html40_  # the local equivalent of 'from phileas import html40 as h'.
     print(
         "Content-type: text/html\n\n",
         h.html | (
