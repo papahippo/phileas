@@ -10,7 +10,7 @@ python source code.
 """
 import sys
 
-from html import _HTML
+from html import HTML
 from element import Element
 
 
@@ -45,7 +45,7 @@ class Element40(Element):
     AttrDicts = (CoreAttrs,)
 
 
-class _HTML40(_HTML):
+class HTML40(HTML):
     """
 This class is called _HTML40 because its members correspond to HTML 4.0 tags.
     """
@@ -396,20 +396,13 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
                      {'name': 1, 'rows': 1, 'cols': 1, 'disabled': 0, 'readonly': 0},)
 
 
-# create a singleton instance of the above-defined class. We retain the leading
-# underscore in the class name even though our instance is designed for import.
-# But it's not intended to be bulk imported as part of *, or to be used with
-# this name, so this usage isn't wrong on ALL counts:
-#
-_html40 = _HTML40()
-
 
 # I recommend that this is imported under a much shorter name, e.g.:
-# 'from phileas import _html40 as h'. This usage will be assumed and
+# 'from phileas import html40 as h'. This usage will be assumed and
 # 'h' referred to as 'the HTML generator' in this code.
 
 def main():
-    h = _html40  # the local equivalent of 'from phileas import _html40 as h'.
+    h = HTML40()  # the local equivalent of 'from phileas import html40 as h'.
     print(
         "Content-type: text/html\n\n",
         h.html | (

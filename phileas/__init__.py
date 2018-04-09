@@ -1,2 +1,8 @@
 from html40 import _HTML40
-_html40 = _HTML40()
+
+# create a singleton instance of this class. The approved method to use phileas is to include this
+# by  "from phileas import html40 as h" (The alias with leading '_' is deprecated but retained to avoid
+# having to refactor lots of stuff!). Then html element creation can use the compact form
+# (e.g.) "h.h4 ..." etc. (html40.h4 ... would soon get cumbersome!)
+
+_html40 = html40 = HTML40()
