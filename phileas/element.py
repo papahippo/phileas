@@ -9,7 +9,7 @@ be required. As one might guess, 'unravel' is a recursive function.
     """
     ans = []
     for it in seq:
-        if not it:
+        if it is None:
             continue
         if isinstance(it, (list, tuple)):
             ans += unravel(it)
