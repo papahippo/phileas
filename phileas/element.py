@@ -111,7 +111,7 @@ The above definition ensures  that the '|' operator (see above) is symmetrical.
 Member function '__ior__' facilitates adding more child Elements to an
 already defined html Element, using the '|=' in-place operator
         """
-        self.children.extend(self._as_children(self, other))
+        self.children.extend(self._as_children(other))
         return self
 
     def __and__(self, other):

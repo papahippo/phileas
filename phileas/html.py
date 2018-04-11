@@ -9,14 +9,14 @@ Use the 'show source' button of the left-hand panel to view and/or capture the
 python source code.
 """
 import sys
-from element import Element
+from .element import Element
 
 
 class HTML_Error(Exception):
     pass
 
 
-class _HTML(object):
+class HTML(object):
     """
 This class is called _HTML40 because its members correspond to HTML 4.0 tags.
 The leading _ is appropriate because it is not intended for direct use by

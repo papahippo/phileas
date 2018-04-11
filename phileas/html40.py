@@ -10,8 +10,8 @@ python source code.
 """
 import sys
 
-from html import _HTML
-from element import Element
+from .html import HTML
+from .element import Element
 
 
 CoreAttrs = {'id': 1, 'class': 1, 'style': 1, 'title': 1}
@@ -45,7 +45,7 @@ class Element40(Element):
     AttrDicts = (CoreAttrs,)
 
 
-class _HTML40(_HTML):
+class HTML40(HTML):
     """
 This class is called _HTML40 because its members correspond to HTML 4.0 tags.
     """
@@ -396,46 +396,4 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
                      {'name': 1, 'rows': 1, 'cols': 1, 'disabled': 0, 'readonly': 0},)
 
 
-# create a singleton instance of the above-defined class. We retain the leading
-# underscore in the class name even though our instance is designed for import.
-# But it's not intended to be bulk imported as part of *, or to be used with
-# this name, so this usage isn't wrong on ALL counts:
-#
-_html40 = _HTML40()
 
-
-# I recommend that this is imported under a much shorter name, e.g.:
-# 'from phileas import _html40 as h'. This usage will be assumed and
-# 'h' referred to as 'the HTML generator' in this code.
-
-def main():
-    h = _html40  # the local equivalent of 'from phileas import _html40 as h'.
-    print(
-        "Content-type: text/html\n\n",
-        h.html | (
-            (h.p |
-             """ This primitive web-page was produced using 'phileas' (and python of course!).
-             """ + (h.em | 'aha!')
-             ) +
-            (h.p |
-             h.br * 2 +
-             h.br + "abc " * 3 + 4 * 'xyz ' + '\n' +
-             3 * h.br +
-             """ If you're viewing this output in a browser, you can get to some (possibly not
-              100% up to date!) background info on 'phileas' by clicking """ +
-             h.br + (h.a(href="http://larry.myerscough.nl/phileas_project/") | 'this text') +
-             '.' +
-             (False & h.em | 'plain ') + (True & h.em | "italic")
-             ) +
-
-            h.br.join(sys.path[:3]), h.br * 2,
-            # let's check the creation of 'deliberately orphaned html Elements:
-            h | ("\n[orphaned Elements' text should look just like any other text.]"
-                 + "... even when using the '+' operator!")
-
-        )
-    )
-
-
-if __name__ == '__main__':
-    main()
