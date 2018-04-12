@@ -1,14 +1,4 @@
 #!/usr/bin/python
-"""
-This is the '__init__' file of the 'phileas' package.
-Phileas stands for  Python/HTML Integration - Larry's Elegant Alternative Solution.
-(For 'Elegant' you may wish to substitute e.g. 'Eccentric' or 'Excruciating' -
-I don't mind - just try to spell it properly!) See http://larry.myerscough.nl
-(n.b. no "www." up front) for an example of a site built using this module.
-Use the 'show source' button of the left-hand panel to view and/or capture the
-python source code.
-"""
-import sys
 
 from .html import HTML
 from .element import Element
@@ -229,7 +219,7 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
         pass
 
     class _br(Element40):
-        separateClose = False
+        separate_close = False
 
     class _base(Element40):
         AttrDicts = (AnchorReference, TargetFrameInfo)
@@ -250,7 +240,7 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
         AttrDicts = (CoreAttrs, {'cite': 1, 'datetime': 1})
 
     class _col(_colgroup):
-        separateClose = False
+        separate_close = False
 
     class _Del(Element40):
         AttrDicts = (CoreAttrs, CellHAlign, CellVAlign, {'span': 1, 'width': 1})
@@ -271,7 +261,7 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
         AttrDicts = (CoreAttrs, {'action': 1, 'method': 1, 'enctype': 1, 'accept-charset': 1, 'target': 1})
 
     class _frame(Element40):
-        separateClose = False
+        separate_close = False
         AttrDicts = (CoreAttrs, {'longdesc': 1, 'name': 1, 'src': 1, 'frameborder': 1,
                                  'marginwidth': 1, 'marginheight': 1, 'noresize': 0, 'scrolling': 1})
 
@@ -285,7 +275,7 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
         AttrDicts = (I18n, {'align': 1})
 
     class _hr(Element40):
-        separateClose = None
+        separate_close = None
         AttrDicts = (CoreAttrs, IntrinsicEvents, {'align': 1, 'noshade': 0, 'size': 1, 'width': 1})
 
     class _html(Element40):
@@ -303,11 +293,11 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
                                  'width': 1, 'height': 1, 'allowfullscreen': 0, 'frameborder': 1})
 
     class _img(Element40):
-        separateClose = False
+        separate_close = False
         AttrDicts = (CoreAttrs, VisualPresentation, AlternateText, {'src': 1, 'longdesc': 1, 'usemap': 1, 'ismap': 0})
 
     class _input(Element40):
-        separateClose = False
+        separate_close = False
         AttrDicts = (CoreAttrs, TabbingNavigation, AccessKeys, AlternateText,
                      {'type': 1, 'name': 1, 'value': 1, 'checked': 0, 'disabled': 0,
                       'readonly': 0, 'size': 1, 'maxlength': 1, 'src': 1,
@@ -326,11 +316,11 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
         AttrDicts = (CoreAttrs, {'compact': 0, 'start': 1, 'value': 1, 'type': 1})
 
     class _link(Element40):
-        separateClose = False
+        separate_close = False
         AttrDicts = (CoreAttrs, LinksAndAnchors, {'charset': 1, 'media': 1})
 
     class _meta(Element40):
-        separateClose = False
+        separate_close = False
         AttrDicts = (I18n,
                      {'http-equiv': 1, 'name': 1, 'content': 1, 'scheme': 1})
 

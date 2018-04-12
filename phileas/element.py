@@ -41,10 +41,10 @@ within class _HTML40. This ensures that e.g. h._h4 where h is obtained by e.g.
     """
     AttrDicts = ()
     ok_attrs = None
-    # 'separateClose' is True for most Elements but False for tags like 'br' which are
+    # 'separate_close' is True for most Elements but False for tags like 'br' which are
     # self-contatined and so don't require a separate closing tag.
     #
-    separateClose = True
+    separate_close = True
     dented = True
 
     def __init__(self, tag=None, separate_close=None, children=[], **sArgs):
@@ -52,7 +52,7 @@ within class _HTML40. This ensures that e.g. h._h4 where h is obtained by e.g.
         self.sArgs = sArgs
         self.children = children[:]
         if separate_close is not None:  # use None for 'no overrule'
-            self.separateClose = separate_close
+            self.separate_close = separate_close
 
     def __call__(self, **args):
         """
@@ -80,7 +80,7 @@ to just a name alias; i.e. 'my_table = h.table()' is kind of analogous to the fo
                 # just a cheap and cheerful way to allow numeric
                 # values to be specified without quotes; room for improvement here!
                 s_args[key] = str(val)
-        return self.__class__(tag=self.tag, separateClose=self.separateClose,
+        return self.__class__(tag=self.tag, separate_close=self.separate_close,
                               **s_args)
 
     def _as_children(self, other):
@@ -98,7 +98,7 @@ member function '__or__' ensures that code like e.g. 'h.h4 | <expression>',
 when converted to a string, results in '<h4>expression</h4>'.
 Similarly 'h.a(href="myLink") | "text"' becomes '<a href=myLink>text</a>'.
         """
-        return self.__class__(tag=self.tag, separateClose=self.separateClose,
+        return self.__class__(tag=self.tag, separate_close=self.separate_close,
                               children=self._as_children(other), **self.sArgs)
 
     __ror__ = __or__
@@ -134,13 +134,13 @@ HTML objects into strings.
         if not other:
             return self()  # just return clone of self!
 
-        return self.__class__(tag=None, separateClose=False,
+        return self.__class__(tag=None, separate_close=False,
                               children=self._as_children(self)+self._as_children(other))
 
     def __radd__(self, other):
         """ note that our addition is not commutative!
         """
-        return self.__class__(tag=None, separateClose=False,
+        return self.__class__(tag=None, separate_close=False,
                               children=self._as_children(other)+self._as_children(self))
 
     def __mul__(self, other):
@@ -162,12 +162,12 @@ this is used by 'print'. The character representation in our case is valid HTML.
             for key, val in self.sArgs.items():
                 if val is not None:
                     s += ' %s="%s"' % (key.lower(), val)
-            if not self.separateClose:
+            if not self.separate_close:
                 s += '/'
             s += '>'
         for child in unravel(self.children):
             s += str(child)
-        if self.separateClose:
+        if self.separate_close:
             s += '</%s>' % self.tag
             if self.tag not in ('span', 'a'):
                 s += '\n'
@@ -181,5 +181,5 @@ be interspersed with blank lines when output. Items of the
 sequence with the value 'None' are ignored completely
 (but zero length strings are treated normally!)
         """
-        return self.__class__( tag=None, separateClose=False,
+        return self.__class__( tag=None, separate_close=False,
                                children=(seq[:1] + [(self+term) for term in seq[1:]]))

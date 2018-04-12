@@ -63,7 +63,7 @@ and hence automatically returned by the standard 'getattribute' handler on subse
             to Elements (see class '_Element' definition below. E.g. 'h | ('abc', 'def')'
             creates a 'tagless' Element with two children, each a string.
         """
-        return Element(tag=None, separateClose=False,
+        return Element(tag=None, separate_close=False,
                                children=[other, ])
 
     def __ior__(self, other):
