@@ -2,8 +2,8 @@ def unravel(seq):
     """
 Unravel/flatten a sequence of HTML Elements. This is necessary because
 concatenations of Elements may be coded as tuples or lists.
-The unravelling happens when the top Cr4level Element is stringified. In other words,
-sequencing is a form of deferred concatenation. Earlier versons of phileas didn't
+The unravelling happens when the top level Element is subjected to its own 'str' function.
+In other words, sequencing is a form of deferred concatenation. Earlier versions of phileas didn't
 support the use of '+' to 'concatenate as you go' so many levels of unravelling could
 be required. As one might guess, 'unravel' is a recursive function.
     """
@@ -21,7 +21,7 @@ be required. As one might guess, 'unravel' is a recursive function.
 class Element:
 
     """
-Each possible HTML tag is defined  as a lcass inheriting this class.
+Each possible HTML tag is defined  as a class inheriting this class.
 The name of the class is the lower case tag string with a leading underscore added,
 e.g. '_h3' or '_br'. When no attributes are associated with a tag, it can be expressed
 simply by e.g. 'h.br' or 'h.h4' (without the quotes). Such references are 'corrected'
@@ -40,57 +40,57 @@ within class _HTML40. This ensures that e.g. h._h4 where h is obtained by e.g.
 'h = _HTML40()' is a valid attribute reference (see __getattr__ above).
     """
     AttrDicts = ()
-    okAttrs = None
+    ok_attrs = None
     # 'separateClose' is True for most Elements but False for tags like 'br' which are
     # self-contatined and so don't require a separate closing tag.
     #
     separateClose = True
     dented = True
 
-    def __init__(self, tag=None, separateClose=None, children=[], **sArgs):
+    def __init__(self, tag=None, separate_close=None, children=[], **sArgs):
         self.tag = tag
         self.sArgs = sArgs
         self.children = children[:]
-        if separateClose is not None:  # use None for 'no overrule'
-            self.separateClose = separateClose
+        if separate_close is not None:  # use None for 'no overrule'
+            self.separateClose = separate_close
 
     def __call__(self, **args):
         """
 This functions makes it possible to derive tags with attributes by calling the tag with
-arguments, e.g. 'h.img(src='pickie.jpg')'.
+arguments, e.g. 'h.img(src='picture.jpg')'.
 Beware: this looks like a simple instance creation but isn't; h.img already returns an
 instance so the bracketed construction gets routed to this function.
 This construction can be used with empty brackets to force a copy operation as opposed
-to just a name alias; i.e. 'mytable = h.table()' is kind of analogous to the following
+to just a name alias; i.e. 'my_table = h.table()' is kind of analogous to the following
 'trick' for lists: 'my_list = precious_list[:]'.
         """
-        if self.okAttrs is None:
-            self.okAttrs = {}
+        if self.ok_attrs is None:
+            self.ok_attrs = {}
             for d in self.AttrDicts:
-                self.okAttrs.update(d)
-        sArgs = {}
+                self.ok_attrs.update(d)
+        s_args = {}
         for key, val in args.items():
             key = key.lower().replace('_', '-')
-            if not key in self.okAttrs.keys():
+            if not key in self.ok_attrs.keys():
                 raise KeyError(key)
-            if not self.okAttrs[key]:
-                sArgs[key] = key
+            if not self.ok_attrs[key]:
+                s_args[key] = key
             else:
                 # the following statement is currently essentially
                 # just a cheap and cheerful way to allow numeric
                 # values to be specified without quotes; room for improvement here!
-                sArgs[key] = str(val)
+                s_args[key] = str(val)
         return self.__class__(tag=self.tag, separateClose=self.separateClose,
-                              **sArgs)
+                              **s_args)
 
     def _as_children(self, other):
         """
 Function '_as_children' is used internally by several public customization member function.
 Its purpose is to avoid unnecessary nesting of Elements when the child
-Element is tagless; in this case, its children can be taken on board by its parent.
+Element has not tag; in this case, its children can be taken on board by its new parent.
         """
         return ((other is self or isinstance(other, self.__class__)) and other.tag is None
-                and other.children or [other,])
+                and other.children or [other, ])
 
     def __or__(self, other):
         """
@@ -120,7 +120,7 @@ This member function facilitates the use of & (usually a bit-wise 'and') to cond
 apply HTML operators, e.g.:
 '(this_user==selected_user)&h.em | "this is highlighted when it relates to selected user"'.
         """
-        return self if other else self.__class__() # if false, return 'lame' html tag.
+        return self if other else self.__class__()  # if false, return 'lame' html tag.
 
     __rand__ = __and__  # '&' operator is symmetrical
 
@@ -128,25 +128,25 @@ apply HTML operators, e.g.:
         """
 This custom function was introduced very late in the development in order to
 facilitate the use of '+' instead of ',' for concatenating Elements. This will
-drastically reduce the amount of 'unravelling' when stringifying complex nested
-HTML objects.
+drastically reduce the amount of 'unravelling' when resolving complex nested
+HTML objects into strings.
         """
         if not other:
             return self()  # just return clone of self!
 
         return self.__class__(tag=None, separateClose=False,
-            children=self._as_children(self)+self._as_children(other))
+                              children=self._as_children(self)+self._as_children(other))
 
     def __radd__(self, other):
         """ note that our addition is not commutative!
         """
         return self.__class__(tag=None, separateClose=False,
-            children=self._as_children(other)+self._as_children(self))
+                              children=self._as_children(other)+self._as_children(self))
 
     def __mul__(self, other):
-        return sum([self for i in range(other)], None)
+        return sum([self for _ in range(other)], None)
 
-    __rmul__ = __mul__  # e.g. h.br*5 and 5*h.br are equivalent
+    __rmul__ = __mul__  # multiplication is commutative; e.g. h.br*5 and 5*h.br are equivalent
 
     def __str__(self):
         """
@@ -181,4 +181,5 @@ be interspersed with blank lines when output. Items of the
 sequence with the value 'None' are ignored completely
 (but zero length strings are treated normally!)
         """
-        return self.__class__( tag=None, separateClose=False , children=(seq[:1] + [(self+term) for term in seq[1:]]))
+        return self.__class__( tag=None, separateClose=False,
+                               children=(seq[:1] + [(self+term) for term in seq[1:]]))
