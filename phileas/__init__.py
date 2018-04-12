@@ -1,6 +1,4 @@
 from .html40 import HTML40
-from .__main__ import main
-
 
 # create a singleton instance of this class. The approved method to use phileas is to include this
 # by  "from phileas import html40 as h" (The alias with leading '_' is deprecated but retained to avoid
