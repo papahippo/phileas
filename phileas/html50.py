@@ -40,7 +40,9 @@ MiscEventAttrs = {    'onshow': 1,    'ontoggle': 1,}
 EventAttrs = {**WindowEventAttrs, **FormEventAttrs, **KeyboardEventAttrs, **MouseEventAttrs,
               **DragEventAttrs, **ClipboardEventAttrs, **MediaEventAttrs, **MiscEventAttrs}
 
-LinksAndAnchorAttrs = {'href': 1, 'hreflang': 1, 'type': 1, 'rel': 1, 'rev': 1}
+GlobalAndEventAttrs  = {**GlobalAttrs, **EventAttrs}
+
+LinksAndAnchorAttrs = {'href': 1, 'hreflang': 1, 'type': 1, 'rel': 1, 'download': 1}
 
 AlternateText = {'alt': 1}
 ImageMaps = {'shape': 1, 'coords': 1}
@@ -59,8 +61,8 @@ FontModifiers = {'size': 1, 'color': 1, 'face': 1}
 
 BordersAndRules = {'frame': 1, 'rules': 1, 'border': 1}
 
-class Element50(Element):
-    attr_dict = (GlobalAttrs,)
+class HTML5_Element(Element):
+    attr_dict = GlobalAndEventAttrs
 
 
 class HTML50(HTML):
@@ -68,160 +70,90 @@ class HTML50(HTML):
 This class is called _HTML40 because its members correspond to HTML 4.0 tags.
     """
     # we now define all legal HTML4.0 tags, all wth a leading underscore ('_').
-    # Each of these represents a sub-class of Element40, but these aren't
+    # Each of these represents a sub-class of Element50, but these aren't
     # intended for explicit use; constructions like e.g. 'h.h3' cause the class
     # (same e.g.!) _HTML40._h3 to be initiated and given the tag value 'h3'.
     #
 
-    class _a(Element50):
-        attr_dict = {**GlobalAttrs, **EventAttrs, **LinksAndAnchorAttrs, }
+    class _a(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs, **LinksAndAnchorAttrs, }
 
-    class _bdo(Element40):
+    class _abbr(HTML5_Element):
         pass
 
-    class _cite(Element40):
+    class _area(HTML5_Element):
+# {'name': 1, 'nohref': 0}, GlobalAttrs, LinksAndAnchors, ImageMaps, TargetFrameInfo, TabbingNavigation)
+        attr_dict = {**GlobalAndEventAttrs, **LinksAndAnchorAttrs, **ImageMaps, **AlternateText,
+                     'coords': 1, 'type': 1, }
+
+    class _article(HTML5_Element):
         pass
 
-    class _code(Element40):
+    class _aside(HTML5_Element):
         pass
 
-    class _col(Element40):
-        pass
+    class _audio(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs,
+                     'autoplay': 1, 'controls':1, 'loop':1, 'muted':1,  'preload':1, 'src':1, }
 
-    class _colgroup(Element40):
-        pass
-
-    class _dfn(Element40):
-        pass
-
-    class _div(Element40):
-        pass
-
-    class _fieldset(Element40):
-        pass
-
-    class _i(Element40):
-        pass
-
-    class _isindex(Element40):
-        pass
-
-    class _kbd(Element40):
-        pass
-
-    class _li(Element40):
-        pass
-
-    class _map(Element40):
-        pass
-
-    class _object(Element40):
-        pass
-
-    class _ol(Element40):
-        pass
-
-    class _optgroup(Element40):
-        pass
-
-    class _option(Element40):
-        pass
-
-    class _p(Element40):
-        pass
-
-    class _param(Element40):
-        pass
-
-    class _q(Element40):
-        pass
-
-    class _s(Element40):
-        pass
-
-    class _samp(Element40):
-        pass
-
-    class _script(Element40):
-        pass
-
-    class _select(Element40):
-        pass
-
-    class _small(Element40):
-        pass
-
-    class _span(Element40):
-        pass
-
-    class _tbody(Element40):
-        pass
-
-    class _tfoot(Element40):
-        pass
-
-    class _tr(Element40):
-        pass
-
-    class _tt(Element40):
-        pass
-
-    class _u(Element40):
-        pass
-
-    class _ul(Element40):
-        pass
-
-    class _dd(Element40):
-        pass
-
-    class _dl(Element40):
-        pass
-
-    class _dt(Element40):
-        pass
-
-    class _var(Element40):
-        pass
-
-    class _b(Element40):
+    class _b(HTML5_Element):
         dented = False
 
-    class _big(_b):
+    class _base(HTML5_Element):
+        attr_dict = {**GlobalAttrs,
+                     'href': 1, 'target':1, }
+
+    class _bdi(HTML5_Element):
         pass
 
-    class _center(_b):
+    class _blockquote(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs,
+                     'cite': 1}
+
+    class _body(HTML5_Element):
         pass
 
-    class _em(_b):
+    class _br(HTML5_Element):
+        separate_close = False
+
+    class _center(HTML5_Element):
+        dented = False
+
+    class _cite(HTML5_Element):
         pass
 
-    class _small(_b):
+    class _code(HTML5_Element):
         pass
 
-    class _big(_b):
+    class _col(HTML5_Element):
         pass
 
-    class _center(_b):
+    class _colgroup(HTML5_Element):
         pass
 
-    class _strike(_b):
+    class _dd(HTML5_Element):
         pass
 
-    class _strong(_b):
+    class _dfn(HTML5_Element):
         pass
 
-    class _style(_b):
+    class _div(HTML5_Element):
         pass
 
-    class _sub(_b):
+    class _dl(HTML5_Element):
         pass
 
-    class _sup(_b):
+    class _dt(HTML5_Element):
         pass
 
-    class _h1(Element40):
-        AttrDicts = (GlobalAttrs, IntrinsicEvents, {'align': 1})
+    class _em(HTML5_Element):
+        dented = False
+
+    class _fieldset(HTML5_Element):
+        pass
+
+    class _h1(HTML5_Element):
+        AttrDicts = {**GlobalAndEventAttrs, 'align': 1}
 
     class _h2(_h1):
         pass
@@ -238,156 +170,239 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
     class _h6(_h1):
         pass
 
-    class _area(Element40):
-        AttrDicts = (
-            {'name': 1, 'nohref': 0}, GlobalAttrs, LinksAndAnchors, ImageMaps, TargetFrameInfo, TabbingNavigation)
+    class _i(HTML5_Element):
+        pass
+
+    class _isindex(HTML5_Element):
+        pass
+
+    class _kbd(HTML5_Element):
+        pass
+
+    class _li(HTML5_Element):
+        pass
+
+    class _map(HTML5_Element):
+        pass
+
+    class _object(HTML5_Element):
+        pass
+
+    class _ol(HTML5_Element):
+        pass
+
+    class _optgroup(HTML5_Element):
+        pass
+
+    class _option(HTML5_Element):
+        pass
+
+    class _p(HTML5_Element):
+        pass
+
+    class _param(HTML5_Element):
+        pass
+
+    class _q(HTML5_Element):
+        pass
+
+    class _s(HTML5_Element):
+        pass
+
+    class _samp(HTML5_Element):
+        pass
+
+    class _script(HTML5_Element):
+        pass
+
+    class _select(HTML5_Element):
+        pass
+
+    class _small(HTML5_Element):
+        dented = False
+
+    class _span(HTML5_Element):
+        pass
+
+    class _strike(HTML5_Element):
+        dented = False
+
+    class _strong(HTML5_Element):
+        dented = False
+
+    class _style(HTML5_Element):
+        dented = False
+
+    class _sub(HTML5_Element):
+        dented = False
+
+    class _sup(HTML5_Element):
+        dented = False
+
+    class _tbody(HTML5_Element):
+        pass
+
+    class _tfoot(HTML5_Element):
+        pass
+
+    class _tr(HTML5_Element):
+        pass
+
+    class _tt(HTML5_Element):
+        pass
+
+    class _u(HTML5_Element):
+        pass
+
+    class _ul(HTML5_Element):
+        pass
+
+    class _var(HTML5_Element):
+        pass
 
     class _map(_h1):
         pass
 
-    class _br(Element40):
-        separate_close = False
-
-    class _base(Element40):
+    class _base(HTML5_Element):
         AttrDicts = (AnchorReference, TargetFrameInfo)
 
-    class _blockquote(Element40):
+    class _blockquote(HTML5_Element):
         AttrDicts = ({'cite': 1}, GlobalAttrs)
 
     class _q(_blockquote):
         pass
 
-    class _button(Element40):
+    class _button(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'name': 1, 'value': 1, 'type': 1, 'disabled': 0})
 
-    class _caption(Element40):
+    class _caption(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'align': 1})
 
-    class _colgroup(Element40):
+    class _colgroup(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'cite': 1, 'datetime': 1})
 
     class _col(_colgroup):
         separate_close = False
 
-    class _Del(Element40):
+    class _Del(HTML5_Element):
         AttrDicts = (GlobalAttrs, CellHAlign, CellVAlign, {'span': 1, 'width': 1})
 
     class _ins(_Del):
         pass
 
-    class _legend(Element40):
+    class _legend(HTML5_Element):
         AttrDicts = (GlobalAttrs, AccessKeys, {'align': 1})
 
-    class _basefont(Element40):
+    class _basefont(HTML5_Element):
         AttrDicts = (FontModifiers, {'id': 1})
 
-    class _font(Element40):
+    class _font(HTML5_Element):
         AttrDicts = (GlobalAttrs, FontModifiers, I18n)
 
-    class _form(Element40):
+    class _form(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'action': 1, 'method': 1, 'enctype': 1, 'accept-charset': 1, 'target': 1})
 
-    class _frame(Element40):
+    class _frame(HTML5_Element):
         separate_close = False
         AttrDicts = (GlobalAttrs, {'longdesc': 1, 'name': 1, 'src': 1, 'frameborder': 1,
                                  'marginwidth': 1, 'marginheight': 1, 'noresize': 0, 'scrolling': 1})
 
-    class _frameset(Element40):
+    class _frameset(HTML5_Element):
         AttrDicts = (FontModifiers, IntrinsicEvents, {'rows': 1, 'cols': 1, 'border': 1})
 
-    class _head(Element40):
+    class _head(HTML5_Element):
         AttrDicts = (I18n, {'profile': 1})
 
-    class _headset(Element40):
+    class _headset(HTML5_Element):
         AttrDicts = (I18n, {'align': 1})
 
-    class _hr(Element40):
+    class _hr(HTML5_Element):
         separate_close = None
         AttrDicts = (GlobalAttrs, IntrinsicEvents, {'align': 1, 'noshade': 0, 'size': 1, 'width': 1})
 
-    class _html(Element40):
+    class _html(HTML5_Element):
         AttrDicts = (I18n,)
 
     class _title(_html):
         pass
 
-    class _body(Element40):
+    class _body(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'background': 1, 'text': 1, 'link': 1, 'vlink': 1, 'alink': 1, 'bgcolor': 1})
 
-    class _iframe(Element40):
+    class _iframe(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'background': 1, 'text': 1,
                                  'link': 1, 'vlink': 1, 'alink': 1, 'bgcolor': 1, 'src': 1,
                                  'width': 1, 'height': 1, 'allowfullscreen': 0, 'frameborder': 1})
 
-    class _img(Element40):
+    class _img(HTML5_Element):
         separate_close = False
         AttrDicts = (GlobalAttrs, VisualPresentation, AlternateText, {'src': 1, 'longdesc': 1, 'usemap': 1, 'ismap': 0})
 
-    class _input(Element40):
+    class _input(HTML5_Element):
         separate_close = False
         AttrDicts = (GlobalAttrs, TabbingNavigation, AccessKeys, AlternateText,
                      {'type': 1, 'name': 1, 'value': 1, 'checked': 0, 'disabled': 0,
                       'readonly': 0, 'size': 1, 'maxlength': 1, 'src': 1,
                       'usemap': 1, 'accept': 1, 'border': 1})
 
-    class _label(Element40):
+    class _label(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'label-for': 1, 'for': 1})
 
-    class _ul(Element40):
+    class _ul(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'compact': 0})
 
-    class _ol(Element40):
+    class _ol(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'compact': 0, 'start': 1})
 
-    class _li(Element40):
+    class _li(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'compact': 0, 'start': 1, 'value': 1, 'type': 1})
 
-    class _link(Element40):
+    class _link(HTML5_Element):
         separate_close = False
         AttrDicts = (GlobalAttrs, LinksAndAnchors, {'charset': 1, 'media': 1})
 
-    class _meta(Element40):
+    class _meta(HTML5_Element):
         separate_close = False
         AttrDicts = (I18n,
                      {'http-equiv': 1, 'name': 1, 'content': 1, 'scheme': 1})
 
-    class _object(Element40):
+    class _object(HTML5_Element):
         AttrDicts = (TabbingNavigation, {'declare': 0, 'classid': 1, 'codebase': 1, 'data': 1, 'type': 1,
                                          'codetype': 1, 'archive': 1, 'standby': 1, 'height': 1, 'width': 1,
                                          'usemap': 1})
 
-    class _select(Element40):
+    class _select(HTML5_Element):
         AttrDicts = (GlobalAttrs, TabbingNavigation, {'name': 1, 'size': 1, 'multiple': 0, 'disabled': 0})
 
-    class _optGroup(Element40):
+    class _optGroup(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'disabled': 0, 'label': 1})
 
-    class _option(Element40):
+    class _option(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'disabled': 0, 'label': 1, 'value': 1, 'selected': 0})
 
-    class _param(Element40):
+    class _param(HTML5_Element):
         AttrDicts = ({'id': 1, 'name': 1, 'value': 1, 'valuetype': 1, 'type': 1},)
 
-    class _pre(Element40):
+    class _pre(HTML5_Element):
         AttrDicts = (GlobalAttrs,)
 
-    class _span(Element40):
+    class _span(HTML5_Element):
         AttrDicts = (GlobalAttrs, {'align': 1})
 
-    class _script(Element40):
+    class _script(HTML5_Element):
         AttrDicts = ({'charset': 1, 'type': 1, 'src': 1, 'defer': 0},)
 
     class _div(_script):
         pass
 
-    class _style(Element40):
+    class _style(HTML5_Element):
         AttrDicts = (I18n, {'type': 1, 'media': 1, 'title': 1},)
 
-    class _table(Element40):
+    class _table(HTML5_Element):
         AttrDicts = (GlobalAttrs, BordersAndRules,
                      {'cellspacing': 1, 'cellpadding': 1, 'summary': 1, 'align': 1, 'bgcolor': 1, 'width': 1})
 
-    class _tbody(Element40):
+    class _tbody(HTML5_Element):
         AttrDicts = (GlobalAttrs, CellHAlign, CellVAlign)
 
     class _thead(_tbody):
@@ -399,7 +414,7 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
     class _tr(_tbody):
         pass
 
-    class _th(Element40):
+    class _th(HTML5_Element):
         dented = False
         AttrDicts = (GlobalAttrs, CellHAlign, CellVAlign,
                      {'abbv': 1, 'axis': 1, 'headers': 1, 'scope': 1, 'rowspan': 1, 'colspan': 1,
@@ -408,7 +423,7 @@ This class is called _HTML40 because its members correspond to HTML 4.0 tags.
     class _td(_th):
         pass
 
-    class _textarea(Element40):
+    class _textarea(HTML5_Element):
         AttrDicts = (GlobalAttrs, TabbingNavigation, AccessKeys,
                      {'name': 1, 'rows': 1, 'cols': 1, 'disabled': 0, 'readonly': 0},)
 
