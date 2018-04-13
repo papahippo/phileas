@@ -39,7 +39,7 @@ validation and manipulation of numeric values easier. N.B. class Element must be
 within class _HTML40. This ensures that e.g. h._h4 where h is obtained by e.g.
 'h = _HTML40()' is a valid attribute reference (see __getattr__ above).
     """
-    AttrDicts = ()
+    attr_dict = {}
     ok_attrs = None
     # 'separate_close' is True for most Elements but False for tags like 'br' which are
     # self-contatined and so don't require a separate closing tag.
@@ -65,9 +65,13 @@ to just a name alias; i.e. 'my_table = h.table()' is kind of analogous to the fo
 'trick' for lists: 'my_list = precious_list[:]'.
         """
         if self.ok_attrs is None:
-            self.ok_attrs = {}
-            for d in self.AttrDicts:
-                self.ok_attrs.update(d)
+            if isinstance(self.attr_dict, dict):
+# Changed while extending phileas for HTML5: support dsingle dictionary or list of dictionaries.
+                self.ok_attrs = self.attr_dict
+            else:
+                self.ok_attrs = {}
+                for d in self.attr_dict:
+                    self.ok_attrs.update(d)
         s_args = {}
         for key, val in args.items():
             key = key.lower().replace('_', '-')
@@ -120,7 +124,7 @@ This member function facilitates the use of & (usually a bit-wise 'and') to cond
 apply HTML operators, e.g.:
 '(this_user==selected_user)&h.em | "this is highlighted when it relates to selected user"'.
         """
-        return self if other else self.__class__()  # if false, return 'lame' html tag.
+        return self if other is None else self.__class__()  # if false, return 'lame' html tag.
 
     __rand__ = __and__  # '&' operator is symmetrical
 
