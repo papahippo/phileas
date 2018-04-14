@@ -157,12 +157,16 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         attr_dict = {**GlobalAndEventAttrs,
                      'cite':1, 'datetime':1, }
 
-    class Detailsl(HTML5_Element):
+    class Details(HTML5_Element):
         attr_dict = {**GlobalAndEventAttrs,
                      'open':1, }
 
     class Dfn(HTML5_Element):
         pass
+
+    class Dialog(HTML5_Element): # N>B> not supported on IE
+        attr_dict = {**GlobalAndEventAttrs,
+                     'open':1, }
 
     class Div(HTML5_Element):
         pass
@@ -176,11 +180,34 @@ This class is called HTML5 because its members correspond to HTML5 tags.
     class Em(HTML5_Element):
         dented = False
 
+    class Embed(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs,
+                     'height': 1, 'src': 1, 'type': 1, 'width': 1, }
+
     class Fieldset(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs,
+                    'disabled': 1, 'form': 1, 'name': 1, }
+
+    class Figcaption(HTML5_Element):
+        dented = False
+
+    class Figure(HTML5_Element):
+        dented = False
+
+    class Font(HTML5_Element):
         pass
 
+    class Footer(HTML5_Element):
+        pass
+
+    class Form(HTML5_Element):
+        AttrDicts = {**GlobalAttrs,
+                     'accept-charset': 1, 'action': 1, 'autocomplete': 1, 'enctype': 1,
+                     'method': 1, 'name':1, 'novalidate':1, 'target': 1,}
+
     class H1(HTML5_Element):
-        AttrDicts = {**GlobalAndEventAttrs, 'align': 1}
+        AttrDicts = {**GlobalAndEventAttrs,
+                     'align': 1}
 
     class H2(H1):
         pass
@@ -197,17 +224,63 @@ This class is called HTML5 because its members correspond to HTML5 tags.
     class H6(H1):
         pass
 
+    class Head(HTML5_Element):
+        pass
+
+    class Header(HTML5_Element):
+        pass
+
+    class Hr(HTML5_Element):
+        separate_close = False
+
+    class Html(HTML5_Element):
+        AttrDicts = {**GlobalAttrs,
+                     'xmlns': 1,}
+
     class I(HTML5_Element):
         pass
 
-    class Isindex(HTML5_Element):
+    class Iframe(HTML5_Element):
+        AttrDicts = {**GlobalAndEventAttrs,
+                     'height':1, 'name':1, 'src':1, 'width': 1,}
+
+    class Img(HTML5_Element):
+        AttrDicts = {**GlobalAndEventAttrs,
+                     'alt':1, 'crossorigin':1, 'height':1, 'ismap':1, 'longdesc':1, 'sizes': 1,
+                     'src': 1, 'srcset':1, 'src':1, 'usemap': 1,'vspace': 1,'width': 1,}
+
+    class Input(HTML5_Element):
+        separate_close = False
+        AttrDicts = {**GlobalAndEventAttrs,
+                     'accept':1, 'alt':1, 'autocomplete':1, 'autofocus':1,
+                     'checked':1, 'dirname': 1, 'disabled': 1, 'form':1,
+                     'formaction':1, 'formenctype': 1,'formmethod': 1,'formnovalidate': 1, 'formtarget': 1,
+                     'height': 1, 'list': 1, 'max': 1, 'maxlength': 1, 'min': 1, 'multiple': 1, 'name': 1,
+                     'pattern': 1, 'placeholder': 1, 'readonly': 1, 'required': 1, 'size': 1,  'src': 1,
+                     'step': 1, 'type': 1, 'value': 1, 'width': 1, }
+
+    class Ins(Del):
         pass
 
     class Kbd(HTML5_Element):
         pass
 
-    class Li(HTML5_Element):
+    class Label(HTML5_Element):
+        AttrDicts = {**GlobalAndEventAttrs,
+                     'for': 1, 'form': 1}
+
+    class Legend(HTML5_Element):
         pass
+
+    class Li(HTML5_Element):
+        AttrDicts = {**GlobalAndEventAttrs,
+                     'value': 1,}
+
+    class Link(HTML5_Element):
+        separate_close = False
+        AttrDicts = {**GlobalAndEventAttrs,
+                     'corssorigin':1, 'href':1, 'hreflang':1, 'media':1,
+                     'rel':1, 'sizes': 1,  'target': 1, 'type': 1, }
 
     class Map(HTML5_Element):
         pass
