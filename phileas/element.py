@@ -66,7 +66,7 @@ to just a name alias; i.e. 'my_table = h.table()' is kind of analogous to the fo
         """
         if self.ok_attrs is None:
             if isinstance(self.attr_dict, dict):
-# Changed while extending phileas for HTML5: support dsingle dictionary or list of dictionaries.
+# Changed while extending phileas for HTML5: support single dictionary or list of dictionaries.
                 self.ok_attrs = self.attr_dict
             else:
                 self.ok_attrs = {}

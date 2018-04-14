@@ -31,357 +31,309 @@ FontModifiers = {'size': 1, 'color': 1, 'face': 1}
 LinksAndAnchors = {'href': 1, 'hreflang': 1, 'type': 1, 'rel': 1, 'rev': 1}
 BordersAndRules = {'frame': 1, 'rules': 1, 'border': 1}
 
-class Element40(Element):
+
+class HTML4_Element(Element):
     attr_dict = (CoreAttrs,)
 
 
-class HTML40(HTML):
+class HTML4(HTML):
     """
 This class is called _HTML40 because its members correspond to HTML 4.0 tags.
     """
-    # we now define all legal HTML4.0 tags, all wth a leading underscore ('_').
+    # we now define all legal HTML4.0 tags, all with the first letter captialized.
     # Each of these represents a sub-class of Element40, but these aren't
     # intended for explicit use; constructions like e.g. 'h.h3' cause the class
-    # (same e.g.!) _HTML40._h3 to be initiated and given the tag value 'h3'.
+    # (same e.g.) HTML40.H3 to be initiated and given the tag value 'h3'.
     #
 
-    class _bdo(Element40):
+    class Bdo(HTML4_Element):
         pass
 
-    class _cite(Element40):
+    class Cite(HTML4_Element):
         pass
 
-    class _code(Element40):
+    class Code(HTML4_Element):
         pass
 
-    class _col(Element40):
+    class Col(HTML4_Element):
         pass
 
-    class _colgroup(Element40):
+    class Colgroup(HTML4_Element):
         pass
 
-    class _dfn(Element40):
+    class Dfn(HTML4_Element):
         pass
 
-    class _div(Element40):
+    class Fieldset(HTML4_Element):
         pass
 
-    class _fieldset(Element40):
+    class I(HTML4_Element):
         pass
 
-    class _i(Element40):
+    class Isindex(HTML4_Element):
         pass
 
-    class _isindex(Element40):
+    class Kbd(HTML4_Element):
         pass
 
-    class _kbd(Element40):
+    class Map(HTML4_Element):
         pass
 
-    class _li(Element40):
+    class Optgroup(HTML4_Element):
         pass
 
-    class _map(Element40):
+    class P(HTML4_Element):
         pass
 
-    class _object(Element40):
+    class Q(HTML4_Element):
         pass
 
-    class _ol(Element40):
+    class S(HTML4_Element):
         pass
 
-    class _optgroup(Element40):
+    class Samp(HTML4_Element):
         pass
 
-    class _option(Element40):
+    class Tt(HTML4_Element):
         pass
 
-    class _p(Element40):
+    class U(HTML4_Element):
         pass
 
-    class _param(Element40):
+    class Dd(HTML4_Element):
         pass
 
-    class _q(Element40):
+    class Dl(HTML4_Element):
         pass
 
-    class _s(Element40):
+    class Dt(HTML4_Element):
         pass
 
-    class _samp(Element40):
+    class Var(HTML4_Element):
         pass
 
-    class _script(Element40):
-        pass
-
-    class _select(Element40):
-        pass
-
-    class _small(Element40):
-        pass
-
-    class _span(Element40):
-        pass
-
-    class _tbody(Element40):
-        pass
-
-    class _tfoot(Element40):
-        pass
-
-    class _tr(Element40):
-        pass
-
-    class _tt(Element40):
-        pass
-
-    class _u(Element40):
-        pass
-
-    class _ul(Element40):
-        pass
-
-    class _dd(Element40):
-        pass
-
-    class _dl(Element40):
-        pass
-
-    class _dt(Element40):
-        pass
-
-    class _var(Element40):
-        pass
-
-    class _b(Element40):
+    class B(HTML4_Element):
         dented = False
 
-    class _big(_b):
-        pass
+    class Strike(HTML4_Element):
+        dented = False
 
-    class _center(_b):
-        pass
+    class Big(HTML4_Element):
+        dented = False
 
-    class _em(_b):
-        pass
+    class Center(HTML4_Element):
+        dented = False
 
-    class _small(_b):
-        pass
+    class Em(HTML4_Element):
+        dented = False
 
-    class _big(_b):
-        pass
+    class Small(HTML4_Element):
+        dented = False
 
-    class _center(_b):
-        pass
+    class Strong(HTML4_Element):
+        dented = False
 
-    class _strike(_b):
-        pass
+    class Sub(HTML4_Element):
+        dented = False
 
-    class _strong(_b):
-        pass
+    class Sup(HTML4_Element):
+        dented = False
 
-    class _style(_b):
-        pass
-
-    class _sub(_b):
-        pass
-
-    class _sup(_b):
-        pass
-
-    class _h1(Element40):
+    class H1(HTML4_Element):
         attr_dict = (CoreAttrs, IntrinsicEvents, {'align': 1})
 
-    class _h2(_h1):
+    class H2(H1):
         pass
 
-    class _h3(_h1):
+    class H3(H1):
         pass
 
-    class _h4(_h1):
+    class H4(H1):
         pass
 
-    class _h5(_h1):
+    class H5(H1):
         pass
 
-    class _h6(_h1):
+    class H6(H1):
         pass
 
-    class _a(Element40):
+    class A(HTML4_Element):
         attr_dict = (
-            {'name': 1, 'charset': 1}, CoreAttrs, LinksAndAnchors, ImageMaps, TargetFrameInfo, TabbingNavigation)
+            {'name': 1, 'charset': 1}, CoreAttrs, LinksAndAnchors, ImageMaps,
+            TargetFrameInfo, TabbingNavigation)
 
-    class _area(Element40):
+    class Area(HTML4_Element):
         attr_dict = (
-            {'name': 1, 'nohref': 0}, CoreAttrs, LinksAndAnchors, ImageMaps, TargetFrameInfo, TabbingNavigation)
+            {'name': 1, 'nohref': 0}, CoreAttrs, LinksAndAnchors, ImageMaps,
+            TargetFrameInfo, TabbingNavigation)
 
-    class _map(_h1):
+    class Map(H1):
         pass
 
-    class _br(Element40):
+    class Br(HTML4_Element):
         separate_close = False
 
-    class _base(Element40):
+    class Base(HTML4_Element):
         attr_dict = (AnchorReference, TargetFrameInfo)
 
-    class _blockquote(Element40):
+    class Blockquote(HTML4_Element):
         attr_dict = ({'cite': 1}, CoreAttrs)
 
-    class _q(_blockquote):
+    class Q(Blockquote):
         pass
 
-    class _button(Element40):
+    class Button(HTML4_Element):
         attr_dict = (CoreAttrs, {'name': 1, 'value': 1, 'type': 1, 'disabled': 0})
 
-    class _caption(Element40):
+    class Caption(HTML4_Element):
         attr_dict = (CoreAttrs, {'align': 1})
 
-    class _colgroup(Element40):
+    class Colgroup(HTML4_Element):
         attr_dict = (CoreAttrs, {'cite': 1, 'datetime': 1})
 
-    class _col(_colgroup):
+    class Col(Colgroup):
         separate_close = False
 
-    class _Del(Element40):
+    class Del(HTML4_Element):
         attr_dict = (CoreAttrs, CellHAlign, CellVAlign, {'span': 1, 'width': 1})
 
-    class _ins(_Del):
+    class Ins(Del):
         pass
 
-    class _legend(Element40):
+    class Legend(HTML4_Element):
         attr_dict = (CoreAttrs, AccessKeys, {'align': 1})
 
-    class _basefont(Element40):
+    class Basefont(HTML4_Element):
         attr_dict = (FontModifiers, {'id': 1})
 
-    class _font(Element40):
+    class Font(HTML4_Element):
         attr_dict = (CoreAttrs, FontModifiers, I18n)
 
-    class _form(Element40):
+    class Form(HTML4_Element):
         attr_dict = (CoreAttrs, {'action': 1, 'method': 1, 'enctype': 1, 'accept-charset': 1, 'target': 1})
 
-    class _frame(Element40):
+    class Frame(HTML4_Element):
         separate_close = False
         attr_dict = (CoreAttrs, {'longdesc': 1, 'name': 1, 'src': 1, 'frameborder': 1,
                                  'marginwidth': 1, 'marginheight': 1, 'noresize': 0, 'scrolling': 1})
 
-    class _frameset(Element40):
+    class Frameset(HTML4_Element):
         attr_dict = (FontModifiers, IntrinsicEvents, {'rows': 1, 'cols': 1, 'border': 1})
 
-    class _head(Element40):
+    class Head(HTML4_Element):
         attr_dict = (I18n, {'profile': 1})
 
-    class _headset(Element40):
+    class Headset(HTML4_Element):
         attr_dict = (I18n, {'align': 1})
 
-    class _hr(Element40):
+    class Hr(HTML4_Element):
         separate_close = None
         attr_dict = (CoreAttrs, IntrinsicEvents, {'align': 1, 'noshade': 0, 'size': 1, 'width': 1})
 
-    class _html(Element40):
+    class Html(HTML4_Element):
         attr_dict = (I18n,)
 
-    class _title(_html):
+    class Title(Html):
         pass
 
-    class _body(Element40):
+    class Body(HTML4_Element):
         attr_dict = (CoreAttrs, {'background': 1, 'text': 1, 'link': 1, 'vlink': 1, 'alink': 1, 'bgcolor': 1})
 
-    class _iframe(Element40):
+    class Iframe(HTML4_Element):
         attr_dict = (CoreAttrs, {'background': 1, 'text': 1,
                                  'link': 1, 'vlink': 1, 'alink': 1, 'bgcolor': 1, 'src': 1,
                                  'width': 1, 'height': 1, 'allowfullscreen': 0, 'frameborder': 1})
 
-    class _img(Element40):
+    class Img(HTML4_Element):
         separate_close = False
         attr_dict = (CoreAttrs, VisualPresentation, AlternateText, {'src': 1, 'longdesc': 1, 'usemap': 1, 'ismap': 0})
 
-    class _input(Element40):
+    class Input(HTML4_Element):
         separate_close = False
         attr_dict = (CoreAttrs, TabbingNavigation, AccessKeys, AlternateText,
                      {'type': 1, 'name': 1, 'value': 1, 'checked': 0, 'disabled': 0,
                       'readonly': 0, 'size': 1, 'maxlength': 1, 'src': 1,
                       'usemap': 1, 'accept': 1, 'border': 1})
 
-    class _label(Element40):
+    class Label(HTML4_Element):
         attr_dict = (CoreAttrs, {'label-for': 1, 'for': 1})
 
-    class _ul(Element40):
+    class Ul(HTML4_Element):
         attr_dict = (CoreAttrs, {'compact': 0})
 
-    class _ol(Element40):
+    class Ol(HTML4_Element):
         attr_dict = (CoreAttrs, {'compact': 0, 'start': 1})
 
-    class _li(Element40):
+    class Li(HTML4_Element):
         attr_dict = (CoreAttrs, {'compact': 0, 'start': 1, 'value': 1, 'type': 1})
 
-    class _link(Element40):
+    class Link(HTML4_Element):
         separate_close = False
         attr_dict = (CoreAttrs, LinksAndAnchors, {'charset': 1, 'media': 1})
 
-    class _meta(Element40):
+    class Meta(HTML4_Element):
         separate_close = False
         attr_dict = (I18n,
                      {'http-equiv': 1, 'name': 1, 'content': 1, 'scheme': 1})
 
-    class _object(Element40):
+    class Object(HTML4_Element):
         attr_dict = (TabbingNavigation, {'declare': 0, 'classid': 1, 'codebase': 1, 'data': 1, 'type': 1,
                                          'codetype': 1, 'archive': 1, 'standby': 1, 'height': 1, 'width': 1,
                                          'usemap': 1})
 
-    class _select(Element40):
+    class Select(HTML4_Element):
         attr_dict = (CoreAttrs, TabbingNavigation, {'name': 1, 'size': 1, 'multiple': 0, 'disabled': 0})
 
-    class _optGroup(Element40):
+    class OptGroup(HTML4_Element):
         attr_dict = (CoreAttrs, {'disabled': 0, 'label': 1})
 
-    class _option(Element40):
+    class Option(HTML4_Element):
         attr_dict = (CoreAttrs, {'disabled': 0, 'label': 1, 'value': 1, 'selected': 0})
 
-    class _param(Element40):
+    class Param(HTML4_Element):
         attr_dict = ({'id': 1, 'name': 1, 'value': 1, 'valuetype': 1, 'type': 1},)
 
-    class _pre(Element40):
+    class Pre(HTML4_Element):
         attr_dict = (CoreAttrs,)
 
-    class _span(Element40):
+    class Span(HTML4_Element):
         attr_dict = (CoreAttrs, {'align': 1})
 
-    class _script(Element40):
+    class Script(HTML4_Element):
         attr_dict = ({'charset': 1, 'type': 1, 'src': 1, 'defer': 0},)
 
-    class _div(_script):
+    class Div(Script):
         pass
 
-    class _style(Element40):
+    class Style(HTML4_Element):
         attr_dict = (I18n, {'type': 1, 'media': 1, 'title': 1},)
 
-    class _table(Element40):
+    class Table(HTML4_Element):
         attr_dict = (CoreAttrs, BordersAndRules,
                      {'cellspacing': 1, 'cellpadding': 1, 'summary': 1, 'align': 1, 'bgcolor': 1, 'width': 1})
 
-    class _tbody(Element40):
+    class Tbody(HTML4_Element):
         attr_dict = (CoreAttrs, CellHAlign, CellVAlign)
 
-    class _thead(_tbody):
+    class Thead(Tbody):
         pass
 
-    class _tfoot(_tbody):
+    class Tfoot(Tbody):
         pass
 
-    class _tr(_tbody):
+    class Tr(Tbody):
         pass
 
-    class _th(Element40):
+    class Th(HTML4_Element):
         dented = False
         attr_dict = (CoreAttrs, CellHAlign, CellVAlign,
                      {'abbv': 1, 'axis': 1, 'headers': 1, 'scope': 1, 'rowspan': 1, 'colspan': 1,
                       'nowrap': 0, 'width': 1, 'height': 1, 'bgcolor': 1},)
 
-    class _td(_th):
+    class Td(Th):
         pass
 
-    class _textarea(Element40):
+    class Textarea(HTML4_Element):
         attr_dict = (CoreAttrs, TabbingNavigation, AccessKeys,
                      {'name': 1, 'rows': 1, 'cols': 1, 'disabled': 0, 'readonly': 0},)
 
