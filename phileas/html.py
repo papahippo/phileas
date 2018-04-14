@@ -38,7 +38,8 @@ and hence automatically returned by the standard 'getattribute' handler on subse
         if not attr_name.islower():
             # This seems to be the easiest way to pick up invalid
             # tags BEFORE a run-time recursion error occurs!
-            # src'
+            # src'. Note that (e.g) 'h.invalid' will get here
+            # via an attempted invocation of 'h.Invalid' by the 'getattrcall below.
             raise HTML_Error("Invalid tag '%s'" % attr_name)
 
         attr = getattr(self, attr_name.capitalize())(tag=attr_name)

@@ -65,133 +65,160 @@ class HTML5_Element(Element):
     attr_dict = GlobalAndEventAttrs
 
 
-class HTML50(HTML):
+class HTML5(HTML):
     """
-This class is called _HTML40 because its members correspond to HTML 4.0 tags.
+This class is called HTML5 because its members correspond to HTML5 tags.
     """
-    # we now define all legal HTML4.0 tags, all wth a leading underscore ('_').
-    # Each of these represents a sub-class of Element50, but these aren't
+    # we now define all legal HTML5 tags, all with the first letter capitalized.
+    # Each of these represents a sub-class of HTML5_Element, but these aren't
     # intended for explicit use; constructions like e.g. 'h.h3' cause the class
-    # (same e.g.!) _HTML40._h3 to be initiated and given the tag value 'h3'.
-    #
+    # (same e.g.) HTML40.H3 to be initiated and given the tag value 'h3'.
 
-    class _a(HTML5_Element):
+
+    class A(HTML5_Element):
         attr_dict = {**GlobalAndEventAttrs, **LinksAndAnchorAttrs, }
 
-    class _abbr(HTML5_Element):
+    class Abbr(HTML5_Element):
         pass
 
-    class _area(HTML5_Element):
+    class Area(HTML5_Element):
 # {'name': 1, 'nohref': 0}, GlobalAttrs, LinksAndAnchors, ImageMaps, TargetFrameInfo, TabbingNavigation)
         attr_dict = {**GlobalAndEventAttrs, **LinksAndAnchorAttrs, **ImageMaps, **AlternateText,
                      'coords': 1, 'type': 1, }
 
-    class _article(HTML5_Element):
+    class Article(HTML5_Element):
         pass
 
-    class _aside(HTML5_Element):
+    class Aside(HTML5_Element):
         pass
 
-    class _audio(HTML5_Element):
+    class Audio(HTML5_Element):
         attr_dict = {**GlobalAndEventAttrs,
                      'autoplay': 1, 'controls':1, 'loop':1, 'muted':1,  'preload':1, 'src':1, }
 
-    class _b(HTML5_Element):
+    class B(HTML5_Element):
         dented = False
 
-    class _base(HTML5_Element):
+    class Base(HTML5_Element):
         attr_dict = {**GlobalAttrs,
                      'href': 1, 'target':1, }
 
-    class _bdi(HTML5_Element):
+    class Bdi(HTML5_Element):
         pass
 
-    class _blockquote(HTML5_Element):
+    class Blockquote(HTML5_Element):
         attr_dict = {**GlobalAndEventAttrs,
                      'cite': 1}
 
-    class _body(HTML5_Element):
+    class Body(HTML5_Element):
         pass
 
-    class _br(HTML5_Element):
+    class Br(HTML5_Element):
         separate_close = False
 
-    class _center(HTML5_Element):
+    class Button(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs,
+                     'autotfocus': 1, 'disabled':1, 'form':1, 'formaction':1, 'formenctype':1, 'formmethod': 1,
+                     'formnovalidate': 1, 'formtarget': 1, 'name': 1, 'type': 1, 'value': 1, }
+
+    class Canvas(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs,
+                     'height': 1, 'width': 1, }
+
+    class Caption(HTML5_Element):
+        pass
+
+
+    class Cite(HTML5_Element):
+        pass
+
+    class Code(HTML5_Element):
+        attr_dict = {}
+
+    class Col(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs,
+                     'span': 1, }
+
+    class Colgroup(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs,
+                     'span': 1, }
+
+    class Data(HTML5_Element):  # N.B. limited browser suupport!
+        attr_dict = {**GlobalAttrs,
+                     'value':1, }
+
+    class Datalist(HTML5_Element):  # N.B. perhaps needs devloper attention!?
+        pass
+
+    class Dd(HTML5_Element):
+        pass
+
+    class Del(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs,
+                     'cite':1, 'datetime':1, }
+
+    class Detailsl(HTML5_Element):
+        attr_dict = {**GlobalAndEventAttrs,
+                     'open':1, }
+
+    class Dfn(HTML5_Element):
+        pass
+
+    class Div(HTML5_Element):
+        pass
+
+    class Dl(HTML5_Element):
+        pass
+
+    class Dt(HTML5_Element):
+        pass
+
+    class Em(HTML5_Element):
         dented = False
 
-    class _cite(HTML5_Element):
+    class Fieldset(HTML5_Element):
         pass
 
-    class _code(HTML5_Element):
-        pass
-
-    class _col(HTML5_Element):
-        pass
-
-    class _colgroup(HTML5_Element):
-        pass
-
-    class _dd(HTML5_Element):
-        pass
-
-    class _dfn(HTML5_Element):
-        pass
-
-    class _div(HTML5_Element):
-        pass
-
-    class _dl(HTML5_Element):
-        pass
-
-    class _dt(HTML5_Element):
-        pass
-
-    class _em(HTML5_Element):
-        dented = False
-
-    class _fieldset(HTML5_Element):
-        pass
-
-    class _h1(HTML5_Element):
+    class H1(HTML5_Element):
         AttrDicts = {**GlobalAndEventAttrs, 'align': 1}
 
-    class _h2(_h1):
+    class H2(H1):
         pass
 
-    class _h3(_h1):
+    class H3(H1):
         pass
 
-    class _h4(_h1):
+    class H4(H1):
         pass
 
-    class _h5(_h1):
+    class H5(H1):
         pass
 
-    class _h6(_h1):
+    class H6(H1):
         pass
 
-    class _i(HTML5_Element):
+    class I(HTML5_Element):
         pass
 
-    class _isindex(HTML5_Element):
+    class Isindex(HTML5_Element):
         pass
 
-    class _kbd(HTML5_Element):
+    class Kbd(HTML5_Element):
         pass
 
-    class _li(HTML5_Element):
+    class Li(HTML5_Element):
         pass
 
-    class _map(HTML5_Element):
+    class Map(HTML5_Element):
         pass
 
-    class _object(HTML5_Element):
+    class Object(HTML5_Element):
         pass
 
-    class _ol(HTML5_Element):
+    class Ol(HTML5_Element):
         pass
 
-    class _optgroup(HTML5_Element):
+    class Optgroup(HTML5_Element):
         pass
 
     class _option(HTML5_Element):
