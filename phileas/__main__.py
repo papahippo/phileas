@@ -1,4 +1,5 @@
 from .html4 import HTML4
+from .html5 import HTML5
 import sys
 
 # create a singleton instance of this class. The approved method to use phileas is to include this
@@ -6,7 +7,8 @@ import sys
 # having to refactor lots of stuff!). Then html element creation can use the compact form
 # (e.g.) "h.h4 ..." etc. (html40.h4 ... would soon get cumbersome!)
 
-_html40 = html40_ = HTML4()
+_html40 = html4 = HTML4()
+html5 = HTML5()
 # I recommend that this is imported under a much shorter name, e.g.:
 # 'from phileas import html40 as h'. This usage will be assumed and
 # 'h' referred to as 'the HTML generator' in this code.
