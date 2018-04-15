@@ -282,11 +282,47 @@ This class is called HTML5 because its members correspond to HTML5 tags.
                      {'corssorigin':1, 'href':1, 'hreflang':1, 'media':1,
                      'rel':1, 'sizes': 1,  'target': 1, 'type': 1, })
 
+    class Main(HTML5_Element):
+        pass
+
     class Map(HTML5_Element):
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'data': 1, 'form': 1, 'height': 1, 'name': 1,
+                      'type': 1, 'width': 1, })
+
+    class Mark(HTML5_Element):
+        pass
+
+    class Menu(HTML5_Element):
+        pass
+
+    class Menuitem(HTML5_Element):
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'checked': 1, 'command': 1, 'default': 1, 'disabled': 1,
+                      'icon': 1, 'label': 1, 'radiogroup': 1, 'type': 1, })
+
+    class Meta(HTML5_Element):
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'charset': 1, 'content': 1, 'http-equiv': 1, 'name': 1,
+                      'scheme': 1, })
+
+    class Menuitem(HTML5_Element):
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'form': 1, 'high': 1, 'low': 1, 'max': 1, 'min': 1,
+                      'optimum': 1, 'value': 1, })
+
+    class Nav(HTML5_Element):
+        pass
+
+    class Ol(HTML5_Element):
+        pass
+
+    class Ol(HTML5_Element):
         pass
 
     class Object(HTML5_Element):
-        pass
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'name': 1,})
 
     class Ol(HTML5_Element):
         pass
@@ -294,7 +330,7 @@ This class is called HTML5 because its members correspond to HTML5 tags.
     class Optgroup(HTML5_Element):
         pass
 
-    class _option(HTML5_Element):
+    class Option(HTML5_Element):
         pass
 
     class _p(HTML5_Element):
