@@ -13,7 +13,7 @@ _html40 = html40_ = HTML4()
 
 def main():
 
-    h = html40_  # the local equivalent of 'from phileas import html40 as h'.
+    h = html5 # the local equivalent of 'from phileas import html40 as h'.
     print(
         "Content-type: text/html\n\n",
         h.html | (
