@@ -37,10 +37,19 @@ MediaEventAttrs = { 'onabort': 1,    'oncanplay': 1,    'oncanplaythrough': 1,  
 
 MiscEventAttrs = {    'onshow': 1,    'ontoggle': 1,}
 
-EventAttrs = {**WindowEventAttrs, **FormEventAttrs, **KeyboardEventAttrs, **MouseEventAttrs,
-              **DragEventAttrs, **ClipboardEventAttrs, **MediaEventAttrs, **MiscEventAttrs}
+EventAttrs = {}
+EventAttrs.update(WindowEventAttrs)
+EventAttrs.update(FormEventAttrs)
+EventAttrs.update(KeyboardEventAttrs)
+EventAttrs.update(WindowEventAttrs)
+EventAttrs.update(DragEventAttrs)
+EventAttrs.update(ClipboardEventAttrs)
+EventAttrs.update(MediaEventAttrs)
+EventAttrs.update(MiscEventAttrs)
 
-GlobalAndEventAttrs  = {**GlobalAttrs, **EventAttrs}
+GlobalAndEventAttrs  = {}
+GlobalAndEventAttrs.update(GlobalAttrs)
+GlobalAndEventAttrs.update(EventAttrs)
 
 LinksAndAnchorAttrs = {'href': 1, 'hreflang': 1, 'type': 1, 'rel': 1, 'download': 1}
 
