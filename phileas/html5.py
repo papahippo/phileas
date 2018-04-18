@@ -475,7 +475,9 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Video(HTML5_Element):
-        pass
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'autoplay': 1, 'controls': 1, 'height': 1, 'loop': 1,
+                      'muted': 1, 'required': 1, 'size': 1, })
 
     class Wbr(HTML5_Element):
         pass

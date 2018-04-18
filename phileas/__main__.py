@@ -2,15 +2,12 @@ from .html4 import HTML4
 from .html5 import HTML5
 import sys
 
-# create a singleton instance of this class. The approved method to use phileas is to include this
-# by  "from phileas import html40 as h" (The alias with leading '_' is deprecated but retained to avoid
-# having to refactor lots of stuff!). Then html element creation can use the compact form
-# (e.g.) "h.h4 ..." etc. (html40.h4 ... would soon get cumbersome!)
+# create a singleton instance of each html class.
 
-_html40 = html4 = HTML4()
+_html40 = html4 = HTML4()  # _html40 is a deprecated alias!
 html5 = HTML5()
-# I recommend that this is imported under a much shorter name, e.g.:
-# 'from phileas import html40 as h'. This usage will be assumed and
+# I recommend that one of the above is imported under a much shorter name, e.g.:
+# 'from phileas import html4 as h'. This usage will be assumed and
 # 'h' referred to as 'the HTML generator' in this code.
 
 def main():
