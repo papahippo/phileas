@@ -7,6 +7,9 @@ minimalistic database definition (entity) respectively.
 """
 import datetime
 import inspect
+from collections import OrderedDict
+import locale
+locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
 
 class EntityError(Exception):
@@ -119,11 +122,11 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
                 raise EntityError(_key, _val, _exc)
 
         if cls.keyLookup is None:
-            cls.rangeLookup = {}
-            cls.keyLookup = {}
+            cls.rangeLookup = OrderedDict()
+            cls.keyLookup = OrderedDict()
         cls.rangeLookup[self.lineno_range] = self
         for k_ in self.keyFields:
-            key_dict = cls.keyLookup.setdefault(k_, {})
+            key_dict = cls.keyLookup.setdefault(k_, OrderedDict())
             try:
                 key_ = getattr(self, k_)
             except AttributeError:
