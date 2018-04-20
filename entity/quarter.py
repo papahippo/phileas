@@ -2,6 +2,7 @@
 # -*- encoding: utf8 -*-
 from __future__ import print_function
 from entity import *
+from entity.company import *
 from phileas.page import Page, h
 
 class AccountingException(Exception):
@@ -19,7 +20,8 @@ class Common:
 class OutgoingItem(Entity):
 # currently in transition to new Entity class , hence strange mix of arguments
     expressExtra = {None: 'n.v.t', False: 'al gedaan'}
-    
+    keyFields = ('sequenceNumber',)
+
     def __init__(self,
         date:str='',
         sequenceNumber:(str, type(None))=None,
@@ -224,7 +226,7 @@ class Quarter(Entity, Page):
         for (content,  tableQuartet,  text, )   in (
                 ([invoiceModule.invoice for invoiceModule in self.invoiceModules],
                             self.incomeTables, 'income', ),
-                ( self.uitgoings,
+                ( (OutgoingItem.keyLookup['sequenceNumber']).values(),  # self.uitgoings,
                             self.expenditureTables, 'outgoing',  ),
                                          ):
             for item in content:
