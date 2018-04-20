@@ -8,4 +8,3 @@ from .html5 import HTML5
 
 _html40 = html4 = HTML4()
 html5 = HTML5()
-
