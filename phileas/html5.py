@@ -439,31 +439,35 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Textarea(HTML5_Element):
-        pass
+        attr_dict = (GlobalAndEventAttrs,
+                     {'autofocus':1, 'cols':1, 'dirname': 1, 'disabled': 1, 'form':1,
+                     'maxlength': 1, 'name': 1, 'placeholder': 1, 'readonly': 1,
+                      'required': 1, 'rows': 1,  'wrap': 1, })
 
     class Tfoot(HTML5_Element):
         pass
 
     class Th(HTML5_Element):
-        pass
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'abbr': 1, 'colspan': 1, 'headers': 1, 'scope': 1, 'sorted': 1,})
 
     class Thead(HTML5_Element):
         pass
 
     class Time(HTML5_Element):
-        pass
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'datetime': 1, })
 
     class Title(HTML5_Element):
-        pass
+        AttrDicts = (GlobalAttrs,)
 
     class Tr(HTML5_Element):
         pass
 
     class Track(HTML5_Element):
-        pass
-
-    class Tt(HTML5_Element):
-        pass
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'default': 1, 'kind': 1, 'label': 1,
+                      'src': 1, 'srclang': 1, })
 
     class U(HTML5_Element):
         pass
@@ -477,7 +481,7 @@ This class is called HTML5 because its members correspond to HTML5 tags.
     class Video(HTML5_Element):
         AttrDicts = (GlobalAndEventAttrs,
                      {'autoplay': 1, 'controls': 1, 'height': 1, 'loop': 1,
-                      'muted': 1, 'required': 1, 'size': 1, })
+                      'muted': 1, 'poster': 1, 'preload': 1, 'src': 1, 'width': 1, })
 
     class Wbr(HTML5_Element):
         pass
