@@ -397,34 +397,32 @@ This class is called HTML5 because its members correspond to HTML5 tags.
 # from here on, not yet fully filled in!
 
     class Source(HTML5_Element):
-        pass
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'src':1, 'srcset':1, 'sizes': 1, 'type': 1, })
 
     class Span(HTML5_Element):
         pass
 
-    class Strike(HTML5_Element):
-        pass
+ # Strike is not a valid HTML5_Element!
 
     class Strong(HTML5_Element):
         pass
 
     class Style(HTML5_Element):
-        pass
+        attr_dict = (GlobalAndEventAttrs,
+                     {'media': 1, 'type': 1, })
 
     class Sub(HTML5_Element):
         pass
 
-    class Summary(HTML5_Element):
+    class Summary(HTML5_Element):  # not supported in IE acc. to w3schools!
         pass
 
     class Sup(HTML5_Element):
         pass
 
-    class Strong(HTML5_Element):
-        pass
-
     class Svg(HTML5_Element):
-        pass
+        AttrDicts = ({'width': 1, 'height': 1, }, )
 
     class Table(HTML5_Element):
         pass
@@ -433,14 +431,16 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Td(HTML5_Element):
-        pass
+        AttrDicts = (GlobalAndEventAttrs,
+                     {'colspan': 1, 'headers': 1, 'rowspan': 1, })
+
 
     class Template(HTML5_Element):
-        pass
+        attr_dict = (GlobalAttrs,)
 
     class Textarea(HTML5_Element):
         attr_dict = (GlobalAndEventAttrs,
-                     {'autofocus':1, 'cols':1, 'dirname': 1, 'disabled': 1, 'form':1,
+                     {'colspan':1, 'headers': 1, 'disabled': 1, 'form':1,
                      'maxlength': 1, 'name': 1, 'placeholder': 1, 'readonly': 1,
                       'required': 1, 'rows': 1,  'wrap': 1, })
 
