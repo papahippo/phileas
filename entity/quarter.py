@@ -87,8 +87,6 @@ class Quarter(Entity, Page):
         year:int=1588,
         quarter:int=0,
         prevSeqNumber:int=0,
-        invoiceModules:tuple=(),
-        rawUitgoings:tuple=(),
         pageNo:int=0,
         uitgoings:tuple=(),
      ):
@@ -103,8 +101,6 @@ class Quarter(Entity, Page):
             year=year,
             quarter=quarter,
             prevSeqNumber=prevSeqNumber,
-            invoiceModules=invoiceModules,
-            rawUitgoings=rawUitgoings,
             pageNo=pageNo,
             uitgoings=uitgoings,
         )
@@ -124,14 +120,13 @@ class Quarter(Entity, Page):
             ] for _AccountsTable in (IncomeTable,  ExpenditureTable)
         ]
         
-        # determine which invoices are 'binnenland' which are EU (ICL) and which are rest-of-the-world
-        for (content,  tableQuartet,  text, )   in (
-                ((Invoice.keyLookup['sequenceNumber']).values(),
-                            self.incomeTables, 'income', ),
-                ( (OutgoingItem.keyLookup['sequenceNumber']).values(),  # self.uitgoings,
-                            self.expenditureTables, 'outgoing',  ),
-                                         ):
-            for item in content:
+        for (ItemClass,  tableQuartet,  text, )   in (
+                (Invoice,      self.incomeTables,       'income', ),
+                (OutgoingItem, self.expenditureTables,  'outgoing',  ),
+            ):
+            dir_of_items = ItemClass.keyLookup and ItemClass.keyLookup['sequenceNumber'] or {}
+            for item in dir_of_items.values():
+                # determine whether item falls under  'binnenland' or 'EU (ICL)' or 'rest-of-the-world':
                 for  ix,  accountsTable in enumerate(tableQuartet):
                     if ix==0  or  item.chargeBtw is accountsTable.chargeBtw:
                         #print (ix,  accountsTable.chargeBtw,  item.sequenceNumber)

@@ -96,8 +96,8 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
         (b) The first such entity must be preceded by a call to [EntityName].begin().
     """
     keyFields = ()
-    keyLookup = {}
-    rangeLookup = {}
+    keyLookup = None
+    rangeLookup = None
     next_lineno = -1
 
 
@@ -121,7 +121,7 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
             except (ValueError) as _exc:
                 raise EntityError(_key, _val, _exc)
 
-        if cls.keyLookup is {}:
+        if cls.keyLookup is None:
             cls.rangeLookup = {}  # don't share between inheriting classes!
             cls.keyLookup = {}    # don't share between inheriting classes!
         cls.rangeLookup[self.lineno_range] = self

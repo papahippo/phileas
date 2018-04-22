@@ -31,12 +31,15 @@ class Page(object):
 
     def __init__(self, localIndex=None):
         self.localIndex = localIndex
-        if self.dateTime is None:
-            pTime = os.stat(sys.argv[0]).st_ctime,
-            self.dateTime = time.strftime('%Y %b %d %a %H:%M', time.gmtime(*pTime))
-        self.nameToPrint = modulename2text(
-            os.path.splitext(os.path.split(sys.argv[0])[1])[0]
-        )
+        try:
+            if self.dateTime is None:
+                pTime = os.stat(sys.argv[0]).st_ctime,
+                self.dateTime = time.strftime('%Y %b %d %a %H:%M', time.gmtime(*pTime))
+            self.nameToPrint = modulename2text(
+                os.path.splitext(os.path.split(sys.argv[0])[1])[0])
+        except FileNotFoundError:
+            self.dateTime = self.nameToPrint = ''
+
         self.resolveData()
 
     def resolveData(self):
