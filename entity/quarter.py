@@ -4,6 +4,7 @@ from __future__ import print_function
 #from entity import *
 from entity.company import *
 from entity.outgoing import OutgoingItem
+from entity.invoice import Invoice
 from phileas.page import Page, h
 
 class AccountingException(Exception):
@@ -125,7 +126,7 @@ class Quarter(Entity, Page):
         
         # determine which invoices are 'binnenland' which are EU (ICL) and which are rest-of-the-world
         for (content,  tableQuartet,  text, )   in (
-                ([invoiceModule.invoice for invoiceModule in self.invoiceModules],
+                ((Invoice.keyLookup['sequenceNumber']).values(),
                             self.incomeTables, 'income', ),
                 ( (OutgoingItem.keyLookup['sequenceNumber']).values(),  # self.uitgoings,
                             self.expenditureTables, 'outgoing',  ),

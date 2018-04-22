@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-from entity import *
-from entity import Page
+from entity.company import *
+from phileas.page import Page
 
 class InvoiceItem(Entity):
 
