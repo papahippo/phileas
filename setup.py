@@ -6,8 +6,8 @@ setup(
     packages=['phileas'],
     url='',
     license='',
-    author='larry',
+    author='Larry Myerscough',
     author_email='hippostech@gmail.com',
-    description='python & HTML integration; alternative approach'
+    description='Python with Html In-Line At Source (somewhat contrived acronym)'
 )
 
