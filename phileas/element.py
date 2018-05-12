@@ -170,6 +170,8 @@ this is used by 'print'. The character representation in our case is valid HTML.
                 s += '/'
             s += '>'
         for child in unravel(self.children):
+            if child is False:
+                continue
             s += str(child)
         if self.separate_close:
             s += '</%s>' % self.tag
