@@ -76,12 +76,12 @@ The initial value may be supplies a a read-made lsit of strings or as a string c
         return '[%s]' % ', '.join(['"%s"' % s for s in self.list_])
 
 
-def get_next_lineno(depth):
+def get_frame(depth):
     """
 This returns the line number following
     """
     frames = inspect.getouterframes(inspect.currentframe())
-    return 1 + frames[depth].lineno
+    return frames[depth]
 
 
 class Entity(object):
@@ -103,9 +103,10 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
 
     def __init__(self, **kw):
         cls = self.__class__
-        next_lineno = get_next_lineno(3)
-        self.lineno_range = (cls.next_lineno, next_lineno)
-        cls.next_lineno = next_lineno
+        frame = get_frame(3)
+        self.filename = frame.filename
+        self.lineno_range = (cls.next_lineno, 1 +frame.lineno)
+        cls.next_lineno = 1 +frame.lineno
         annos = self.__init__.__annotations__
         for _key, _val in kw.items():
             reqd_class = annos.get(_key)
@@ -169,7 +170,7 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
     by_range = classmethod(by_range)
 
     def begin(cls):
-        cls.next_lineno = get_next_lineno(2)
+        cls.next_lineno = 1 + get_frame(2).lineno
     begin = classmethod(begin)
 
 def money(amount):
