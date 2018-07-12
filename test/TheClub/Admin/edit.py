@@ -10,13 +10,14 @@ from entity.club import Member, EntityError
 import mailgroups
 import members
 
-from clubPage import ClubPage, h
+from membersPage import ClubMembersPage, h
 
-class ClubAdminEditPage(ClubPage):
+class ClubAdminEditPage(ClubMembersPage):
     EntityClass = Member
     _lowerBanner = "edit member details"
 
     def validate(self, **kw):
+        #  valid_ = ClubMembersPage.validate(self, **kw)
         self.ee = None
         self.filename, = kw.get('filename', ('?fn',))
         self.calling_script, = kw.get('calling_script', ('?cs',))
@@ -47,7 +48,7 @@ class ClubAdminEditPage(ClubPage):
                         if requested_action != 'Delete':
                             module_src.write(str(self.member_))
                         module_src.writelines(self.all_lines[self.line_[1]:])
-                ClubPage.validate(self, **kw)
+                ClubMembersPage.validate(self, **kw)
                 print("Location: " + self.href(self.calling_script, {}, "#%s" % self.line_[0]) + "\n\n")
                 #print("Location: editable_list.py#%s\n\n" % self.line_[0])
                 return None
@@ -57,7 +58,7 @@ class ClubAdminEditPage(ClubPage):
             #print(item_string, file=sys.stderr)
             self.member_ = eval(item_string)
 
-        return ClubPage.validate(self, **kw)
+        return ClubMembersPage.validate(self, **kw)
 
 
     def entry_line(self, displayed_name, attr_name, placeholder):
@@ -76,24 +77,10 @@ class ClubAdminEditPage(ClubPage):
         print('edit.py?'+os.environ.get("QUERY_STRING"), file=sys.stderr)
         print(self.href('edit.py', {'line_': map(str, self.line_)}), file=sys.stderr)
         return (
-            h.form(action='edit.py?'+os.environ.get("QUERY_STRING"), method='post')| (
+            h.form(action='edit.py?' + os.environ.get("QUERY_STRING"), method='post')| (
             #h.form(action=self.href('edit.py', {'line_': map(str, self.line_)}), method='post')| (
             [self.entry_line(displayed_name, attr_name, placeholder)
-             for (displayed_name, attr_name, placeholder) in (
-                 ('known as', 'called', 'bekend binnen MEW als...'),
-                 ('full name', 'name', 'surname, initials'),
-                 ('street address', 'streetAddress', 'e.g. Rechtstraat 42'),
-                 ('postcode', 'postCode', 'e.g. 1234 XY'),
-                 ('Town/City', 'cityAddress', 'e.g. Eindhoven'),
-                 ('telephome', 'phone', 'e.g. 040-2468135'),
-                 ('mobile', 'mobile', 'e.g. 06-24681357'),
-                 ('1st email address', 'emailAddress', 'e.g. fred@backofthe.net'),
-                 ('opt. 2nd email address', 'altEmailAddress', 'optional'),
-                 ('date of birth', 'birthDate', 'e.g. 15-mrt-1963'),
-                 ('date of joining', 'memberSince', 'e.g. 15-okt-2003'),
-                 ('instrument', 'instrument', 'e.g. Klarinet'),
-                 ('mail groups', 'mailGroups', 'e.g. Musicians, Hoorns'),
-            )],
+             for (displayed_name, attr_name, placeholder) in self.fieldDisplay],
             [(ix_<2 or existing) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
              for ix_, (val_, colour) in enumerate((
                 ("Cancel", "green"),
