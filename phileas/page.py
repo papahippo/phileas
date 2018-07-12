@@ -5,7 +5,7 @@ import sys, os, time
 from phileas import _html40 as h
 
 import cgitb
-#cgitb.enable()
+cgitb.enable()
 
 from urllib.parse import urlparse, parse_qs
 
@@ -97,13 +97,13 @@ by 'validate'.
             h.body(bgcolor='white') | (self.body(), h.pre | self.errOutput)
         )
 
-    def validate(self, language=('NL',), **kw):
+    def validate(self, **kw):
         """
 'validate' interprets the 'keywords' (actually cgi-parameters) passed to the page. It returns
 True if this page is be presented. Alternatively it may cause some other page to be presented
 and return False.
         """
-        kw['language'] = self.language = list(language)
+        self.language = kw.get('language', ('EN',))
         self.kw = kw  # stub / base class version
         return True  # =>  # go ahead an prsent this page.
 

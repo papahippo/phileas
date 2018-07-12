@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
-import sys
+import sys, os
 from membersPage import ClubMembersPage, h
 from entity.club import Member
 import members
@@ -9,8 +9,8 @@ import members
 class ClubMembersListPage(ClubMembersPage):
     admin = 0
 
-    def validate(self, sortby=('name',), **kw):
-        self.sortby = sortby
+    def validate(self, **kw):
+        self.sortby = kw.get('sortby', ('name',))
         return ClubMembersPage.validate(self, **kw)
 
     def lowerBanner(self):
@@ -47,7 +47,10 @@ class ClubMembersListPage(ClubMembersPage):
                 h.td | member.name,
                 self.admin and
                 (h.td |  (h.a(id='%s' %member.lineno_range[0],
-                                 href=self.href('edit.py', {'line_': map(str, member.lineno_range)})) |member.called))
+                                 href=self.href('edit.py', {'calling_script': (os.environ.get('SCRIPT_NAME'),),
+                                                            'line_': map(str, member.lineno_range),
+                                                            'filename': (member.filename,)}))
+                          |member.called))
                 or  h.td |  member.called,
                 h.td | (member.streetAddress, h.br, member.postCode, '&nbsp;'*2, member.cityAddress),
                 h.td | (member.phone, h.br, member.mobile),
@@ -63,6 +66,7 @@ class ClubMembersListPage(ClubMembersPage):
     def lowerText(self):
         #for ix, (name, member) in enumerate(Member.keyLookup['name'].items()):
         #    print (name, member.name, '...', member.__init__.__annotations__)
+        print(self.language, file=sys.stderr)
         #print(Member.keyLookup['name'].items())
         return (self.one_offs(),
                 h.table(id="members") | [self.rows_per_member(ix, member) for ix, (name, member) in

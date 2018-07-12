@@ -10,18 +10,20 @@ from entity.club import Member, EntityError
 import mailgroups
 import members
 
-from page import *
-Club_members_file = './members.py'
-import subprocess
+from clubPage import ClubPage, h
 
-class ClubAdminEditPage(Page):
+class ClubAdminEditPage(ClubPage):
+    EntityClass = Member
+    _lowerBanner = "edit member details"
 
-    def validate(self, line_=(-1, -1), **kw):
+    def validate(self, **kw):
         self.ee = None
-        self.line_= list(map(int, line_))
-        Member.by_range(self.line_).detach()
+        self.filename, = kw.get('filename', ('?fn',))
+        self.calling_script, = kw.get('calling_script', ('?cs',))
+        self.line_ = list(map(int, kw.get('line_', (-1, -1))))
+        self.EntityClass.by_range(self.line_).detach()
         # we usually need the following so let's get it done now.
-        with open(Club_members_file, 'r') as module_src:
+        with open(self.filename, 'r') as module_src:
             self.all_lines = module_src.readlines()
         # the following method of dermining whether we're here as a from validator
         # is a bit stange but works.
@@ -31,36 +33,31 @@ class ClubAdminEditPage(Page):
             requested_action = self.form.getfirst('button_')
             if requested_action in ('Add', 'Modify'):
                 answers = [(mfs.name, mfs.value) for mfs in self.form.list if not mfs.name.endswith('_')]
-                # print('ff', file=sys.stderr)
+                #print('ff', file=sys.stderr)
                 try:
-                    self.member_ = Member(**dict(answers))
+                    self.member_ = self.EntityClass(**dict(answers))
                 except EntityError as ee:
                     print(ee, file=sys.stderr)
                     self.ee = ee
             if self.ee is None:
                 # incorporate the updated entry into the module:
                 if requested_action != 'Cancel':
-                    with open(Club_members_file, 'w') as module_src:
+                    with open(self.filename, 'w') as module_src:
                         module_src.writelines(self.all_lines[:self.line_[requested_action=='Add']])
                         if requested_action != 'Delete':
                             module_src.write(str(self.member_))
                         module_src.writelines(self.all_lines[self.line_[1]:])
-                # from index import Club_AdminIndexPage
-                # pg = Club_AdminIndexPage()
-                # pg.main()
-                # sys.exit(0)
-                #subprocess.run('./index.py')
-                Page.validate(self, **kw)
-                print("Location: " + self.href("editable_list.py", {}, "#%s" % self.line_[0]) + "\n\n")
+                ClubPage.validate(self, **kw)
+                print("Location: " + self.href(self.calling_script, {}, "#%s" % self.line_[0]) + "\n\n")
                 #print("Location: editable_list.py#%s\n\n" % self.line_[0])
                 return None
         else:
-            #Member.by_range(self.line_).detach()
+            #self.EntityClass.by_range(self.line_).detach()
             item_string = ''.join(self.all_lines[slice(*self.line_)])
             #print(item_string, file=sys.stderr)
             self.member_ = eval(item_string)
 
-        return Page.validate(self, **kw)
+        return ClubPage.validate(self, **kw)
 
 
     def entry_line(self, displayed_name, attr_name, placeholder):
@@ -74,7 +71,7 @@ class ClubAdminEditPage(Page):
         return (h.label(For='%s' %attr_name)|displayed_name, '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
                 % (colour, attr_name, value))
 
-    def body(self):
+    def lowerText(self):
         existing = self.ee or self.member_.called!='(new member)'
         print('edit.py?'+os.environ.get("QUERY_STRING"), file=sys.stderr)
         print(self.href('edit.py', {'line_': map(str, self.line_)}), file=sys.stderr)
