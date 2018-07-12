@@ -61,7 +61,7 @@ class ClubAdminEditPage(ClubMembersPage):
         return ClubMembersPage.validate(self, **kw)
 
 
-    def entry_line(self, displayed_name, attr_name, placeholder):
+    def entry_line(self, attr_name, displayed_name, placeholder):
         colour = '#000000'  # black is default
         if self.submitting:
             value = self.form.getfirst(attr_name, '')
@@ -79,8 +79,8 @@ class ClubAdminEditPage(ClubMembersPage):
         return (
             h.form(action='edit.py?' + os.environ.get("QUERY_STRING"), method='post')| (
             #h.form(action=self.href('edit.py', {'line_': map(str, self.line_)}), method='post')| (
-            [self.entry_line(displayed_name, attr_name, placeholder)
-             for (displayed_name, attr_name, placeholder) in self.fieldDisplay],
+            [self.entry_line(attr_name, self.gloss(displayed_name), self.gloss(placeholder))
+             for (attr_name, displayed_name, placeholder) in self.fieldDisplay],
             [(ix_<2 or existing) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
              for ix_, (val_, colour) in enumerate((
                 ("Cancel", "green"),

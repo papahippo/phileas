@@ -108,6 +108,8 @@ and return False.
         return True  # =>  # go ahead an prsent this page.
 
     def gloss(self, dikkie, sep='/'):
+        if not isinstance(dikkie, dict):
+            return dikkie  # just a string, I presume.
         return '/'.join([dikkie[taal] for taal in self.language])
 
     def present(self):
