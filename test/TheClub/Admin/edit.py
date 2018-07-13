@@ -17,7 +17,9 @@ class ClubAdminEditPage(ClubMembersPage):
     _lowerBanner = "edit member details"
 
     def validate(self, **kw):
-        #  valid_ = ClubMembersPage.validate(self, **kw)
+        return self.validate_edit(ClubMembersPage.validate(self, **kw), **kw)
+
+    def validate_edit(self, valid_, **kw):
         self.ee = None
         self.filename, = kw.get('filename', ('?fn',))
         self.calling_script, = kw.get('calling_script', ('?cs',))
@@ -36,7 +38,7 @@ class ClubAdminEditPage(ClubMembersPage):
                 answers = [(mfs.name, mfs.value) for mfs in self.form.list if not mfs.name.endswith('_')]
                 #print('ff', file=sys.stderr)
                 try:
-                    self.member_ = self.EntityClass(**dict(answers))
+                    self.new_member = self.EntityClass(**dict(answers))
                 except EntityError as ee:
                     print(ee, file=sys.stderr)
                     self.ee = ee
@@ -46,9 +48,9 @@ class ClubAdminEditPage(ClubMembersPage):
                     with open(self.filename, 'w') as module_src:
                         module_src.writelines(self.all_lines[:self.line_[requested_action=='Add']])
                         if requested_action != 'Delete':
-                            module_src.write(str(self.member_))
+                            module_src.write(str(self.new_member))
                         module_src.writelines(self.all_lines[self.line_[1]:])
-                ClubMembersPage.validate(self, **kw)
+                #ClubMembersPage.validate(self, **kw)
                 print("Location: " + self.href(self.calling_script, {}, "#%s" % self.line_[0]) + "\n\n")
                 #print("Location: editable_list.py#%s\n\n" % self.line_[0])
                 return None
@@ -56,9 +58,8 @@ class ClubAdminEditPage(ClubMembersPage):
             #self.EntityClass.by_range(self.line_).detach()
             item_string = ''.join(self.all_lines[slice(*self.line_)])
             #print(item_string, file=sys.stderr)
-            self.member_ = eval(item_string)
-
-        return ClubMembersPage.validate(self, **kw)
+            self.new_member = eval(item_string)
+        return valid_
 
 
     def entry_line(self, attr_name, displayed_name, placeholder):
@@ -68,12 +69,12 @@ class ClubAdminEditPage(ClubMembersPage):
             if self.ee and attr_name == self.ee.key_:
                 colour = '#ff0000'  # red = place of error
         else:
-            value = getattr(self.member_, attr_name)
+            value = getattr(self.new_member, attr_name)
         return (h.label(For='%s' %attr_name)|displayed_name, '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
                 % (colour, attr_name, value))
 
     def lowerText(self):
-        existing = self.ee or self.member_.called!='(new member)'
+        existing = self.ee or self.new_member.called!='(new member)'
         print('edit.py?'+os.environ.get("QUERY_STRING"), file=sys.stderr)
         print(self.href('edit.py', {'line_': map(str, self.line_)}), file=sys.stderr)
         return (
