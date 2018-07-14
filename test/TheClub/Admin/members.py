@@ -63,7 +63,7 @@ Member(
     name='Duck, Donaldus',
     initials='',
     called='Donald',
-    streetAddress='De Vijfer 30',
+    streetAddress='De Vijfer 30b',
     postCode='1234 AB',
     cityAddress='Eendhoven',
     phone='099-1234567',

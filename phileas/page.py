@@ -178,8 +178,8 @@ and return False.
                     # except KeyError as ee:
                     print(ee, file=sys.stderr)
                     self.ee = ee
-                    print("Location: " + self.href('/testing/test3.py', {'exc': (str(ee),)}, "#%s" % self.line_[0]) + "\n\n")
-                    return None
+                    #print("Location: " + self.href('/testing/test3.py', {'exc': (str(ee),)}, "#%s" % self.line_[0]) + "\n\n")
+                    #return None
             if self.ee is None:
                 # incorporate the updated entry into the module:
                 if requested_action != 'Cancel':

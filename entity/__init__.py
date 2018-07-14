@@ -109,15 +109,15 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
         cls.next_lineno = 1 +frame.lineno
         annos = self.__init__.__annotations__
         for _key, _val in kw.items():
-            reqd_class = annos.get(_key)
-            if (reqd_class is not None) and not isinstance(_val, reqd_class):
-                if isinstance(reqd_class, tuple):
-                    reqd_class = reqd_class[0]
-                cast_val = reqd_class(_val)
-            else:
-                cast_val = _val
-            # cast_val = (((reqd_class is not None) and not isinstance(_val, reqd_class)) and  ) or _val
             try:
+                reqd_class = annos.get(_key)
+                if (reqd_class is not None) and not isinstance(_val, reqd_class):
+                    if isinstance(reqd_class, tuple):
+                        reqd_class = reqd_class[0]
+                    cast_val = reqd_class(_val)
+                else:
+                    cast_val = _val
+                # cast_val = (((reqd_class is not None) and not isinstance(_val, reqd_class)) and  ) or _val
                 self.__setattr__(_key, cast_val)
             except (ValueError) as _exc:
                 raise EntityError(_key, _val, _exc)

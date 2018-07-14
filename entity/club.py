@@ -75,5 +75,6 @@ class Member(Entity):
 if __name__ == "__main__":
     # This is of (very?) limited value owing to use of relative includes; see .../admin/test/veri.py.
     mailGroup = MailGroup('tryers')
-    member = Member(name='test', mailGroups='asdf')
+    member = Member(name='test', memberSince='bad date')
+    #member = Member(name='test', mailGroups='asdf')
     print(member)
