@@ -47,9 +47,9 @@ class ClubMembersListPage(ClubMembersPage):
                 h.td | member.name,
                 self.admin and
                 (h.td |  (h.a(id='%s' %member.lineno_range[0],
-                                 href=self.href('edit.py', {'calling_script': (os.environ.get('SCRIPT_NAME'),),
+                                 href=self.href('edit.py', {'calling_script_': (os.environ.get('SCRIPT_NAME'),),
                                                             'line_': map(str, member.lineno_range),
-                                                            'filename': (member.filename,)}))
+                                                            'filename_': (member.filename,)}))
                           |member.called))
                 or  h.td |  member.called,
                 h.td | (member.streetAddress, h.br, member.postCode, '&nbsp;'*2, member.cityAddress),
