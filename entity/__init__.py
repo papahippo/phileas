@@ -5,9 +5,11 @@ module 'entity' is housed within package 'phileas' but the connection between th
 roughly over the same time frame and represent rather off-beat approaches to pythn-html integration (phileas') and
 minimalistic database definition (entity) respectively.
 """
+import sys,os
 import datetime
 import inspect
 from collections import OrderedDict
+from phileas import html4 as h
 import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
@@ -84,6 +86,12 @@ This returns the line number following
     return frames[depth]
 
 
+def gloss(dikkie, language=('EN',), sep='/'):
+    if not isinstance(dikkie, dict):
+        return dikkie  # just a string, I presume.
+    return '/'.join([dikkie[taal] for taal in language])
+
+
 class Entity(object):
     """
 Class 'Entity' is the start of module 'entity'. Some features of enity obects are:
@@ -99,6 +107,9 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
     keyLookup = None
     rangeLookup = None
     next_lineno = -1
+# following few represent quick(?) hack to get cool tale display and may disappear later!
+    fieldDisplay = None
+    admin = 1
 
 
     def __init__(self, **kw):
@@ -172,6 +183,52 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
     def begin(cls):
         cls.next_lineno = 1 + get_frame(2).lineno
     begin = classmethod(begin)
+
+    def display0(self, ix, name):
+        # = stub!
+        return (
+                h.tr | (h.th | (str(ix), name, self.name))
+        )
+
+    def display(self, ix, name, page):
+        #print(h.th | self.gloss({'EN': 'full name', 'NL': 'naam'}), file=sys.stderr)
+        #return h.br, "abc", h.br
+        if 0:
+            return (
+                (ix % 10 == 0) and (h.tr | (
+                    [h.th | gloss(dikkie, language=language)
+                        for _, dikkie, _ in self.fieldDisplay ]
+                    ),
+                )
+        )
+        else:
+            return h.tr |(
+                h.td | self.name,
+                self.admin and
+                (h.td |  (h.a(id='%s' %self.lineno_range[0],
+                                 href=page.href('edit.py', {'calling_script_': (os.environ.get('SCRIPT_NAME'),),
+                                                            'line_': map(str, self.lineno_range),
+                                                            'filename_': (self.filename,)}))
+                          |self.called))
+                or  h.td |  self.called,
+                h.td | (self.streetAddress, h.br, self.postCode, '&nbsp;'*2, self.cityAddress),
+                h.td | (self.phone, h.br, self.mobile),
+                h.td | (self.emailAddress, h.br, self.altEmailAddress),
+                h.td | self.birthDate,
+                h.td | self.memberSince,
+                h.td | self.instrument,
+                self.admin and (
+                        h.td | (self.mailGroups)
+                )
+            )
+
+    def Display(cls, filter_=True, sort_key_=None, page=None):
+        return (
+            h.table(id="members") | [member.display(ix, name, page=page) for ix, (name, member) in
+                             enumerate(sorted(cls.keyLookup[sort_key_].items())[not cls.admin:])]
+        )
+
+    Display = classmethod(Display)
 
 def money(amount):
     l = list(("%.2f" % amount ).replace('.',  ','))

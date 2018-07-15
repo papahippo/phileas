@@ -28,6 +28,23 @@ class MailGroup(Entity):
 
 class Member(Entity):
     keyFields = ('name', 'called')
+
+    fieldDisplay = [
+        ('called', {'EN':'known as', 'NL': 'roepnaam'},
+                        {'EN': 'known within MEW as...', 'NL': 'bekend binnen MEW als...'}),
+        ('name', 'full name', 'surname, initials'),
+        ('streetAddress', 'street address', 'e.g. Rechtstraat 42'),
+        ('postCode', 'postcode', 'e.g. 1234 XY'),
+        ('cityAddress', 'Town/City', 'e.g. Eindhoven'),
+        ('phone', 'telephome', 'e.g. 040-2468135'),
+        ('mobile', 'mobile', 'e.g. 06-24681357'),
+        ('emailAddress', '1st email address', 'e.g. fred@backofthe.net'),
+        ('altEmailAddress', 'opt. 2nd email address', 'optional'),
+        ('birthDate', 'date of birth', 'e.g. 15-mrt-1963'),
+        ('memberSince', 'date of joining', 'e.g. 15-okt-2003'),
+        ('instrument', 'instrument', 'e.g. Klarinet'),
+        ('mailGroups', 'mail groups', 'e.g. Musicians, Hoorns'),
+    ]
     def __init__(self,
                  name:str='',
                  initials:str='',

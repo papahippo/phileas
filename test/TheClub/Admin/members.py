@@ -54,7 +54,7 @@ Member(
     emailAddress='dafne.duck2@wetmail.com',
     altEmailAddress='',
     birthDate='12-aug-1953',
-    memberSince='03-sep-2017',
+    memberSince='03-jul-2017',
     instrument='Clarinet',
     mailGroups=["Musicians"]
 )
