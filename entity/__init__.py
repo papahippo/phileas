@@ -184,47 +184,31 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
         cls.next_lineno = 1 + get_frame(2).lineno
     begin = classmethod(begin)
 
-    def display0(self, ix, name):
-        # = stub!
-        return (
-                h.tr | (h.th | (str(ix), name, self.name))
-        )
-
-    def display(self, ix, name, page):
+    def display(self, ix, name, page, item_script=None):
         #print(h.th | self.gloss({'EN': 'full name', 'NL': 'naam'}), file=sys.stderr)
         #return h.br, "abc", h.br
-        if 0:
-            return (
-                (ix % 10 == 0) and (h.tr | (
-                    [h.th | gloss(dikkie, language=language)
-                        for _, dikkie, _ in self.fieldDisplay ]
-                    ),
-                )
-        )
-        else:
-            return h.tr |(
-                h.td | self.name,
-                self.admin and
-                (h.td |  (h.a(id='%s' %self.lineno_range[0],
-                                 href=page.href('edit.py', {'calling_script_': (os.environ.get('SCRIPT_NAME'),),
-                                                            'line_': map(str, self.lineno_range),
-                                                            'filename_': (self.filename,)}))
-                          |self.called))
-                or  h.td |  self.called,
-                h.td | (self.streetAddress, h.br, self.postCode, '&nbsp;'*2, self.cityAddress),
-                h.td | (self.phone, h.br, self.mobile),
-                h.td | (self.emailAddress, h.br, self.altEmailAddress),
-                h.td | self.birthDate,
-                h.td | self.memberSince,
-                h.td | self.instrument,
-                self.admin and (
-                        h.td | (self.mailGroups)
-                )
-            )
-
-    def Display(cls, filter_=True, sort_key_=None, page=None):
         return (
-            h.table(id="members") | [member.display(ix, name, page=page) for ix, (name, member) in
+            (ix % 10 == 0) and (h.tr | (
+                [h.th | page.gloss(dikkie)
+                    for _, dikkie, _ in self.fieldDisplay ]
+                ),
+            ),
+            h.tr |(
+                [(h.td | (h.a(id='%s' %self.lineno_range[0],
+                              href=page.href(item_script,
+                                    {'calling_script_': (os.environ.get('SCRIPT_NAME'),),
+                                     'line_': map(str, self.lineno_range),
+                                     'filename_': (self.filename,)})) | str(getattr(self, arg_name))
+                            if (item_script and arg_name  in self.keyFields )
+                                                     else str(getattr(self, arg_name))))
+                 for arg_name, _, _ in self.fieldDisplay ]
+            )
+        )
+
+    def Display(cls, filter_=True, sort_key_=None, page=None, item_script=None):
+        return (
+            h.table(id="members") | [member.display(ix, name, page=page, item_script=item_script)
+                                     for ix, (name, member) in
                              enumerate(sorted(cls.keyLookup[sort_key_].items())[not cls.admin:])]
         )
 

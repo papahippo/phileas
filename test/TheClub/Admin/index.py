@@ -69,7 +69,7 @@ class ClubMembersListPage(ClubMembersPage):
         print(self.language, file=sys.stderr)
         #print(Member.keyLookup['name'].items())
         return (self.one_offs(),
-                Member.Display(filter_=True, sort_key_='called', page=self),
+                Member.Display(filter_=True, sort_key_='called', page=self, item_script='edit.py'),
         )
 
 if __name__ == "__main__":
