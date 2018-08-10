@@ -7,7 +7,7 @@ from entity import EntityError
 from entity.club import Member
 import cgi
 import cgitb
-cgitb.enable()
+#cgitb.enable()
 
 from urllib.parse import urlparse, parse_qs
 
