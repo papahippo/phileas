@@ -70,7 +70,7 @@ class ClubMembersListPage(ClubMembersPage):
         #print(Member.keyLookup['name'].items())
         return (self.one_offs(),
                 h.table(id="members") | [self.rows_per_member(ix, member) for ix, (name, member) in
-                enumerate (sorted(Member.keyLookup['called'].items())[not self.admin:])]
+                enumerate (sorted(Member.keyLookup['called'].items())[not self.admin:]) if member]
         )
 
 if __name__ == "__main__":
