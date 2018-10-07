@@ -105,7 +105,8 @@ by 'validate'.
 True if this page is be presented. Alternatively it may cause some other page to be presented
 and return False.
         """
-        self.language = kw.get('language', ('EN',))
+        print('validate!', file=sys.stderr)
+        self.language = kw.pop('language', ('EN',))
         self.kw = kw  # stub / base class version
         return True  # =>  # go ahead an prsent this page.
 
