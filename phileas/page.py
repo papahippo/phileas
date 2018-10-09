@@ -131,10 +131,10 @@ and return False.
         return fileName[len(self.topDir):]
 
     def main(self):
-        uri = os.environ.get('REQUEST_URI')
-        if uri:
+        self.uri = os.environ.get('REQUEST_URI')
+        if self.uri:
             self.script_name = os.environ['SCRIPT_NAME']
-            o = urlparse(uri)
+            o = urlparse(self.uri)
             path = os.environ['DOCUMENT_ROOT'] + o.path  # geturl()
             if not os.path.isdir(path):
                 path = os.path.split(path)[0]

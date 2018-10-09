@@ -47,7 +47,7 @@ class ClubMembersListPage(ClubMembersPage):
                 h.td | member.name,
                 self.admin and
                 (h.td |  (h.a(id='%s' %member.lineno_range[0],
-                                 href=self.href('edit.py', {'calling_script_': (os.environ.get('SCRIPT_NAME'),),
+                                 href=self.href('edit.py', {'calling_script_': (self.script_name,),
                                                             'line_': map(str, member.lineno_range),
                                                             'filename_': (member.filename,)}))
                           |member.called))
