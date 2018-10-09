@@ -7,7 +7,7 @@ import members
 
 
 class ClubMembersListPage(ClubMembersPage):
-    admin = 0
+    admin = False
 
     def validate(self, **kw):
         self.sortby = kw.get('sortby', ('name',))
@@ -66,11 +66,11 @@ class ClubMembersListPage(ClubMembersPage):
     def lowerText(self):
         #for ix, (name, member) in enumerate(Member.keyLookup['name'].items()):
         #    print (name, member.name, '...', member.__init__.__annotations__)
-        print(self.language, file=sys.stderr)
+        #print(self.language, file=sys.stderr)
         #print(Member.keyLookup['name'].items())
         return (self.one_offs(),
                 h.table(id="members") | [self.rows_per_member(ix, member) for ix, (name, member) in
-                enumerate (sorted(Member.keyLookup['called'].items())[not self.admin:])]
+                enumerate (sorted(Member.keyLookup['called'].items())[not self.admin:]) if member]
         )
 
 if __name__ == "__main__":

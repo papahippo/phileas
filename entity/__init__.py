@@ -191,12 +191,12 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
             (ix % 10 == 0) and (h.tr | (
                 [h.th | page.gloss(dikkie)
                     for _, dikkie, _ in self.fieldDisplay ]
-                ),
-            ),
+                )
+            ) or '',
             h.tr |(
                 [(h.td | (h.a(id='%s' %self.lineno_range[0],
                               href=page.href(item_script,
-                                    {'calling_script_': (os.environ.get('SCRIPT_NAME'),),
+                                    {'calling_script_': (page.script_name,),
                                      'line_': map(str, self.lineno_range),
                                      'filename_': (self.filename,)})) | str(getattr(self, arg_name))
                             if (item_script and arg_name  in self.keyFields )

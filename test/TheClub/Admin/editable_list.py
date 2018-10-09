@@ -5,7 +5,7 @@ cgitb.enable()
 from list import ClubMembersListPage
 
 class ClubEditableListPage(ClubMembersListPage):
-    admin = 1
+    admin = True
 
 
 if __name__ == "__main__":
