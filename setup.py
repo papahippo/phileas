@@ -3,11 +3,11 @@ from setuptools import setup
 setup(
     name='phileas',
     version='0.9.0',
-    packages=['phileas'],
+    packages=['phileas', 'entity'],
     url='',
     license='',
-    author='larry',
+    author='Larry Myerscough',
     author_email='hippostech@gmail.com',
-    description='python & HTML integration; alternative approach'
+    description='Python with Html In-Line At Source (somewhat contrived acronym)'
 )
 

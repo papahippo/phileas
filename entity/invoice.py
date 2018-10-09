@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-from phileas.entity.company import *
-from phileas.entity.page import Page
+from entity.company import *
+from phileas.page import *
 
 class InvoiceItem(Entity):
 
@@ -70,11 +70,12 @@ class InvoiceItem(Entity):
 
 
 class Invoice(Page, Entity):
+    keyFields = ('sequenceNumber',)
     def __init__(self,
         date:str="42 Januari, 2099",
         styleSheet:str="file:///home/gill/hippos.css",
         sequenceNumber:str='N2099/042', #stub
-        items:list=[InvoiceItem(cost=54.),],
+        items:list=[],
         description:str='',
         client:Client=Client(-1), #stub for base class!
         deliveryHelp:str='',
@@ -266,8 +267,8 @@ class Invoice(Page, Entity):
     def composeDescription(self):
         return self.items and self.items[0].description
  
-if __name__=="__main__":
-    invoice = Invoice()
-    invoice.present()
+#if __name__=="__main__":
+#    invoice = Invoice()
+#    invoice.present()
 
     

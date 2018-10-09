@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-from phileas import _html40 as h
-from phileas.entity import Entity, DateOrNone
-import datetime
+from entity import Entity, DateOrNone
+import locale
+locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
 
 class Company(Entity):
@@ -122,8 +122,7 @@ def putLines(el,  *lines):
         el.text(line)
         el.br
 
-from ..page import *
-from .invoice import *
+
 from .quarter import *
 # from .mailing import *
 
