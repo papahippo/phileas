@@ -1,10 +1,8 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
-from __future__ import print_function
 import sys, os, time
 from phileas import _html40 as h
 from entity import EntityError
-from entity.club import Member
 import cgi
 import cgitb
 #cgitb.enable()
@@ -21,26 +19,22 @@ def modulename2text(name):
     return (name.lstrip('_')).replace('__', "'").replace("_", " ")
 
 
-class Page(object):
+class Page:
     topDir = os.path.split(__file__)[0]
     styleSheet = "/.style/mew.css"
     errOutput = []
-    dateTimeFormat = "%Y %b %d %a %H:%M"
-    dateTime = None
     name = os.path.splitext(os.path.basename(__file__))[0]
     metaDict = {'http-equiv': "content-type", 'content': "text/html; charset=utf-8"}
     _title = None  # => use basename of page as page title - unless overruled.
+    EntityClass = None  # only relevant for certain kinds of pages.
 
     def __init__(self, localIndex=None):
         self.localIndex = localIndex
         try:
-            if self.dateTime is None:
-                pTime = os.stat(sys.argv[0]).st_ctime,
-                self.dateTime = time.strftime('%Y %b %d %a %H:%M', time.gmtime(*pTime))
             self.nameToPrint = modulename2text(
                 os.path.splitext(os.path.split(sys.argv[0])[1])[0])
         except FileNotFoundError:
-            self.dateTime = self.nameToPrint = ''
+            self.nameToPrint = ''
 
         self.resolveData()
 
@@ -151,10 +145,15 @@ and return False.
             self.present()
 
     def validate_edit(self, valid_, **kw):
+        # validate_edit only comes into force for field-by-field-edit style page so maybe belongs in a
+        # subclass
+
         self.ee = None
         self.filename, = kw.get('filename_', ('?fn',))
         self.calling_script, = kw.get('calling_script_', ('?cs',))
         self.line_ = list(map(int, kw.get('line_', (-1, -1))))
+
+        # we must avoid trying to create an entity which already exists accordin gto the source file.
         self.EntityClass.by_range(self.line_).detach()
         # we usually need the following so let's get it done now.
         with open(self.filename, 'r') as module_src:
@@ -162,20 +161,20 @@ and return False.
         # the following method of dermining whether we're here as a from validator
         # is a bit stange but works.
         self.submitting = os.environ.get("REQUEST_METHOD") == "POST"
-        if self.submitting:
+        if self.submitting and self.EntityClass:
+
+            # So the user has finished editing an item which was taken from a page containing a list of such items.
+            # If we're happy with his edit we return to that list page, otherwsie we stay on this page and helphim sort it out.
+            #
             self.form = cgi.FieldStorage()
             requested_action = self.form.getfirst('button_')
-            answers = [(mfs.name, mfs.value) for mfs in self.form.list if not mfs.name.endswith('_')]
-            print(answers, file=sys.stderr)
             if requested_action in ('Add', 'Modify'):
-                answers = [(mfs.name, mfs.value) for mfs in self.form.list if not mfs.name.endswith('_')]
                 try:
-                    self.new_member = Member(**dict(answers))
-                    #self.new_member = self.EntityClass(**dict(answers))
-                    # print("Location: " + self.href('/testing/test3.py', {'exc': ('None!',)}, "#%s" % self.line_[0]) + "\n\n")
-                    # return  None
-                #except EntityError as ee:
-                except Exception as ee:
+                    # Retrieve the fields and values and use thses to create a new or replacement instance.
+                    answers = [(mfs.name, mfs.value) for mfs in self.form.list if not mfs.name.endswith('_')]
+                    self.new_instance = self.EntityClass(**dict(answers))
+                except EntityError as ee:
+                # except Exception as ee:
                     # except KeyError as ee:
                     print(ee, file=sys.stderr)
                     self.ee = ee
@@ -187,7 +186,7 @@ and return False.
                     with open(self.filename, 'w') as module_src:
                         module_src.writelines(self.all_lines[:self.line_[requested_action=='Add']])
                         if requested_action != 'Delete':
-                            module_src.write(str(self.new_member))
+                            module_src.write(str(self.new_instance))
                         module_src.writelines(self.all_lines[self.line_[1]:])
                 print("Location: " + self.href(self.calling_script, {}, "#%s" % self.line_[0]) + "\n\n")
                 #print("Location: " + self.href('/testing/test3.py', {}, "#%s" % self.line_[0]) + "\n\n")
@@ -204,7 +203,7 @@ and return False.
 
 
     def edit_pane(self):
-        existing = self.ee or self.new_member.called!='(new member)'
+        existing = self.ee or self.new_instance.called != '(new member)'
         print('edit.py?'+os.environ.get("QUERY_STRING"), file=sys.stderr)
         print(self.href('edit.py', {'line_': map(str, self.line_)}), file=sys.stderr)
         return (
