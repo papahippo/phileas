@@ -26,6 +26,23 @@ Member(
 )
 
 Member(
+    name='Doubleshod, Novus',
+    initials='',
+    called='newbie twoshoes',
+    streetAddress='',
+    postCode='',
+    cityAddress='',
+    phone='',
+    mobile='',
+    emailAddress='',
+    altEmailAddress='',
+    birthDate='',
+    memberSince='',
+    instrument='',
+    mailGroups=["Musicians", "Percussion"]
+)
+
+Member(
     name='X, Frederik',
     initials='',
     called='fred x',
@@ -64,7 +81,7 @@ Member(
     initials='',
     called='Donald',
     streetAddress='De Vijfer 30b',
-    postCode='1234 AX',
+    postCode='1234 AB',
     cityAddress='Eendhoven',
     phone='099-1234567',
     mobile='06-9876543',
