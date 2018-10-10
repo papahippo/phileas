@@ -10,19 +10,17 @@ from entity.club import Member, EntityError
 import mailgroups
 import members
 
-from membersPage import ClubMembersPage, h
-from editPage import EditPage
+from membersPage import ClubMembersPage
+from editPage import EditPage, h
 
 class ClubAdminEditPage(EditPage, ClubMembersPage):
     EntityClass = Member
     _lowerBanner = "edit member details"
 
-    def validate(self, **kw):
-        valid_ = self.validate_edit(ClubMembersPage.validate(self, **kw), **kw)
-        return valid_
+    def evaluate(self, str):
+        return eval(str)
 
     def lowerText(self):
-        self.new_instance = isinstance(self.validated, str) and eval(self.validated) or None
         return self.edit_pane()
 
 if __name__ == "__main__":

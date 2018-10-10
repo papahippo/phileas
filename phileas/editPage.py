@@ -3,12 +3,14 @@
 import sys, os, time
 from page import *
 
+
 class EditPage(Page):
 
-    def validate_edit(self, valid_, his_globals=None,  **kw):
+    def validate(self, **kw):
         # validate_edit only comes into force for field-by-field-edit style page so maybe belongs in a
         # subclass
-        self.his_globals = his_globals
+        if not Page.validate(self, **kw):
+            return False
         self.ee = None
         self.filename, = kw.get('filename_', ('?fn',))
         self.calling_script, = kw.get('calling_script_', ('?cs',))
@@ -53,13 +55,14 @@ class EditPage(Page):
                 #print("Location: " + self.href('/testing/test3.py', {}, "#%s" % self.line_[0]) + "\n\n")
                 return  None
             else:
-                return valid_
+                return True
         else:
             item_string = ''.join(self.all_lines[slice(*self.line_)])
             print(item_string, file=sys.stderr)
             #print("Location: " + self.href('/testing/test3.py', {'item_string_': (str('item_string'),)}, "#%s" % self.line_[0]) + "\n\n")
             # return None
-            return item_string
+            self.new_instance = self.evaluate(item_string)
+            return True
 
     def edit_pane(self):
         existing = self.ee or self.new_instance.called != '(new member)'
