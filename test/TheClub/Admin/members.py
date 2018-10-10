@@ -64,7 +64,7 @@ Member(
     initials='',
     called='Donald',
     streetAddress='De Vijfer 30b',
-    postCode='1234 AB',
+    postCode='1234 AX',
     cityAddress='Eendhoven',
     phone='099-1234567',
     mobile='06-9876543',
