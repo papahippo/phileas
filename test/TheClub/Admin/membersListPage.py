@@ -1,17 +1,17 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
 import sys, os
-from membersPage import ClubMembersPage, h
+from membersPage import MembersPage, h
 from entity.club import Member
 import members
 
 
-class MembersListPage(ClubMembersPage):
+class MembersListPage(MembersPage):
     admin = False
 
     def validate(self, **kw):
         self.sortby = kw.get('sortby', ('name',))
-        return ClubMembersPage.validate(self, **kw)
+        return MembersPage.validate(self, **kw)
 
     def lowerBanner(self):
         return h.h2 | (
@@ -38,7 +38,8 @@ class MembersListPage(ClubMembersPage):
             ])),
             h.tr |(
                 (h.td |  (h.a(id='%s' %member.lineno_range[0],
-                                 href=self.href('edit.py', {'calling_script_': (self.script_name,),
+                                 href=self.href(self.admin and 'memberEditPage.py' or 'memberViewPage.py',
+                                                {'calling_script_': (self.script_name,),
                                                             'line_': map(str, member.lineno_range),
                                                             'filename_': (member.filename,)}))
                           | (self.admin and 'edit' or 'view'))),
@@ -57,5 +58,5 @@ class MembersListPage(ClubMembersPage):
 
 if __name__ == "__main__":
     # print ("hello Larry")
-    ClubMembersListPage().main()
+    MembersListPage().main()
     

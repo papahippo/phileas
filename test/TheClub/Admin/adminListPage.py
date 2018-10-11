@@ -2,12 +2,12 @@
 # -*- encoding: utf8 -*-
 import cgitb
 cgitb.enable()
-from list import ClubMembersListPage
+from membersListPage import MembersListPage
 
-class ClubEditableListPage(ClubMembersListPage):
+class AdminListPage(MembersListPage):
     admin = True
 
 
 if __name__ == "__main__":
-    ClubEditableListPage().main()
+    AdminListPage().main()
     

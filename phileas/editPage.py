@@ -66,10 +66,11 @@ class EditPage(Page):
 
     def edit_pane(self):
         existing = self.ee or self.new_instance.called != '(new member)'
-        print('edit.py?'+os.environ.get("QUERY_STRING"), file=sys.stderr)
-        print(self.href('edit.py', {'line_': map(str, self.line_)}), file=sys.stderr)
+        _, low_name = os.path.split(self.kw.pop('calling_script_')[0])
+        print(low_name+os.environ.get("QUERY_STRING"), file=sys.stderr)
+        print(self.href('adminListPage.py', {'line_': map(str, self.line_)}), file=sys.stderr)
         return (
-            h.form(action='edit.py?' + os.environ.get("QUERY_STRING"), method='post')| (
+            h.form(action=low_name + os.environ.get("QUERY_STRING"), method='post')| (
             #h.form(action=self.href('edit.py', {'line_': map(str, self.line_)}), method='post')| (
             [self.entry_line(attr_name, self.gloss(displayed_name), self.gloss(placeholder))
              for (attr_name, displayed_name, placeholder) in self.fieldDisplay],
@@ -78,7 +79,7 @@ class EditPage(Page):
                 ("Cancel", "green"),
                 (existing and "Modify" or "Add", "orange"),
                 ("Delete", "red"),
-            ))],
+            )[:self.admin and 3 or 1])],
             h.br*2,
             h.a(STYLE="color:#ff0000;") | self.ee,
         ))
