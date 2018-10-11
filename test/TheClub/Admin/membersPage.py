@@ -9,10 +9,10 @@ class ClubMembersPage(ClubPage):
     _upperBanner = h.h1 | "%s - Members zone" % clubName
 
     fieldDisplay = [
-        ('called', {'EN':'known as', 'NL': 'roepnaam'},
-                        {'EN': 'known within MEW as...', 'NL': 'bekend binnen MEW als...'}),
-        ('name', 'full name', 'surname, initials'),
-        ('streetAddress', 'street address', 'e.g. Rechtstraat 42'),
+        # python name       # heading for glossing                 # field entry tip for glossing
+        ('called',          {'EN':'known as', 'NL':'roepnaam'},    {'EN': 'known within MEW as...', 'NL': 'bekend binnen MEW als...'}),
+        ('name',            {'EN':'full name', 'NL':'naam'},       {'EN': 'surname, initials', 'NL': 'achternaam, initielen'}),
+        ('streetAddress',   {'EN':'street address', 'NL':'adres'}, {'EN': 'e.g. Rechtstraat 42', 'NL': 'b.v. Rechtstraat 42'}),
         ('postCode', 'postcode', 'e.g. 1234 XY'),
         ('cityAddress', 'Town/City', 'e.g. Eindhoven'),
         ('phone', 'telephome', 'e.g. 040-2468135'),

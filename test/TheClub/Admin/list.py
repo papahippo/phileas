@@ -24,6 +24,7 @@ class ClubMembersListPage(ClubMembersPage):
         )
 
     def one_offs(self):
+        print(self.fieldDisplay, file=sys.stderr)
         return h.p | u""
     
     def rows_per_member(self, ix, member):
