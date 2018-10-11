@@ -68,7 +68,7 @@ Member(
     cityAddress='Eendhoven',
     phone='099-1234567',
     mobile='06-9876543',
-    emailAddress='dafne.duck2@wetmail.com',
+    emailAddress='dafne.duck2@wetmail.com secnd very long email address',
     altEmailAddress='',
     birthDate='12-aug-1953',
     memberSince='03-jul-2017',

@@ -31,19 +31,10 @@ class ClubMembersListPage(ClubMembersPage):
         #print(h.th | self.gloss({'EN': 'full name', 'NL': 'naam'}), file=sys.stderr)
         #return h.br, "abc", h.br
         return (
-            (ix % 10 == 0) and (h.tr | (
-                h.th | self.gloss({'EN': 'full name',         'NL':'naam'}),
-                h.th | self.gloss({'EN': 'known as',          'NL':'roepnaam'}),
-                h.th | self.gloss({'EN': 'address',           'NL': 'addres'}),
-                h.th | self.gloss({'EN': 'telephone',         'NL':'telefoon'}),
-                h.th | self.gloss({'EN': 'email address(es)', 'NL':'email addres(sen)'}),
-                h.th | self.gloss({'EN': 'date of birth',     'NL':'geboortedatum'}),
-                h.th | self.gloss({'EN': 'membership start',  'NL':'lid vanaf'}),
-                h.th | self.gloss({'EN': 'instrument',        'NL':'instrument'}),
-                self.admin and (
-                    h.th | self.gloss({'EN': 'mail group(s)',     'NL':'mailgroep(en)'})
-                ),
-            )),
+            (ix % 10 == 0) and (h.tr | [
+            h.th | self.gloss(heading)
+                for python_name, heading, tip_text in self.fieldDisplay
+            ]),
             h.tr |(
                 h.td | member.name,
                 self.admin and

@@ -18,11 +18,11 @@ class ClubMembersPage(ClubPage):
         ('phone', 'telephome', 'e.g. 040-2468135'),
         ('mobile', 'mobile', 'e.g. 06-24681357'),
         ('emailAddress', '1st email address', 'e.g. fred@backofthe.net'),
-        ('altEmailAddress', 'opt. 2nd email address', 'optional'),
+        #('altEmailAddress', 'opt. 2nd email address', 'optional'),
         ('birthDate', 'date of birth', 'e.g. 15-mrt-1963'),
         ('memberSince', 'date of joining', 'e.g. 15-okt-2003'),
         ('instrument', 'instrument', 'e.g. Klarinet'),
-        ('mailGroups', 'mail groups', 'e.g. Musicians, Hoorns'),
+        #('mailGroups', 'mail groups', 'e.g. Musicians, Hoorns'),
     ]
 if __name__ == "__main__":
     # print ("hello Larry")
