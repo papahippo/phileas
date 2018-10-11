@@ -6,7 +6,7 @@ from entity.club import Member
 import members
 
 
-class ClubMembersListPage(ClubMembersPage):
+class MembersListPage(ClubMembersPage):
     admin = False
 
     def validate(self, **kw):
