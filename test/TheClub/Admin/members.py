@@ -73,7 +73,7 @@ Member(
     birthDate='12-aug-1953',
     memberSince='03-jul-2017',
     instrument='Clarinet',
-    mailGroups=["Musicians"]
+    mailGroups=[]
 )
 
 Member(

@@ -31,28 +31,18 @@ class ClubMembersListPage(ClubMembersPage):
         #print(h.th | self.gloss({'EN': 'full name', 'NL': 'naam'}), file=sys.stderr)
         #return h.br, "abc", h.br
         return (
-            (ix % 10 == 0) and (h.tr | [
-            h.th | self.gloss(heading)
-                for python_name, heading, tip_text in self.fieldDisplay
-            ]),
+            (ix % 10 == 0) and (h.tr | (
+            h.th | (h.em | ('single', h.br, 'item')),
+            [h.th | self.gloss(heading)
+                for attr_name, heading, tip_text in self.fieldDisplay
+            ])),
             h.tr |(
-                h.td | member.name,
-                self.admin and
                 (h.td |  (h.a(id='%s' %member.lineno_range[0],
                                  href=self.href('edit.py', {'calling_script_': (self.script_name,),
                                                             'line_': map(str, member.lineno_range),
                                                             'filename_': (member.filename,)}))
-                          |member.called))
-                or  h.td |  member.called,
-                h.td | (member.streetAddress, h.br, member.postCode, '&nbsp;'*2, member.cityAddress),
-                h.td | (member.phone, h.br, member.mobile),
-                h.td | (member.emailAddress, h.br, member.altEmailAddress),
-                h.td | member.birthDate,
-                h.td | member.memberSince,
-                h.td | member.instrument,
-                self.admin and (
-                        h.td | (member.mailGroups)
-                )
+                          | (self.admin and 'edit' or 'view'))),
+                [(h.td | getattr(member, attr_name)) for attr_name, heading, tip_text in self.fieldDisplay],
             )
         )
     def lowerText(self):
