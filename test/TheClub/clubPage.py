@@ -10,9 +10,9 @@ clubName = "The Club"
 
 class ClubPage(Page):
     _upperBanner = clubName
-    upperBarColour = '#6060f0'
+    upperBarColour = 'SlateBlue'  # '#6060f0'
     _lowerBanner = "(dummy 'Lower banner')"
-    lowerBarColour = '#000088'
+    lowerBarColour = 'Orange'
     _synopsis = """dummy synopsis"""
     _detail = """dummy detail - this page is intended to be included, not displayed in itw own right!"""
     centreImage = None
