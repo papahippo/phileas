@@ -11,12 +11,13 @@ from memberViewPage import MemberViewPage
 
 class MemberEditPage(MemberViewPage):
     _lowerBanner = "edit member details"
+    admin = True
 
     def evaluate(self, str):
         return eval(str)
 
     def lowerText(self):
-        return self.edit_pane()
+        return self.edit_pane()  # EntityClass=Member)
 
 if __name__ == "__main__":
     MemberEditPage().main()

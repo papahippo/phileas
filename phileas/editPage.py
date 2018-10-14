@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
 import sys, os, time
-from page import *
+from page import Page, h
+from entity import EntityError
+import cgi
 
 
 class EditPage(Page):
@@ -52,7 +54,6 @@ class EditPage(Page):
                             module_src.write(str(self.new_instance))
                         module_src.writelines(self.all_lines[self.line_[1]:])
                 print("Location: " + self.href(self.calling_script, {}, "#%s" % self.line_[0]) + "\n\n")
-                #print("Location: " + self.href('/testing/test3.py', {}, "#%s" % self.line_[0]) + "\n\n")
                 return  None
             else:
                 return True
@@ -64,13 +65,13 @@ class EditPage(Page):
             self.new_instance = self.evaluate(item_string)
             return True
 
-    def edit_pane(self):
+    def edit_pane(self, EntityClass=None):
+        if EntityClass:
+            print(EntityClass(), file=sys.stderr)
         existing = self.ee or self.new_instance.called != '(new member)'
         _, low_name = os.path.split(self.kw.pop('calling_script_')[0])
-        print(low_name+os.environ.get("QUERY_STRING"), file=sys.stderr)
-        print(self.href('adminListPage.py', {'line_': map(str, self.line_)}), file=sys.stderr)
         return (
-            h.form(action=low_name + os.environ.get("QUERY_STRING"), method='post')| (
+            h.form(action=low_name + '?' + os.environ.get("QUERY_STRING"), method='post')| (
             #h.form(action=self.href('edit.py', {'line_': map(str, self.line_)}), method='post')| (
             [self.entry_line(attr_name, self.gloss(displayed_name), self.gloss(placeholder))
              for (attr_name, displayed_name, placeholder) in self.fieldDisplay],

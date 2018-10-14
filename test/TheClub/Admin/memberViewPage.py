@@ -22,7 +22,7 @@ class MemberViewPage(EditPage, MembersPage):
         return eval(str)
 
     def lowerText(self):
-        return self.edit_pane()
+        return self.edit_pane(EntityClass=Member)
 
 if __name__ == "__main__":
     # print ("hello Larry")
