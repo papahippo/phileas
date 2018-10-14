@@ -11,14 +11,14 @@ class EditPage(Page):
     def validate(self, **kw):
         # validate_edit only comes into force for field-by-field-edit style page so maybe belongs in a
         # subclass
+        self.filename, = kw.pop('filename_', ('?fn',))
+        self.calling_script, = kw.pop('calling_script_', ('?cs',))
+        self.line_ = list(map(int, kw.pop('line_', (-1, -1))))
         if not Page.validate(self, **kw):
             return False
         self.ee = None
-        self.filename, = kw.get('filename_', ('?fn',))
-        self.calling_script, = kw.get('calling_script_', ('?cs',))
-        self.line_ = list(map(int, kw.get('line_', (-1, -1))))
 
-        # we must avoid trying to create an entity which already exists accordin gto the source file.
+        # we must avoid trying to create an entity which already exists according to the source file.
         self.EntityClass.by_range(self.line_).detach()
         # we usually need the following so let's get it done now.
         with open(self.filename, 'r') as module_src:
@@ -65,16 +65,16 @@ class EditPage(Page):
             self.new_instance = self.evaluate(item_string)
             return True
 
-    def edit_pane(self, EntityClass=None):
-        if EntityClass:
-            print(EntityClass(), file=sys.stderr)
+    def edit_pane(self):
+        if 0:
+            print(self.new_instance.__class__(), file=sys.stderr)
         existing = self.ee or self.new_instance.called != '(new member)'
-        _, low_name = os.path.split(self.kw.pop('calling_script_')[0])
+        _, low_name = os.path.split(self.calling_script)
         return (
-            h.form(action=low_name + '?' + os.environ.get("QUERY_STRING"), method='post')| (
-            #h.form(action=self.href('edit.py', {'line_': map(str, self.line_)}), method='post')| (
+            h.form(action=low_name + '?language=%s' % self.language[0], method='post')| (
             [self.entry_line(attr_name, self.gloss(displayed_name), self.gloss(placeholder))
              for (attr_name, displayed_name, placeholder) in self.fieldDisplay],
+
             [(ix_<2 or existing) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
              for ix_, (val_, colour) in enumerate((
                 ("Cancel", "green"),

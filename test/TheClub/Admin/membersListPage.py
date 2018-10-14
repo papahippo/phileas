@@ -24,7 +24,8 @@ class MembersListPage(MembersPage):
         )
 
     def one_offs(self):
-        print(self.fieldDisplay, file=sys.stderr)
+        if 0:
+            print(self.fieldDisplay, file=sys.stderr)  #diagnostics
         return h.p | u""
     
     def rows_per_member(self, ix, member):
@@ -41,7 +42,8 @@ class MembersListPage(MembersPage):
                                  href=self.href(self.admin and 'memberEditPage.py' or 'memberViewPage.py',
                                                 {'calling_script_': (self.script_name,),
                                                             'line_': map(str, member.lineno_range),
-                                                            'filename_': (member.filename,)}))
+                                                            'filename_': (member.filename,),
+                                                 'language': self.language}))
                           | (self.admin and 'edit' or 'view'))),
                 [(h.td | getattr(member, attr_name)) for attr_name, heading, tip_text in self.fieldDisplay],
             )

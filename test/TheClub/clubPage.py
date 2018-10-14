@@ -19,7 +19,9 @@ class ClubPage(Page):
     columns = None
     homePage = "/index.py"
     modulename2text, text2modulename # not used within here: we import them so
-                                     # our derived classes can esily use them.
+    styleSheet = "/TheClub/the_club.css"
+
+    # our derived classes can esily use them.
 
     def synopsis(self):
         return self._synopsis
@@ -31,10 +33,10 @@ class ClubPage(Page):
         return self._rightPanel
 
     def lowerBanner(self):
-        return self._lowerBanner
+        return h.h1 | self._lowerBanner
 
     def upperBanner(self):
-        return h.h3 | self._upperBanner
+        return h.h1 | self._upperBanner
 
     def upperText(self):
         return (
@@ -48,7 +50,7 @@ Two languages are supported: English and Dutch. Only this section is shown in bo
 The language used for the rest of the pages can be chosen by the links here:
             """,h.br,h.br,
             h.center | (h.h4 | (
-                [(h.a(href=self.href(new_kw={'language': (language_code,)})) | language_names, ' ')
+                [(h.a(href=self.href(new_kw={'language': (language_code,)})) | language_names, '&nbsp '*4)
                     for language_code, language_names in (
                       ('EN', "English/Engels"),
                       ('NL', "Nederlands/Dutch"),
@@ -70,7 +72,7 @@ de links hierboven.
                             cellspacing="0")| (
                 h.tr | (
                     h.th(bgcolor=bgcolor, valign="top") | (
-                        h.font(color="#FFFFFF", size="2") | (h.h3 | header),
+                        h.font(color="#FFFFFF", size="2") | ( header),
                     ),
                 ),
                 h.tr | (
@@ -88,9 +90,9 @@ de links hierboven.
 
     def body(self):
         return (
-            self.colourBarBox(h | self.upperBanner(), self.upperBarColour,
+            self.colourBarBox(self.upperBanner(), self.upperBarColour,
                     h | self.upperText()),
-            self.colourBarBox(h | self.lowerBanner(), self.lowerBarColour,
+            self.colourBarBox(self.lowerBanner(), self.lowerBarColour,
                     h | self.lowerText()),
     )
 if __name__=="__main__":
