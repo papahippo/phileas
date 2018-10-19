@@ -2,10 +2,6 @@
 # -*- encoding: utf8 -*-
 import sys, os, time
 from phileas import _html40 as h
-from entity import EntityError
-import cgi
-import cgitb
-#cgitb.enable()
 
 from urllib.parse import urlparse, parse_qs
 
@@ -146,12 +142,5 @@ and return False.
             self.present()
 
 
-def main(pageClass, localIndex=None):
-    # the use of this outer level main function is deprecated... but some pages (including my
-    # entire business administration!) currently depend on it.
-    pageClass(localIndex=localIndex).main()
-
-
 if __name__ == "__main__":
-    # old style...    main(Page)
     Page().main()

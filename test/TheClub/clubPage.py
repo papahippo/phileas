@@ -3,7 +3,7 @@
 import sys, os
 #import cgitb
 #cgitb.enable()
-from page import Page, modulename2text, text2modulename, h
+from page import Page, h
 
 clubName = "The Club"
 
