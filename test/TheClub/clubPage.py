@@ -19,7 +19,7 @@ class ClubPage(Page):
     columns = None
     homePage = "/index.py"
     modulename2text, text2modulename # not used within here: we import them so
-    styleSheet = "/TheClub/the_club.css"
+    #styleSheet = "/TheClub/the_club.css"
 
     # our derived classes can esily use them.
 
