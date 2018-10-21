@@ -10,15 +10,6 @@ import cgitb
 from urllib.parse import urlparse, parse_qs
 
 
-def text2modulename(text):
-    prefix = ('_', '')[text[0].isalpha()]
-    return prefix + text.replace(' ', '_').replace("'", "__")
-
-
-def modulename2text(name):
-    return (name.lstrip('_')).replace('__', "'").replace("_", " ")
-
-
 class Page:
     topDir = os.path.split(__file__)[0]
     styleSheet = "/.style/mew.css"
@@ -146,12 +137,5 @@ and return False.
             self.present()
 
 
-def main(pageClass, localIndex=None):
-    # the use of this outer level main function is deprecated... but some pages (including my
-    # entire business administration!) currently depend on it.
-    pageClass(localIndex=localIndex).main()
-
-
 if __name__ == "__main__":
-    # old style...    main(Page)
     Page().main()
