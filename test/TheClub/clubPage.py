@@ -3,7 +3,7 @@
 import sys, os
 #import cgitb
 #cgitb.enable()
-from page import Page, modulename2text, text2modulename, h
+from page import Page, h
 
 clubName = "The Club"
 
@@ -18,8 +18,8 @@ class ClubPage(Page):
     centreImage = None
     columns = None
     homePage = "/index.py"
-    modulename2text, text2modulename # not used within here: we import them so
-    #styleSheet = "/TheClub/the_club.css"
+    styleSheet = "the_club.css"
+
 
     # our derived classes can esily use them.
 
@@ -50,12 +50,7 @@ Two languages are supported: English and Dutch. Only this section is shown in bo
 The language used for the rest of the pages can be chosen by the links here:
             """,h.br,h.br,
             h.center | (h.h4 | (
-                [(h.a(href=self.href(new_kw={'language': (language_code,)})) | language_names, '&nbsp '*4)
-                    for language_code, language_names in (
-                      ('EN', "English/Engels"),
-                      ('NL', "Nederlands/Dutch"),
-                  )
-                ]
+                "(being reworked!)"
             )),
 
             h.em | """
