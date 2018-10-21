@@ -3,7 +3,7 @@
 import sys, os
 #import cgitb
 #cgitb.enable()
-from page import Page, h
+from phileas.page import Page, h
 
 clubName = "The Club"
 
@@ -90,5 +90,10 @@ de links hierboven.
             self.colourBarBox(self.lowerBanner(), self.lowerBarColour,
                     h | self.lowerText()),
     )
-if __name__=="__main__":
+theClubConf = os.path.join(os.path.dirname(__file__), 'theClub.conf')
+
+if __name__ == "__main__":
+    # CherryPy always starts with app.root when trying to map request URIs
+    # to objects, so we need to mount a request handler root. A request
+    # to '/' will be mapped to HelloWorld().index().
     ClubPage().main()

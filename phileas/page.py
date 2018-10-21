@@ -34,23 +34,22 @@ class Page:
         print(
             "(gratuitous 'error' output) current directory is:",
             os.getcwd(),
-            file=sys.stderr
+            file=self
         )
         return ('default body of content... abcdéf',
                 h.br,
                 h.p | 'end of content'
                 )
 
-    def html(self):
-        return h.html | (
-            h.head | self.head(),
-            h.body(bgcolor='white') | (self.body(), h.pre | self.errOutput)
-        )
     @cherrypy.expose
     def index(self):
+        yield  str(h.head | self.head())
+        yield  str(h.body(bgcolor='white') | self.body())
+        yield  str(h.pre | '\n'.join(self.errOutput))
+
+    def index0(self):
         sys.stderr = self
-        yield ("Content-type: text/html;charset=UTF-8\n\n")  # the blank line really matters!
-        yield (str(self.html()).encode('ascii','xmlcharrefreplace').decode('ascii'))
+        yield (str(self.html()))   # .encode('ascii','xmlcharrefreplace').decode('ascii'))
 
     def main(self, config=None):
         cherrypy.quickstart(self, config=config)
