@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from .html import HTML
+from .html_ import HTML
 from .element import Element
 
 
