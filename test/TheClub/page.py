@@ -13,17 +13,6 @@ class Page:
     _title = '(untitled)' # => use basename of page as page title - unless overruled.
     EntityClass = None  # only relevant for certain kinds of pages.
 
-    def href(self, url=None, new_kw={}, hashtag=''):
-        total_dict = {}
-        total_dict.update(self.kw)
-        total_dict.update(new_kw)
-        if not url:
-            url = self.script_name
-        return (url + '?' +
-                '&'.join(sum([([(key_+'='+val_) for val_ in val_list])
-                         for key_, val_list in total_dict.items()], []))
-                + hashtag
-                )
 
     def head(self):
         return h.meta(**self.metaDict) | (
