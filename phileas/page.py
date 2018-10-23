@@ -6,7 +6,7 @@ import cherrypy
 
 class Page:
     topDir = os.path.split(__file__)[0]
-    styleSheet = "/.style/mew.css"
+    styleSheet = "test.css"
     errOutput = []
     metaDict = {'http-equiv': "content-type", 'content': "text/html; charset=utf-8"}
     _title = '(untitled)'  # => use basename of page as page title - unless overruled.
