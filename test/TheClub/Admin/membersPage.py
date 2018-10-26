@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
 from clubPage import clubName, ClubPage, h
-from entity.club import Member
-import members
 
 
 class MembersPage(ClubPage):
@@ -24,7 +22,9 @@ class MembersPage(ClubPage):
 #('altEmailAddress', 'opt. 2nd email address', 'optional'),
 #('mailGroups', 'mail groups', 'e.g. Musicians, Hoorns'),
     ]
+
+_membersPage = MembersPage()
 if __name__ == "__main__":
     # print ("hello Larry")
-    MembersPage().main()
+    _membersPage.main()
     

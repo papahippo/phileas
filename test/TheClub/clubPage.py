@@ -4,7 +4,8 @@ import sys, os
 #import cgitb
 #cgitb.enable()
 from phileas.page import Page, h
-
+#from membersListPage import membersListPage
+#from Members.membersPage import MembersPage
 clubName = "The Club"
 
 
@@ -92,8 +93,10 @@ de links hierboven.
     )
 theClubConf = os.path.join(os.path.dirname(__file__), 'theClub.conf')
 
+_clubPage = ClubPage()
+
 if __name__ == "__main__":
     # CherryPy always starts with app.root when trying to map request URIs
     # to objects, so we need to mount a request handler root. A request
     # to '/' will be mapped to HelloWorld().index().
-    ClubPage().main()
+    _clubPage.main()
