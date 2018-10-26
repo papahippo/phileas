@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
 import sys, os
-from membersPage import MembersPage, h
+from ..membersPage import MembersPage, h
 from entity.club import Member
-import members
+import ..members
 
 
-class MembersListPage(MembersPage):
+class ListPage(MembersPage):
     admin = False
 
     def validate(self, **kw):
@@ -60,5 +60,5 @@ class MembersListPage(MembersPage):
 
 if __name__ == "__main__":
     # print ("hello Larry")
-    MembersListPage().main()
+    ListPage().main()
     

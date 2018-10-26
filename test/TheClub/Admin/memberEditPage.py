@@ -4,21 +4,11 @@ import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
 from entity.club import Member
-import mailgroups
-import members
+#import mailgroups
+#import members
 
-from memberViewPage import MemberViewPage
+from ..Members.memberViewPage import MemberViewPage
 
 class MemberEditPage(MemberViewPage):
-    _lowerBanner = "edit member details"
+    _lowerBanner = "edit member details STUB"
     admin = True
-
-    def evaluate(self, str):
-        return eval(str)
-
-    def lowerText(self):
-        return self.edit_pane()  # EntityClass=Member)
-
-if __name__ == "__main__":
-    MemberEditPage().main()
-    

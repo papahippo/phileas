@@ -27,7 +27,7 @@ class MailGroup(Entity):
 
 
 class Member(Entity):
-    keyFields = ('name', 'called')
+    keyFields = ('called', 'name')
 
     fieldDisplay = [
         ('called', {'EN':'known as', 'NL': 'roepnaam'},

@@ -171,7 +171,7 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
 
     def by_key(cls, key_spec):
         if not isinstance(key_spec, (list, tuple)):
-            key_spec = "name", key_spec
+            key_spec = cls.keyFields[0], key_spec
         field_name, field_value = key_spec
         return cls.keyLookup[field_name][field_value]
     by_key = classmethod(by_key)

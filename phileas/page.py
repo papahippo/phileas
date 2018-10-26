@@ -11,6 +11,7 @@ class Page:
     metaDict = {'http-equiv': "content-type", 'content': "text/html; charset=utf-8"}
     _title = '(untitled)'  # => use basename of page as page title - unless overruled.
 
+    _cp_config = {'tools.sessions.on': True}
 
     def title(self):
         return self._title
@@ -47,13 +48,8 @@ class Page:
         yield  str(h.body(bgcolor='white') | self.body())
         yield  str(h.pre | '\n'.join(self.errOutput))
 
-    def index0(self):
-        sys.stderr = self
-        yield (str(self.html()))   # .encode('ascii','xmlcharrefreplace').decode('ascii'))
-
     def main(self, config=None):
         cherrypy.quickstart(self, config=config)
-
 
 phileasConfig = os.path.join(os.path.dirname(__file__), 'phileas.conf')
 

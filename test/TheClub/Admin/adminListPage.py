@@ -2,10 +2,11 @@
 # -*- encoding: utf8 -*-
 import cgitb
 cgitb.enable()
-from membersListPage import MembersListPage
+from ..Members.membersListPage import MembersListPage, clubName
 
 class AdminListPage(MembersListPage):
     admin = True
+    _upperBanner = "%s - Administation zone" % clubName
 
 
 if __name__ == "__main__":

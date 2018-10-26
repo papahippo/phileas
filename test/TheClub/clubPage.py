@@ -3,7 +3,7 @@
 import sys, os
 #import cgitb
 #cgitb.enable()
-from phileas.page import Page, h
+from .page import Page, h
 #from membersListPage import membersListPage
 #from Members.membersPage import MembersPage
 clubName = "The Club"
@@ -19,7 +19,7 @@ class ClubPage(Page):
     centreImage = None
     columns = None
     homePage = "/index.py"
-    styleSheet = "the_club.css"
+    styleSheet = "/TheClub/the_club.css"
 
 
     # our derived classes can esily use them.

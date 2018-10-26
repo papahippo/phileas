@@ -6,7 +6,7 @@ import cherrypy
 
 class Page:
     topDir = os.path.dirname(__file__)
-    styleSheet = "/.style/mew.css"
+    styleSheet = "/.style/the_club0.css"
     errOutput = []
     name = os.path.splitext(os.path.basename(__file__))[0]
     metaDict = {'http-equiv': "content-type", 'content': "text/html; charset=utf-8"}
@@ -41,15 +41,26 @@ class Page:
                 h.p | 'end of content'
                 )
 
+    def validate(self, **kw):
+        return True
+
     def html(self):
         return h.html | (
             h.head | self.head(),
             h.body(bgcolor='white') | (self.body(), h.pre | self.errOutput)
         )
 
+    def gloss(self, dikkie, sep='/'):
+        if not isinstance(dikkie, dict):
+            return dikkie  # just a string, I presume.
+        return dikkie[cherrypy.session.setdefault('language', 'EN')]
+
+
     @cherrypy.expose
-    def index(self):
+    def index(self, **kw):
         sys.stderr = self
+        if not self.validate(**kw):
+            return False
         # print("Content-type: text/html;charset=UTF-8\n\n")  # the blank line really matters!
         # print(str(self.html()).encode('ascii','xmlcharrefreplace').decode('ascii'))
         return (str(self.html()).encode('ascii','xmlcharrefreplace').decode('ascii'))
