@@ -10,7 +10,6 @@ from .members import *
 
 from .membersPage import MembersPage, h
 from . import _membersListPage
-#from editPage import EditPage, h
 import cherrypy
 
 ## class MemberViewPage(EditPage, MembersPage):
@@ -21,14 +20,34 @@ class MemberViewPage(MembersPage):
     admin = False
 
     @cherrypy.expose
-    def index(self, key=None, **kw):
-        if key:
-            self.new_instance = self.EntityClass.by_key(key)
+    def index(self, key=None, exception_=None, **kw):
+        """
+This is where we handle an 'edit' or 'new'(key=None) URL-click in a list of members.
+        """
+        self.chosen_instance = key and self.EntityClass.by_key(key)
+        self.exception_ = exception_
         return MembersPage.index(self, **kw)
 
 
     @cherrypy.expose
-    def validate(self, key=None, **kw):
+    def validate(self, button_=None, **kw):
+        """
+This is where validate a members details form, or simply recognize a 'cancel' (which can also happen view mode).
+        """
+        self.ee = None
+        if button_ not in ('Cancel',):
+            self.chosen_instance.detach()
+            if button_ in ('Add', 'Modify'):
+                try:
+                    # Retrieve the fields and values and use these to create a new or replacement instance.
+                    self.new_instance = self.EntityClass(**kw)
+                except EntityError as ee:
+                    return self.index(exception_=ee)
+            # incorporate the updated entry into the module:
+            # rough and ready try-out!
+            with open('updated_members.py', 'w') as updated_module_source:
+                pass
+
         return self.back_to_list(**kw)
 
     def back_to_list(self, **kw):
@@ -68,7 +87,7 @@ class MemberViewPage(MembersPage):
             if self.ee and attr_name == self.ee.key_:
                 colour = '#ff0000'  # red = place of error
         else:
-            value = getattr(self.new_instance, attr_name)
+            value = getattr(self.chosen_instance, attr_name)
         return (h.label(For='%s' %attr_name)|displayed_name, '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
                 % (colour, attr_name, value))
 
