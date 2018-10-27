@@ -9,7 +9,9 @@ from .mailgroups import *
 from .members import *
 
 from .membersPage import MembersPage, h
+from . import _membersListPage
 #from editPage import EditPage, h
+import cherrypy
 
 ## class MemberViewPage(EditPage, MembersPage):
 class MemberViewPage(MembersPage):
@@ -18,10 +20,19 @@ class MemberViewPage(MembersPage):
     _lowerBanner = "view member details (STUB!)"
     admin = False
 
+    @cherrypy.expose
+    def index(self, key=None, **kw):
+        if key:
+            self.new_instance = self.EntityClass.by_key(key)
+        return MembersPage.index(self, **kw)
+
+
+    @cherrypy.expose
     def validate(self, key=None, **kw):
-        self.new_instance = key and self.EntityClass.by_key(key)
-        print(key, kw, file=sys.stderr)
-        return True
+        return self.back_to_list(**kw)
+
+    def back_to_list(self, **kw):
+        return _membersListPage.index(**kw)
 
     def lowerText(self):
         return self.edit_pane()
@@ -35,7 +46,8 @@ class MemberViewPage(MembersPage):
         existing = True  # STUB!
         self.submitting = False  # STUB!
         return (
-            h.form(action=self.admin and 'edit_one' or 'view_one', method='get')| (
+            #h.form(action=self.admin and 'edit_one' or 'view_one', method='get')| (
+            h.form(action='./validate', method='get')| (
             [self.entry_line(attr_name, self.gloss(displayed_name), self.gloss(placeholder))
              for (attr_name, displayed_name, placeholder) in self.fieldDisplay],
 

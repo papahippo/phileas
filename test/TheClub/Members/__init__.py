@@ -1,11 +1,11 @@
 from .membersPage import MembersPage
-from .membersListPage import MembersListPage
-from .memberViewPage import MemberViewPage
-
 _membersPage = MembersPage()
 
+from .membersListPage import MembersListPage
 _membersListPage = MembersListPage()
-_membersPage.list = _membersListPage
 
+from .memberViewPage import MemberViewPage
 _memberViewPage = MemberViewPage()
+
+_membersPage.list = _membersListPage
 _membersPage.view_one = _memberViewPage

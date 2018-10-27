@@ -1,11 +1,11 @@
 from .adminPage import AdminPage
-from .adminListPage import AdminListPage
-from .memberEditPage import MemberEditPage
-
 _adminPage = AdminPage()
 
+from .adminListPage import AdminListPage
 _adminListPage = AdminListPage()
-_adminPage.list = _adminListPage
 
+from .memberEditPage import MemberEditPage
 _memberEditPage = MemberEditPage()
+
+_adminPage.list = _adminListPage
 _adminPage.edit_one = _memberEditPage

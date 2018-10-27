@@ -41,8 +41,9 @@ class Page:
                 h.p | 'end of content'
                 )
 
+    @cherrypy.expose
     def validate(self, **kw):
-        return True
+        return self.index(**kw)  # STUB!
 
     def html(self):
         return h.html | (
@@ -58,9 +59,8 @@ class Page:
 
     @cherrypy.expose
     def index(self, **kw):
+        self.kw = kw
         sys.stderr = self
-        if not self.validate(**kw):
-            return False
         # print("Content-type: text/html;charset=UTF-8\n\n")  # the blank line really matters!
         # print(str(self.html()).encode('ascii','xmlcharrefreplace').decode('ascii'))
         return (str(self.html()).encode('ascii','xmlcharrefreplace').decode('ascii'))

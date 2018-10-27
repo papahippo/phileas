@@ -8,7 +8,11 @@ from entity.club import Member
 #import members
 
 from ..Members.memberViewPage import MemberViewPage
+from . import _adminListPage
 
 class MemberEditPage(MemberViewPage):
     _lowerBanner = "edit member details STUB"
     admin = True
+
+    def back_to_list(self, **kw):
+        return _adminListPage.index(**kw)
