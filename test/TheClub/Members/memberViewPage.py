@@ -52,7 +52,8 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
                     if not (len(line_)<2 or line_[0]=='#' or line_.split(' ')[0] in ['from', 'import'] ):
                         break
                     import_stuff += line_
-            with open('updated_members.py', 'w') as updated_module_file:
+            with open(members.__file__, 'w') as updated_module_file:
+            #with open('updated_members.py', 'w') as updated_module_file:
                 updated_module_file.write(import_stuff)
                 Member.export(updated_module_file)
 
