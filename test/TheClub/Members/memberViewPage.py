@@ -6,7 +6,7 @@ import sys, os
 
 from entity.club import Member, EntityError
 from .mailgroups import *
-from .members import *
+from . import members
 
 from .membersPage import MembersPage, h
 from . import _membersListPage
@@ -45,8 +45,16 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
                     return self.index(exception_=ee)
             # incorporate the updated entry into the module:
             # rough and ready try-out!
-            with open('updated_members.py', 'w') as updated_module_source:
-                pass
+            import_stuff = ''
+            with open(members.__file__, 'r') as members_file:
+                while True:
+                    line_ = members_file.readline()
+                    if not (len(line_)<2 or line_[0]=='#' or line_.split(' ')[0] in ['from', 'import'] ):
+                        break
+                    import_stuff += line_
+            with open('updated_members.py', 'w') as updated_module_file:
+                updated_module_file.write(import_stuff)
+                Member.export(updated_module_file)
 
         return self.back_to_list(**kw)
 

@@ -13,6 +13,10 @@ from phileas import html4 as h
 import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
+# function requiring improvement!
+def as_python_name(s):
+    return s.replace(' ', '_')
+
 
 class EntityError(Exception):
     """
@@ -131,7 +135,7 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
     def __repr__(self):
         fAS = inspect.getfullargspec(self.__init__)
         return(
-            '\n' + self.__class__.__name__ + '(\n    '
+            self.__class__.__name__ + '(\n    '
           + ',\n    '.join(
                 #[(name_ + '=' + fAS.annotations[name_].__repr__(getattr(self, name_)))
                  [(name_ + '=' + repr(getattr(self, name_)))
@@ -153,7 +157,13 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
         return cls.keyLookup[field_name][field_value]
     by_key = classmethod(by_key)
 
+    def export(cls, file_):
+        for k_, v_ in cls.keyLookup[cls.keyFields[0]].items():
+            print("%s = %s" %(as_python_name(k_), v_), file=file_)
+    export = classmethod(export)
 
+
+# I don't remember how the following stuff ended up here but it surely belongs elsewhere?
 def money(amount):
     l = list(("%.2f" % amount ).replace('.',  ','))
     i=len(l)-6
