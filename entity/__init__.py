@@ -78,20 +78,6 @@ The initial value may be supplies a a read-made lsit of strings or as a string c
         return '[%s]' % ', '.join(['"%s"' % s for s in self.list_])
 
 
-def get_frame(depth):
-    """
-This returns the line number following
-    """
-    frames = inspect.getouterframes(inspect.currentframe())
-    return frames[depth]
-
-
-def gloss(dikkie, language=('EN',), sep='/'):
-    if not isinstance(dikkie, dict):
-        return dikkie  # just a string, I presume.
-    return '/'.join([dikkie[taal] for taal in language])
-
-
 class Entity(object):
     """
 Class 'Entity' is the start of module 'entity'. Some features of enity obects are:
@@ -105,8 +91,6 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
     """
     keyFields = ()
     keyLookup = None
-    rangeLookup = None
-    next_lineno = -1
 # following few represent quick(?) hack to get cool tale display and may disappear later!
     fieldDisplay = None
     admin = 1
@@ -114,10 +98,6 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
 
     def __init__(self, **kw):
         cls = self.__class__
-        frame = get_frame(3)
-        self.filename = frame.filename
-        self.lineno_range = (cls.next_lineno, 1 +frame.lineno)
-        cls.next_lineno = 1 +frame.lineno
         annos = self.__init__.__annotations__
         for _key, _val in kw.items():
             try:
@@ -134,9 +114,7 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
                 raise EntityError(_key, _val, _exc)
 
         if cls.keyLookup is None:
-            cls.rangeLookup = {}  # don't share between inheriting classes!
             cls.keyLookup = {}    # don't share between inheriting classes!
-        cls.rangeLookup[self.lineno_range] = self
         for k_ in self.keyFields:
             key_dict = cls.keyLookup.setdefault(k_, OrderedDict())
             try:
@@ -164,7 +142,6 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
 
     def detach(self):
         cls = self.__class__
-        del cls.rangeLookup[self.lineno_range]
         for k_ in self.keyFields:
             key_dict = cls.keyLookup.setdefault(k_, {})
             del key_dict[getattr(self, k_)]
@@ -176,43 +153,6 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
         return cls.keyLookup[field_name][field_value]
     by_key = classmethod(by_key)
 
-    def by_range(cls, line_range):
-        return cls.rangeLookup[tuple(line_range)]
-    by_range = classmethod(by_range)
-
-    def begin(cls):
-        cls.next_lineno = 1 + get_frame(2).lineno
-    begin = classmethod(begin)
-
-    def display(self, ix, name, page, item_script=None):
-        #print(h.th | self.gloss({'EN': 'full name', 'NL': 'naam'}), file=sys.stderr)
-        #return h.br, "abc", h.br
-        return (
-            (ix % 10 == 0) and (h.tr | (
-                [h.th | page.gloss(dikkie)
-                    for _, dikkie, _ in self.fieldDisplay ]
-                )
-            ) or '',
-            h.tr |(
-                [(h.td | (h.a(id='%s' %self.lineno_range[0],
-                              href=page.href(item_script,
-                                    {'calling_script_': (page.script_name,),
-                                     'line_': map(str, self.lineno_range),
-                                     'filename_': (self.filename,)})) | str(getattr(self, arg_name))
-                            if (item_script and arg_name  in self.keyFields )
-                                                     else str(getattr(self, arg_name))))
-                 for arg_name, _, _ in self.fieldDisplay ]
-            )
-        )
-
-    def Display(cls, filter_=True, sort_key_=None, page=None, item_script=None):
-        return (
-            h.table(id="members") | [member.display(ix, name, page=page, item_script=item_script)
-                                     for ix, (name, member) in
-                             enumerate(sorted(cls.keyLookup[sort_key_].items())[not cls.admin:])]
-        )
-
-    Display = classmethod(Display)
 
 def money(amount):
     l = list(("%.2f" % amount ).replace('.',  ','))
