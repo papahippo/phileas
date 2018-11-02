@@ -24,7 +24,7 @@ class MemberViewPage(MembersPage):
         """
 This is where we handle an 'edit' or 'new'(key=None) URL-click in a list of members.
         """
-        cherrypy.session['chosen_instance'] = key and self.EntityClass.by_key(key)
+        cherrypy.session['chosen_instance'] = key, (key and self.EntityClass.by_key(key) or self.EntityClass())
         self.exception_ = exception_
         return MembersPage.index(self, **kw)
 
@@ -35,8 +35,9 @@ This is where we handle an 'edit' or 'new'(key=None) URL-click in a list of memb
 This is where validate a members details form, or simply recognize a 'cancel' (which can also happen view mode).
         """
         self.ee = None
+        key, instance = cherrypy.session['chosen_instance']
         if button_ not in ('Cancel',):
-            cherrypy.session['chosen_instance'].detach()
+            instance.detach()
             if button_ in ('Add', 'Modify'):
                 try:
                     # Retrieve the fields and values and use these to create a new or replacement instance.
@@ -67,22 +68,20 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
 
     # edit_pane was previously far more generic - and may become so again soon!
     def edit_pane(self, name=None, **kw):
+        key, instance = cherrypy.session['chosen_instance']
         if 0:
             print(self.new_instance.__class__(), file=self)
-            existing = self.ee or self.new_instance.called != '(new member)'
         self.ee = None  # STUB!
-        existing = True  # STUB!
-        self.submitting = False  # STUB!
         return (
             #h.form(action=self.admin and 'edit_one' or 'view_one', method='get')| (
             h.form(action='./validate', method='get')| (
             [self.entry_line(attr_name, self.gloss(displayed_name), self.gloss(placeholder))
              for (attr_name, displayed_name, placeholder) in self.fieldDisplay],
 
-            [(ix_<2 or existing) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
+            [(ix_<2 or key) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
              for ix_, (val_, colour) in enumerate((
                 ("Cancel", "green"),
-                (existing and "Modify" or "Add", "orange"),
+                (key and "Modify" or "Add", "orange"),
                 ("Delete", "red"),
             )[:self.admin and 3 or 1])],
             h.br*2,
@@ -90,15 +89,10 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
         ))
 
     def entry_line(self, attr_name, displayed_name, placeholder):
+        key, instance = cherrypy.session['chosen_instance']
         colour = '#000000'  # black is default
-        if self.submitting:
-            value = self.form.getfirst(attr_name, '')
-            if self.ee and attr_name == self.ee.key_:
-                colour = '#ff0000'  # red = place of error
-        else:
-            value = getattr(cherrypy.session['chosen_instance'], attr_name)
         return (h.label(For='%s' %attr_name)|displayed_name, '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
-                % (colour, attr_name, value))
+                % (colour, attr_name, getattr(instance, attr_name)))
 
 
 if __name__ == "__main__":
