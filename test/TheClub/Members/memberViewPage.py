@@ -69,13 +69,15 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
     # edit_pane was previously far more generic - and may become so again soon!
     def edit_pane(self, name=None, **kw):
         key, instance = cherrypy.session['chosen_instance']
+        colour = '#000000'  # black is default
         if 0:
             print(self.new_instance.__class__(), file=self)
         self.ee = None  # STUB!
         return (
             #h.form(action=self.admin and 'edit_one' or 'view_one', method='get')| (
             h.form(action='./validate', method='get')| (
-            [self.entry_line(attr_name, self.gloss(displayed_name), self.gloss(placeholder))
+            [   (h.label(For='%s' %attr_name)|self.gloss(displayed_name), '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
+                % (colour, attr_name, getattr(instance, attr_name)))
              for (attr_name, displayed_name, placeholder) in self.fieldDisplay],
 
             [(ix_<2 or key) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
@@ -87,12 +89,6 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
             h.br*2,
             h.a(STYLE="color:#ff0000;") | self.ee,
         ))
-
-    def entry_line(self, attr_name, displayed_name, placeholder):
-        key, instance = cherrypy.session['chosen_instance']
-        colour = '#000000'  # black is default
-        return (h.label(For='%s' %attr_name)|displayed_name, '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
-                % (colour, attr_name, getattr(instance, attr_name)))
 
 
 if __name__ == "__main__":
