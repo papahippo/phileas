@@ -14,19 +14,20 @@ class Switch(Page):
 _switch = Switch()
 _switch.TheClub = TheClub._indexPage
 
+
+def validator(dick):
+    def validate_password(realm, username, password):
+        if username in dick and dick[username] == password:
+            return True
+        return False
+    return validate_password
+
 if __name__ == '__main__':
     # CherryPy always starts with app.root when trying to map request URIs
     # to objects, so we need to mount a request handler root. A request
     # to '/' will be mapped to HelloWorld().index().
     # _switch.main(config=phileasConfig)
     #testConfig = os.path.join(os.path.dirname(__file__), 'test.conf')
-    USERS = {'MEW': '@1945'}
-
-
-    def validate_password(realm, username, password):
-        if username in USERS and USERS[username] == password:
-            return True
-        return False
 
 
     config = {
@@ -44,9 +45,15 @@ if __name__ == '__main__':
     '/TheClub/Members': {
             'tools.auth_basic.on': True,
             'tools.auth_basic.realm': 'localhost',
-            'tools.auth_basic.checkpassword': validate_password,
+            'tools.auth_basic.checkpassword': validator({'MEW': '@1945'}),
             'tools.auth_basic.accept_charset': 'UTF-8',
-        }
+        },
+    '/TheClub/Admin': {
+            'tools.auth_basic.on': True,
+            'tools.auth_basic.realm': 'localhost',
+            'tools.auth_basic.checkpassword': validator({'gill': 'Cr4covia'}),
+            'tools.auth_basic.accept_charset': 'UTF-8',
+        },
     }
 
     cherrypy.quickstart(_switch, config=config)
