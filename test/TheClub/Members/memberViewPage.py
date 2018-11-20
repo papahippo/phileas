@@ -35,9 +35,10 @@ This is where we handle an 'edit' or 'new'(key=None) URL-click in a list of memb
 This is where validate a members details form, or simply recognize a 'cancel' (which can also happen view mode).
         """
         self.ee = None
-        key, instance = cherrypy.session['chosen_instance']
         if button_ not in ('Cancel',):
-            instance.detach()
+            key, instance = cherrypy.session['chosen_instance']
+            if button_ not in ('Add'):
+                instance.detach()
             if button_ in ('Add', 'Modify'):
                 try:
                     # Retrieve the fields and values and use these to create a new or replacement instance.

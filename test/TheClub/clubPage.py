@@ -1,11 +1,9 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
 import sys, os
-#import cgitb
-#cgitb.enable()
 from phileas.page import Page, h
-#from membersListPage import membersListPage
-#from Members.membersPage import MembersPage
+
+
 clubName = "The Club"
 
 
