@@ -11,6 +11,7 @@ class Switch(Page):
         return h.p | ("hurrah for Cherrypy!", h.br,
                       "This top-level page is (so far!) simply a place holder for other pages to sit under.",
                       )
+
 _switch = Switch()
 _switch.TheClub = TheClub._indexPage
 

@@ -3,7 +3,7 @@
 import sys, os
 #import cgitb
 #cgitb.enable()
-from .page import Page, h
+from phileas.page import Page, h
 #from membersListPage import membersListPage
 #from Members.membersPage import MembersPage
 clubName = "The Club"
@@ -51,7 +51,12 @@ Two languages are supported: English and Dutch. Only this section is shown in bo
 The language used for the rest of the pages can be chosen by the links here:
             """,h.br,h.br,
             h.center | (h.h4 | (
-                "(being reworked!)"
+                [((h.a(href='/set_language?language=%s' % language_code)) | language_names, '&nbsp '*4)
+                    for language_code, language_names in (
+                      ('EN', "English/Engels"),
+                      ('NL', "Nederlands/Dutch"),
+                  )
+                ]
             )),
 
             h.em | """

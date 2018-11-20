@@ -43,10 +43,26 @@ class Page:
                 )
 
     @cherrypy.expose
-    def index(self):
+    def index(self, **kw):
+        cherrypy.session['index_url'] = cherrypy.url()
+        self.kw = kw
+        sys.stderr = self
         yield  str(h.head | self.head())
         yield  str(h.body(bgcolor='white') | self.body())
         yield  str(h.pre | '\n'.join(self.errOutput))
+
+    @cherrypy.expose
+    def set_language(self, language='??'):
+        print(language)
+        cherrypy.session['language'] = language
+        # redirect back to index tha twas on view before language select:
+        raise cherrypy.HTTPRedirect(cherrypy.session['index_url'])
+
+    def gloss(self, dikkie, sep='/'):
+        if not isinstance(dikkie, dict):
+            return dikkie  # just a string, I presume.
+        return dikkie[cherrypy.session.setdefault('language', 'EN')]
+
 
     def main(self, config=None):
         cherrypy.quickstart(self, config=config)

@@ -59,6 +59,7 @@ class Page:
 
     @cherrypy.expose
     def index(self, **kw):
+        cherrypy.session['index_url'] = cherrypy.url()
         self.kw = kw
         sys.stderr = self
         # print("Content-type: text/html;charset=UTF-8\n\n")  # the blank line really matters!
@@ -67,6 +68,7 @@ class Page:
 
     def main(self):
         return cherrypy.quickstart(self, config=os.path.join(self.topDir, 'theClub.conf'))
+
 
 class HomePage(Page):
     pass
