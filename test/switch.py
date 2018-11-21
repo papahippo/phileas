@@ -46,13 +46,13 @@ if __name__ == '__main__':
     '/TheClub/Members': {
             'tools.auth_basic.on': True,
             'tools.auth_basic.realm': 'localhost',
-            'tools.auth_basic.checkpassword': validator({'MEW': '@1945'}),
+            'tools.auth_basic.checkpassword': validator({'club': 'biscuit'}),
             'tools.auth_basic.accept_charset': 'UTF-8',
         },
     '/TheClub/Admin': {
             'tools.auth_basic.on': True,
             'tools.auth_basic.realm': 'localhost',
-            'tools.auth_basic.checkpassword': validator({'gill': 'Cr4covia'}),
+            'tools.auth_basic.checkpassword': validator({'Admin': 'istrator'}),
             'tools.auth_basic.accept_charset': 'UTF-8',
         },
     }
