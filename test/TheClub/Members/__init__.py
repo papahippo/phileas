@@ -8,4 +8,5 @@ from .memberViewPage import MemberViewPage
 _memberViewPage = MemberViewPage()
 
 _membersPage.list = _membersListPage
+print('larry:', _membersPage.list)
 _membersPage.view_one = _memberViewPage

@@ -2,7 +2,7 @@
 # -*- encoding: utf8 -*-
 import sys, os
 from phileas.page import Page, h
-
+import cherrypy
 
 clubName = "The Club"
 
@@ -18,6 +18,34 @@ class ClubPage(Page):
     columns = None
     homePage = "/index.py"
     styleSheet = "/TheClub/the_club.css"
+
+    @cherrypy.expose
+    def index(self, **kw):
+        cherrypy.session['index_url'] = cherrypy.url()
+        kw.update(cherrypy.session.get('kw', {}))
+        cherrypy.session['kw'] = {}
+        self.kw = kw
+        sys.stderr = self
+        yield  str(h.head | self.head())
+        yield  str(h.body(bgcolor='white') | self.body())
+        yield  str(h.pre | '\n'.join(self.errOutput))
+
+    @cherrypy.expose
+    def set_language(self, language='??'):
+        print(language)
+        cherrypy.session['language'] = language
+        cherrypy.session['kw'] = self.kw
+        # redirect back to index tha twas on view before language select:
+        raise cherrypy.HTTPRedirect(cherrypy.session['index_url'])
+
+    def gloss(self, dikkie, sep='/'):
+        if not isinstance(dikkie, dict):
+            return dikkie  # just a string, I presume.
+        return dikkie[cherrypy.session.setdefault('language', 'EN')]
+
+
+    def main(self, config=None):
+        cherrypy.quickstart(self, config=config)
 
 
     # our derived classes can esily use them.

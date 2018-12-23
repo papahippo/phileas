@@ -7,6 +7,34 @@ import sys, os
 class Switch(Page):
     styleSheet = 'test.css'
 
+    @cherrypy.expose
+    def index(self, **kw):
+        cherrypy.session['index_url'] = cherrypy.url()
+        kw.update(cherrypy.session.get('kw', {}))
+        cherrypy.session['kw'] = {}
+        self.kw = kw
+        sys.stderr = self
+        yield  str(h.head | self.head())
+        yield  str(h.body(bgcolor='white') | self.body())
+        yield  str(h.pre | '\n'.join(self.errOutput))
+
+    @cherrypy.expose
+    def set_language(self, language='??'):
+        print(language)
+        cherrypy.session['language'] = language
+        # cherrypy.session['kw'] = self.kw
+        # redirect back to index tha twas on view before language select:
+        raise cherrypy.HTTPRedirect(cherrypy.session['index_url'])
+
+    def gloss(self, dikkie, sep='/'):
+        if not isinstance(dikkie, dict):
+            return dikkie  # just a string, I presume.
+        return dikkie[cherrypy.session.setdefault('language', 'EN')]
+
+
+    def main(self, config=None):
+        cherrypy.quickstart(self, config=config)
+
     def body(self):
         return h.p | ("hurrah for Cherrypy!", h.br,
                       "This top-level page is (so far!) simply a place holder for other pages to sit under.",
@@ -14,6 +42,8 @@ class Switch(Page):
 
 _switch = Switch()
 _switch.TheClub = TheClub._indexPage
+print(_switch.TheClub)
+_switch.me = _switch
 
 
 def validator(dick):
@@ -40,9 +70,14 @@ if __name__ == '__main__':
     'server.thread_pool': 10,
     },
     '/':
-        { 'tools.staticdir.on': True,
-          'tools.staticdir.dir': "/home/gill/PycharmProjects/phileas/test"
-          },
+        {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': "/home/gill/PycharmProjects/phileas/test",
+            'tools.sessions.on': True,
+            'tools.sessions.storage_class': cherrypy.lib.sessions.FileSession,
+            'tools.sessions.storage_path': 'sessions',
+            'tools.sessions.timeout': 10,
+        },
     '/TheClub/Members': {
             'tools.auth_basic.on': True,
             'tools.auth_basic.realm': 'localhost',
