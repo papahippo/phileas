@@ -52,7 +52,6 @@ string representing a date in the format '%d-%b-%Y'. (refer to pythn docs to see
         elif isinstance(wild, bytes):
             wild = wild,
         elif not isinstance(wild, (tuple,)):
-            print("wild=", wild)
             dt  = datetime.datetime.strptime(wild, str(cls.fmt_str))
             wild = (dt.year, dt.month, dt.day)
         return datetime.date.__new__(cls, *wild)
@@ -186,16 +185,8 @@ def putLines(el,  *lines):
         el.br
 
 if __name__ == "__main__":
-    # Save a dictionary into a pickle file.
+    # ad hoc testing stuff:
     import pickle
-
-    favorite_color = {"lion": "yellow", "kitty": "red"}
-    pickle.dump(favorite_color, open("save.p", "wb"))
-    favorite_color["lion"] = "grey"
-    print (favorite_color)
-    favorite_color = pickle.load(open("save.p", "rb"))
-    print (favorite_color)
-
     d = DateOrNone('29-apr-1954')
     pickle.dump(d, open("date.p", "wb"))
     d1 = pickle.load(open("date.p", "rb"))
