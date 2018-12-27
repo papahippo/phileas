@@ -67,15 +67,15 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
     # edit_pane was previously far more generic - and may become so again soon!
     def edit_pane(self, name=None):
         cherrypy.session['same_kw'] = self.kw
-        key = self.kw['key']
+        key = self.kw.get('key')
         colour = '#000000'  # black is default
         self.ee = None  # STUB!
-        inst = self.EntityClass.by_key(key)
+        inst = key  and self.EntityClass.by_key(key)
         return (
             #h.form(action=self.admin and 'edit_one' or 'view_one', method='get')| (
             h.form(action='./validate?this=dit', method='get')| (
             [   (h.label(For='%s' %attr_name)|self.gloss(displayed_name), '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
-                % (colour, attr_name, getattr(inst, attr_name)))
+                % (colour, attr_name, inst and getattr(inst, attr_name) or ''))
              for (attr_name, displayed_name, placeholder) in self.fieldDisplay],
 
             [(ix_<2 or key) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')

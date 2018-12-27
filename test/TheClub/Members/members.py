@@ -54,3 +54,20 @@ Donald = Member(
     mailGroups=[]
 )
 
+oldtimer = Member(
+    name='Methusala',
+    initials='',
+    called='oldtimer',
+    streetAddress='',
+    postCode='',
+    cityAddress='',
+    phone='',
+    mobile='',
+    emailAddress='',
+    altEmailAddress='',
+    birthDate='',
+    memberSince='',
+    instrument='',
+    mailGroups=[]
+)
+
