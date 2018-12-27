@@ -20,23 +20,6 @@ Daffie = Member(
     mailGroups=[]
 )
 
-Donald = Member(
-    name='Duck, Donaldus',
-    initials='',
-    called='Donald',
-    streetAddress='De Vijfer 30a',
-    postCode='1234 AB',
-    cityAddress='Eendhoven',
-    phone='099-1234567',
-    mobile='06-9876543',
-    emailAddress='donald.duck42@wetmail.com',
-    altEmailAddress='',
-    birthDate='12-aug-1951',
-    memberSince='03-okt-2017',
-    instrument='Flute',
-    mailGroups=[]
-)
-
 newbie_twoshoes = Member(
     name='Doubleshod, Novus',
     initials='',
@@ -51,6 +34,23 @@ newbie_twoshoes = Member(
     birthDate='',
     memberSince='',
     instrument='',
+    mailGroups=[]
+)
+
+Donald = Member(
+    name='Duck, Donaldus',
+    initials='',
+    called='Donald',
+    streetAddress='De Vijfer 30b',
+    postCode='1234 AB',
+    cityAddress='Eendhoven',
+    phone='099-1234567',
+    mobile='06-9876543',
+    emailAddress='donald.duck42@wetmail.com',
+    altEmailAddress='',
+    birthDate='12-aug-1951',
+    memberSince='03-okt-2017',
+    instrument='Flute',
     mailGroups=[]
 )
 

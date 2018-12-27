@@ -42,7 +42,8 @@ class MembersListPage(MembersPage):
                 (h.td |  (h.a(id='%s' % getattr(member, member.keyFields[0] ),
                                  href=(self.admin and '../edit_one' or '../view_one') +
                                       '?key=%s' % getattr(member, member.keyFields[0] ))
-                          | (self.admin and 'edit' or 'view'))),
+                          | (self.admin and (self.gloss({'EN': 'edit', 'NL': 'wijzig'}))
+                                         or (self.gloss({'EN': 'view', 'NL': 'toon'}))))),
                 [(h.td | getattr(member, attr_name)) for attr_name, heading, tip_text in self.fieldDisplay],
             )
         )
@@ -59,4 +60,3 @@ class MembersListPage(MembersPage):
 if __name__ == "__main__":
     # print ("hello Larry")
     MembersListPage().main()
-    

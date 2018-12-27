@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
-import cgitb
-cgitb.enable()
 from ..Members.membersListPage import MembersListPage, clubName
 
 class AdminListPage(MembersListPage):

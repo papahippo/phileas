@@ -19,34 +19,43 @@ class ClubPage(Page):
     homePage = "/index.py"
     styleSheet = "/TheClub/the_club.css"
 
-    @cherrypy.expose
-    def index(self, **kw):
-        cherrypy.session['index_url'] = cherrypy.url()
-        kw.update(cherrypy.session.get('kw', {}))
-        cherrypy.session['kw'] = {}
+    def push_pull_url_kw(self, kw):
+        print('kw before push_url:', kw)
+        kw.update(cherrypy.session.get('same_kw', {}))
         self.kw = kw
-        sys.stderr = self
-        yield  str(h.head | self.head())
-        yield  str(h.body(bgcolor='white') | self.body())
-        yield  str(h.pre | '\n'.join(self.errOutput))
+        cherrypy.session['same_kw'] = {}
+        cherrypy.session.setdefault('url_kw_history', []).append((cherrypy.url(), kw))
+        print('kw after push_url:', kw)
+
+    def pop_url_kw(self, depth=2):
+        print(cherrypy.session['url_kw_history'][-3:])
+        for i in range(depth):
+            url, kw = cherrypy.session['url_kw_history'].pop()
+        cherrypy.session['same_kw'] = kw
+        raise cherrypy.HTTPRedirect(url)
 
     @cherrypy.expose
-    def set_language(self, language='??'):
-        print(language)
+    def index(self, **kw):
+        self.push_pull_url_kw(kw)
+        sys.stderr = self
+        yield str(h.head | self.head())
+        yield str(h.body(bgcolor='white') | self.body())
+        yield str(h.pre | '\n'.join(self.errOutput))
+
+    @cherrypy.expose
+    def set_language(self, language='??', **kw):
+        print('language=', language)
+        self.push_pull_url_kw(kw)
         cherrypy.session['language'] = language
-        cherrypy.session['kw'] = self.kw
-        # redirect back to index tha twas on view before language select:
-        raise cherrypy.HTTPRedirect(cherrypy.session['index_url'])
+        self.pop_url_kw()
 
     def gloss(self, dikkie, sep='/'):
         if not isinstance(dikkie, dict):
             return dikkie  # just a string, I presume.
         return dikkie[cherrypy.session.setdefault('language', 'EN')]
 
-
     def main(self, config=None):
         cherrypy.quickstart(self, config=config)
-
 
     # our derived classes can esily use them.
 
@@ -68,44 +77,44 @@ class ClubPage(Page):
     def upperText(self):
         return (
             h.br, """
-These pages represent an example of a web-site for a club or society. 
-            """,
+    These pages represent an example of a web-site for a club or society. 
+                """,
             h.br,
             h.br,
             """
 Two languages are supported: English and Dutch. Only this section is shown in both together.
 The language used for the rest of the pages can be chosen by the links here:
-            """,h.br,h.br,
+            """, h.br, h.br,
             h.center | (h.h4 | (
-                [((h.a(href='/set_language?language=%s' % language_code)) | language_names, '&nbsp '*4)
-                    for language_code, language_names in (
-                      ('EN', "English/Engels"),
-                      ('NL', "Nederlands/Dutch"),
-                  )
-                ]
+                [((h.a(href='/TheClub/set_language?language=%s' % language_code)) | language_names, '&nbsp ' * 4)
+                 for language_code, language_names in (
+                     ('EN', "English/Engels"),
+                     ('NL', "Nederlands/Dutch"),
+                 )
+                 ]
             )),
 
             h.em | """
-Twee talen worden ondersteund: Engels en Nederlands. Alleen deze kop is getoond in beide talen.
-Welke taal wordt gebruikt voor de rest van de webpagina's mag geselelcteerd worden d.m.v. 
-de links hierboven.
-            """, h.br, h.br,
+    twee talen worden ondersteund: Engels en Nederlands. Alleen deze kop is getoond in beide talen.
+    Welke taal wordt gebruikt voor de rest van de webpagina's mag geselelcteerd worden d.m.v. 
+    de links hierboven.
+                """, h.br, h.br,
 
         )
 
     def colourBarBox(self, header, bgcolor, content):
         return (
-            h.table(width="100%",cellpadding="0",
-                            cellspacing="0")| (
-                h.tr | (
-                    h.th(bgcolor=bgcolor, valign="top") | (
-                        h.font(color="#FFFFFF", size="2") | ( header),
+                h.table(width="100%", cellpadding="0",
+                        cellspacing="0") | (
+                    h.tr | (
+                        h.th(bgcolor=bgcolor, valign="top") | (
+                            h.font(color="#FFFFFF", size="2") | (header),
+                        ),
                     ),
-                ),
-                h.tr | (
-                    h.td | content,
-                ),
-            )
+                    h.tr | (
+                        h.td | content,
+                    ),
+                )
         )
 
     def lowerText(self):
@@ -113,16 +122,17 @@ de links hierboven.
             h | self.synopsis(),
             h | self.detail()
         )
-    
 
     def body(self):
         return (
             self.colourBarBox(self.upperBanner(), self.upperBarColour,
-                    h | self.upperText()),
+                              h | self.upperText()),
             self.colourBarBox(self.lowerBanner(), self.lowerBarColour,
-                    h | self.lowerText()),
-    )
-theClubConf = os.path.join(os.path.dirname(__file__), 'theClub.conf')
+                              h | self.lowerText()),
+        )
+
+
+Conf = os.path.join(os.path.dirname(__file__), 'MEW_extra.conf')
 
 _clubPage = ClubPage()
 
