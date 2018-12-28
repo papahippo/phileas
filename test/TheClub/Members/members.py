@@ -37,10 +37,10 @@ Donald = Member(
     mailGroups=[]
 )
 
-newKidOnTheBlock = Member(
+new__Kid__On__The__Block = Member(
     name='',
     initials='',
-    called='newKidOnTheBlock',
+    called='new-Kid-On-The-Block',
     streetAddress='',
     postCode='',
     cityAddress='',

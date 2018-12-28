@@ -15,7 +15,7 @@ locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
 
 # function requiring improvement!
 def as_python_name(s):
-    return s.replace(' ', '_')
+    return s.replace(' ', '_').replace('-', '__')
 
 
 class EntityError(Exception):
