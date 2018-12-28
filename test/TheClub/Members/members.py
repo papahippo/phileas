@@ -20,40 +20,6 @@ Daffie = Member(
     mailGroups=[]
 )
 
-newbie_twoshoes = Member(
-    name='Doubleshod, Novus',
-    initials='',
-    called='newbie twoshoes',
-    streetAddress='The Hovel',
-    postCode='US99 4ME',
-    cityAddress='',
-    phone='',
-    mobile='',
-    emailAddress='',
-    altEmailAddress='',
-    birthDate='',
-    memberSince='',
-    instrument='',
-    mailGroups=[]
-)
-
-oldtimer = Member(
-    name='Methusala',
-    initials='',
-    called='oldtimer',
-    streetAddress='',
-    postCode='',
-    cityAddress='',
-    phone='',
-    mobile='',
-    emailAddress='',
-    altEmailAddress='',
-    birthDate='',
-    memberSince='',
-    instrument='',
-    mailGroups=[]
-)
-
 Donald = Member(
     name='Duck, Donaldus',
     initials='',
@@ -68,6 +34,23 @@ Donald = Member(
     birthDate='12-aug-1951',
     memberSince='03-okt-2017',
     instrument='Flute',
+    mailGroups=[]
+)
+
+herewegoagain = Member(
+    name='',
+    initials='',
+    called='herewegoagain',
+    streetAddress='',
+    postCode='',
+    cityAddress='brigadoon',
+    phone='',
+    mobile='',
+    emailAddress='',
+    altEmailAddress='',
+    birthDate='',
+    memberSince='',
+    instrument='',
     mailGroups=[]
 )
 

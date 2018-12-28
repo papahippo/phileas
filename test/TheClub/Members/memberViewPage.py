@@ -34,13 +34,13 @@ This is where we handle an 'edit' or 'new'(key=None) URL-click in a list of memb
         """
 This is where validate a members details form, or simply recognize a 'cancel' (which can also happen view mode).
         """
-        self.kw.update(kw)
-        key =  self.kw.pop('key', '(no key!)')
+        self.kw = kw  #.update(kw)
+        key =  self.kw.pop('key',cherrypy.session.get('key'))
         if button_ not in ('Cancel',):
             try:
                 inst = self.EntityClass.by_key(key)
             except KeyError:
-                print("failed to fnist instance of key!", key)
+                print("failed to find instance of key!", key)
                 inst = None
             if inst and button_ not in ('Add'):
                 try:
@@ -74,6 +74,7 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
                 print ("exporting members file")
                 Member.export(updated_module_file)
         print("popping ... to List?")
+        cherrypy.session['key'] = None
         self.pop_url_kw(depth=2)
 
     def lowerText(self):
@@ -81,21 +82,22 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
 
     # edit_pane was previously far more generic - and may become so again soon!
     def edit_pane(self, name=None):
-###        cherrypy.session['same_kw'] = self.kw
-        key = self.kw.get('key')
+        cherrypy.session['same_kw'] = self.kw
+        key = self.kw.get('key', cherrypy.session.get('key'))
+        cherrypy.session['key'] = key
         colour = '#000000'  # black is default
         ee = self.exception_
         try:
             inst = key  and self.EntityClass.by_key(key)
         except KeyError:
             print ("no entity for key", key)
-            inst = None
+            inst = key = None
             print (self.kw)
         return (
             #h.form(action=self.admin and 'edit_one' or 'view_one', method='get')| (
             h.form(action='./validate', method='get')| (
             [   (h.label(For='%s' %attr_name)|self.gloss(displayed_name), '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
-                % (colour, attr_name, (not ee) and getattr(inst, attr_name) or self.kw.get(attr_name, '')))
+                % (colour, attr_name, (key and not ee) and getattr(inst, attr_name) or self.kw.get(attr_name, '')))
              for (attr_name, displayed_name, placeholder) in self.fieldDisplay],
 
             [(ix_<2 or key) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
