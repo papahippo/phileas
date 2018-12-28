@@ -103,7 +103,6 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
 
 
     def __init__(self, **kw):
-        cls = self.__class__
         annos = self.__init__.__annotations__
         for _key, _val in kw.items():
             try:
@@ -118,7 +117,10 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
                 self.__setattr__(_key, cast_val)
             except (ValueError) as _exc:
                 raise EntityError(_key, _val, _exc)
+        self.attach()
 
+    def attach(self):
+        cls = self.__class__
         if cls.keyLookup is None:
             cls.keyLookup = {}    # don't share between inheriting classes!
         for k_ in self.keyFields:

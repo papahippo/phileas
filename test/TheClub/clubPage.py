@@ -23,20 +23,25 @@ class ClubPage(Page):
         print('kw before push_url:', kw)
         kw.update(cherrypy.session.get('same_kw', {}))
         self.kw = kw
+        self.exception_ = None
         cherrypy.session['same_kw'] = {}
         cherrypy.session.setdefault('url_kw_history', []).append((cherrypy.url(), kw))
         print('kw after push_url:', kw)
 
     def pop_url_kw(self, depth=2):
-        print(cherrypy.session['url_kw_history'][-3:])
+        url_kw_history = cherrypy.session['url_kw_history']
         for i in range(depth):
-            url, kw = cherrypy.session['url_kw_history'].pop()
+            url, kw = url_kw_history.pop()
+            print ("popped:", url, kw)
         cherrypy.session['same_kw'] = kw
         raise cherrypy.HTTPRedirect(url)
 
     @cherrypy.expose
     def index(self, **kw):
         self.push_pull_url_kw(kw)
+        yield from self.present()
+
+    def present(self):
         sys.stderr = self
         yield str(h.head | self.head())
         yield str(h.body(bgcolor='white') | self.body())

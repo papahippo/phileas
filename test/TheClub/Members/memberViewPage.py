@@ -26,7 +26,6 @@ This is where we handle an 'edit' or 'new'(key=None) URL-click in a list of memb
         """
         print("memberViewPage")
         # self.push_pull_url_kw(kw)
-        self.exception_ = exception_
         return MembersPage.index(self, **kw)
 
 
@@ -35,18 +34,32 @@ This is where we handle an 'edit' or 'new'(key=None) URL-click in a list of memb
         """
 This is where validate a members details form, or simply recognize a 'cancel' (which can also happen view mode).
         """
-        self.push_pull_url_kw(kw)
-        self.ee = None
-        key = self.kw.pop('key', '(no key!)')
+        self.kw.update(kw)
+        key =  self.kw.pop('key', '(no key!)')
         if button_ not in ('Cancel',):
-            if button_ not in ('Add'):
-                self.EntityClass.by_key(key).detach()
+            try:
+                inst = self.EntityClass.by_key(key)
+            except KeyError:
+                print("failed to fnist instance of key!", key)
+                inst = None
+            if inst and button_ not in ('Add'):
+                try:
+                    inst.detach()
+                except KeyError:
+                    print("failed to detach key member", key)
+                    pass
             if button_ in ('Add', 'Modify'):
                 try:
                     # Retrieve the fields and values and use these to create a new or replacement instance.
                     self.new_instance = self.EntityClass(**kw)
                 except EntityError as ee:
-                    return self.index(exception_=ee)
+                    print("Exception while validating!", ee)
+                    self.exception_ = ee
+                    if button_ in ('Modify'):
+                        inst.attach()
+                    self.kw['key'] = key
+                    yield from self.present()
+                    return
             # incorporate the updated entry into the module:
             # rough and ready try-out!
             import_stuff = ''
@@ -58,24 +71,31 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
                     import_stuff += line_
             with open(members.__file__, 'w') as updated_module_file:
                 updated_module_file.write(import_stuff)
+                print ("exporting members file")
                 Member.export(updated_module_file)
-        self.pop_url_kw(depth=3)
+        print("popping ... to List?")
+        self.pop_url_kw(depth=2)
 
     def lowerText(self):
         return self.edit_pane()
 
     # edit_pane was previously far more generic - and may become so again soon!
     def edit_pane(self, name=None):
-        cherrypy.session['same_kw'] = self.kw
+###        cherrypy.session['same_kw'] = self.kw
         key = self.kw.get('key')
         colour = '#000000'  # black is default
-        self.ee = None  # STUB!
-        inst = key  and self.EntityClass.by_key(key)
+        ee = self.exception_
+        try:
+            inst = key  and self.EntityClass.by_key(key)
+        except KeyError:
+            print ("no entity for key", key)
+            inst = None
+            print (self.kw)
         return (
             #h.form(action=self.admin and 'edit_one' or 'view_one', method='get')| (
-            h.form(action='./validate?this=dit', method='get')| (
+            h.form(action='./validate', method='get')| (
             [   (h.label(For='%s' %attr_name)|self.gloss(displayed_name), '<input type = "text" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
-                % (colour, attr_name, inst and getattr(inst, attr_name) or ''))
+                % (colour, attr_name, (not ee) and getattr(inst, attr_name) or self.kw.get(attr_name, '')))
              for (attr_name, displayed_name, placeholder) in self.fieldDisplay],
 
             [(ix_<2 or key) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
@@ -85,7 +105,7 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
                 ("Delete", "red"),
             )[:self.admin and 3 or 1])],
             h.br*2,
-            h.a(STYLE="color:#ff0000;") | self.ee,
+            h.a(STYLE="color:#ff0000;") | (ee or ''),
         ))
 
 
