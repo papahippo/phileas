@@ -20,16 +20,6 @@ class MemberViewPage(MembersPage):
     admin = False
 
     @cherrypy.expose
-    def index(self, exception_=None, **kw):
-        """
-This is where we handle an 'edit' or 'new'(key=None) URL-click in a list of members.
-        """
-        print("memberViewPage")
-        # self.push_pull_url_kw(kw)
-        return MembersPage.index(self, **kw)
-
-
-    @cherrypy.expose
     def validate(self, button_=None, **kw):
         """
 This is where validate a members details form, or simply recognize a 'cancel' (which can also happen view mode).

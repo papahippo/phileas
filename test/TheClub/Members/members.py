@@ -24,7 +24,7 @@ Donald = Member(
     name='Duck, Donaldus',
     initials='',
     called='Donald',
-    streetAddress='De Vijfer 30',
+    streetAddress='De Vijfer 30B',
     postCode='1234 AB',
     cityAddress='Eendhoven',
     phone='099-1234567',
@@ -37,13 +37,13 @@ Donald = Member(
     mailGroups=[]
 )
 
-herewegoagain = Member(
+newKidOnTheBlock = Member(
     name='',
     initials='',
-    called='herewegoagain',
+    called='newKidOnTheBlock',
     streetAddress='',
     postCode='',
-    cityAddress='brigadoon',
+    cityAddress='',
     phone='',
     mobile='',
     emailAddress='',
