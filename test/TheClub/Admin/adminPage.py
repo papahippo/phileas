@@ -1,12 +1,9 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
-from membersPage import clubName, ClubMembersPage, h
+from ..Members.membersPage import clubName, MembersPage, h
 
 
-class ClubAdminPage(ClubMembersPage):
+class AdminPage(MembersPage):
     _upperBanner = "%s - Administation zone" % clubName
 
-if __name__ == "__main__":
-    # print ("hello Larry")
-    ClubAdminPage().main()
-    
+

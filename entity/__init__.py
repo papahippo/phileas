@@ -5,11 +5,17 @@ module 'entity' is housed within package 'phileas' but the connection between th
 roughly over the same time frame and represent rather off-beat approaches to pythn-html integration (phileas') and
 minimalistic database definition (entity) respectively.
 """
+import sys,os
 import datetime
 import inspect
 from collections import OrderedDict
+from phileas import html4 as h
 import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
+
+# function requiring improvement!
+def as_python_name(s):
+    return s.replace(' ', '_').replace('-', '__')
 
 
 class EntityError(Exception):
@@ -43,8 +49,10 @@ string representing a date in the format '%d-%b-%Y'. (refer to pythn docs to see
         """
         if not wild:
             return ''
-        elif not isinstance(wild, tuple):
-            dt  = datetime.datetime.strptime(wild, cls.fmt_str)
+        elif isinstance(wild, bytes):
+            wild = wild,
+        elif not isinstance(wild, (tuple,)):
+            dt  = datetime.datetime.strptime(wild, str(cls.fmt_str))
             wild = (dt.year, dt.month, dt.day)
         return datetime.date.__new__(cls, *wild)
 
@@ -76,14 +84,6 @@ The initial value may be supplies a a read-made lsit of strings or as a string c
         return '[%s]' % ', '.join(['"%s"' % s for s in self.list_])
 
 
-def get_next_lineno(depth):
-    """
-This returns the line number following
-    """
-    frames = inspect.getouterframes(inspect.currentframe())
-    return 1 + frames[depth].lineno
-
-
 class Entity(object):
     """
 Class 'Entity' is the start of module 'entity'. Some features of enity obects are:
@@ -97,34 +97,32 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
     """
     keyFields = ()
     keyLookup = None
-    rangeLookup = None
-    next_lineno = -1
+# following few represent quick(?) hack to get cool tale display and may disappear later!
+    fieldDisplay = None
+    admin = 1
 
 
     def __init__(self, **kw):
-        cls = self.__class__
-        next_lineno = get_next_lineno(3)
-        self.lineno_range = (cls.next_lineno, next_lineno)
-        cls.next_lineno = next_lineno
         annos = self.__init__.__annotations__
         for _key, _val in kw.items():
-            reqd_class = annos.get(_key)
-            if (reqd_class is not None) and not isinstance(_val, reqd_class):
-                if isinstance(reqd_class, tuple):
-                    reqd_class = reqd_class[0]
-                cast_val = reqd_class(_val)
-            else:
-                cast_val = _val
-            # cast_val = (((reqd_class is not None) and not isinstance(_val, reqd_class)) and  ) or _val
             try:
+                reqd_class = annos.get(_key)
+                if (reqd_class is not None) and not isinstance(_val, reqd_class):
+                    if isinstance(reqd_class, tuple):
+                        reqd_class = reqd_class[0]
+                    cast_val = reqd_class(_val)
+                else:
+                    cast_val = _val
+                # cast_val = (((reqd_class is not None) and not isinstance(_val, reqd_class)) and  ) or _val
                 self.__setattr__(_key, cast_val)
             except (ValueError) as _exc:
                 raise EntityError(_key, _val, _exc)
+        self.attach()
 
+    def attach(self):
+        cls = self.__class__
         if cls.keyLookup is None:
-            cls.rangeLookup = OrderedDict()
-            cls.keyLookup = OrderedDict()
-        cls.rangeLookup[self.lineno_range] = self
+            cls.keyLookup = {}    # don't share between inheriting classes!
         for k_ in self.keyFields:
             key_dict = cls.keyLookup.setdefault(k_, OrderedDict())
             try:
@@ -141,7 +139,7 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
     def __repr__(self):
         fAS = inspect.getfullargspec(self.__init__)
         return(
-            '\n' + self.__class__.__name__ + '(\n    '
+            self.__class__.__name__ + '(\n    '
           + ',\n    '.join(
                 #[(name_ + '=' + fAS.annotations[name_].__repr__(getattr(self, name_)))
                  [(name_ + '=' + repr(getattr(self, name_)))
@@ -152,26 +150,24 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
 
     def detach(self):
         cls = self.__class__
-        del cls.rangeLookup[self.lineno_range]
         for k_ in self.keyFields:
             key_dict = cls.keyLookup.setdefault(k_, {})
             del key_dict[getattr(self, k_)]
 
     def by_key(cls, key_spec):
         if not isinstance(key_spec, (list, tuple)):
-            key_spec = "name", key_spec
+            key_spec = cls.keyFields[0], key_spec
         field_name, field_value = key_spec
         return cls.keyLookup[field_name][field_value]
     by_key = classmethod(by_key)
 
-    def by_range(cls, line_range):
-        return cls.rangeLookup[tuple(line_range)]
-    by_range = classmethod(by_range)
+    def export(cls, file_):
+        for k_, v_ in cls.keyLookup[cls.keyFields[0]].items():
+            print("%s = %s" %(as_python_name(k_), v_), file=file_)
+    export = classmethod(export)
 
-    def begin(cls):
-        cls.next_lineno = get_next_lineno(2)
-    begin = classmethod(begin)
 
+# I don't remember how the following stuff ended up here but it surely belongs elsewhere?
 def money(amount):
     l = list(("%.2f" % amount ).replace('.',  ','))
     i=len(l)-6
@@ -190,4 +186,10 @@ def putLines(el,  *lines):
         el.text(line)
         el.br
 
-#if __name__ == "__main__":
+if __name__ == "__main__":
+    # ad hoc testing stuff:
+    import pickle
+    d = DateOrNone('29-apr-1954')
+    pickle.dump(d, open("date.p", "wb"))
+    d1 = pickle.load(open("date.p", "rb"))
+    print(d, d1)

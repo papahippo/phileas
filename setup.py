@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='phileas',
     version='0.9.5',
-    packages=['phileas'],
+    packages=['phileas', 'entity'],
     url='',
     license='',
     author='Larry Myerscough',
