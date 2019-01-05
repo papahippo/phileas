@@ -69,7 +69,7 @@ A 'StringList' is - as the name suggests a list of strings (hmmm... list of name
     """
     def __init__(self, sl):
         """
-The initial value may be supplies a a read-made lsit of strings or as a string comma-separated list of strings(names)
+The initial value may be supplies a a read-made list of strings or as a string comma-separated list of strings(names)
         :param sl:
         """
         if isinstance(sl, list):
@@ -83,6 +83,11 @@ The initial value may be supplies a a read-made lsit of strings or as a string c
     def __repr__(self):
         return '[%s]' % ', '.join(['"%s"' % s for s in self.list_])
 
+    def __iter__(self):
+        """
+ '__iter__' makes a  StringList its own iterator for flexibility without intimacy!
+        """
+        return iter(self.list_)
 
 class Entity(object):
     """
@@ -193,3 +198,6 @@ if __name__ == "__main__":
     pickle.dump(d, open("date.p", "wb"))
     d1 = pickle.load(open("date.p", "rb"))
     print(d, d1)
+
+    sl = StringList('a, b')
+    print(', '.join([c+'!' for c in sl]))

@@ -54,7 +54,7 @@ class Member(Entity):
                  cityAddress:str='',
                  phone:str='',
                  mobile: str = '',
-                 emailAddress:str='',
+                 emailAddress:StringList=[],
                  altEmailAddress:str='',
                  birthDate:DateOrNone= '',
                  memberSince:DateOrNone= '',
