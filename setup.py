@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='phileas',
-    version='0.9.4',
+    version='0.9.5',
     packages=['phileas', 'entity'],
     url='',
     license='',
