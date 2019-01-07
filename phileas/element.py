@@ -29,7 +29,7 @@ simply by e.g. 'h.br' or 'h.h4' (without the quotes). Such references are 'corre
 When, however, attributes are required, it must be expressed as e.g.
 'h.a(href='somewhere')'. Note that this calls - not creates - an instance (see
 member function '__call__' below). Differences of the 'rules of use' of various html tags
-are handled by the attribute 'AttrDicts'. 'AttrDicts' is a (often empty) tuple of
+are handled by the attribute 'attr_dict' which can be  a (often empty) tuple of
 dictionaries. keys of each dictionary represent valid attributes for this _Element.
 The corresponding values are (in the current implementation) booleans indicating
 whether a value is associated with this attribute. False means that the value must not be
@@ -75,6 +75,7 @@ to just a name alias; i.e. 'my_table = h.table()' is kind of analogous to the fo
         s_args = {}
         for key, val in args.items():
             key = key.lower().replace('_', '-')
+            # print (self.ok_attrs.keys())
             if not key in self.ok_attrs.keys():
                 raise KeyError(key)
             if not self.ok_attrs[key]:

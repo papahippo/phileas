@@ -2,7 +2,7 @@
 # -*- encoding: utf8 -*-
 from __future__ import print_function
 import sys, os, time
-from phileas import _html40 as h
+from phileas import html5 as h
 from entity import EntityError
 from entity.club import Member
 import cgi

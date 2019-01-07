@@ -166,10 +166,13 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
         return cls.keyLookup[field_name][field_value]
     by_key = classmethod(by_key)
 
-    def export(cls, file_):
-        for k_, v_ in cls.keyLookup[cls.keyFields[0]].items():
-            print("%s = %s" %(as_python_name(k_), v_), file=file_)
-    export = classmethod(export)
+    @classmethod
+    def export(cls, filename, filter_ =lambda x:x):
+        with open(filename, 'w') as file_:
+            print('from %s import %s' %(cls.__module__, cls.__name__), file=file_)
+            print(file=file_)
+            for k_, v_ in cls.keyLookup[cls.keyFields[0]].items():
+                print("%s = %s" %(as_python_name(k_), filter_(v_)), file=file_)
 
 
 # I don't remember how the following stuff ended up here but it surely belongs elsewhere?

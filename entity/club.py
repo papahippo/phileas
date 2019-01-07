@@ -52,10 +52,10 @@ class Member(Entity):
                  streetAddress:str='',
                  postCode:str='',
                  cityAddress:str='',
-                 phone:str='',
-                 mobile: str = '',
+                 phone:StringList=[],
+                 mobile:StringList=[],
                  emailAddress:StringList=[],
-                 altEmailAddress:str='',
+                 altEmailAddress:StringList=[],
                  birthDate:DateOrNone= '',
                  memberSince:DateOrNone= '',
                  instrument='',
@@ -91,7 +91,7 @@ class Member(Entity):
 
 if __name__ == "__main__":
     # This is of (very?) limited value owing to use of relative includes; see .../admin/test/veri.py.
-    mailGroup = MailGroup('tryers')
-    member = Member(name='test', memberSince='bad date')
+    #mailGroup = MailGroup('tryers')
+    #member = Member(name='test', memberSince='bad date')
     #member = Member(name='test', mailGroups='asdf')
-    print(member)
+    print(Member)
