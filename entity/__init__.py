@@ -5,7 +5,7 @@ module 'entity' is housed within package 'phileas' but the connection between th
 roughly over the same time frame and represent rather off-beat approaches to pythn-html integration (phileas') and
 minimalistic database definition (entity) respectively.
 """
-import sys,os
+import sys,os, io
 import datetime
 import inspect
 from collections import OrderedDict
@@ -167,8 +167,11 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
     by_key = classmethod(by_key)
 
     @classmethod
-    def export(cls, filename, filter_ =lambda x:x):
-        with open(filename, 'w') as file_:
+    def export(cls, file_or_filename=sys.stdout, filter_ =lambda x:x):
+        if not isinstance(file_or_filename, io.IOBase):
+            file_or_filename = open(file_or_filename, 'w')
+
+        with  file_or_filename as file_:
             print('from %s import %s' %(cls.__module__, cls.__name__), file=file_)
             print(file=file_)
             for k_, v_ in cls.keyLookup[cls.keyFields[0]].items():
