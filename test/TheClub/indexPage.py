@@ -3,3 +3,4 @@
 from .clubPage import ClubPage
 class IndexPage(ClubPage):
     pass
+_indexPage = IndexPage()

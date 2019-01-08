@@ -4,145 +4,139 @@ import sys, os
 from phileas.page import Page, h
 import cherrypy
 
+
 clubName = "The Club"
 
 
 class ClubPage(Page):
+    _title = clubName
     _upperBanner = clubName
     upperBarColour = 'SlateBlue'  # '#6060f0'
-    _lowerBanner = "(dummy 'Lower banner')"
+    _lowerBanner = "club details"
     lowerBarColour = 'Orange'
     _synopsis = """dummy synopsis"""
-    _detail = """dummy detail - this page is intended to be included, not displayed in itw own right!"""
+    _detail = """dummy detail - this page is intended to be included, not displayed in its own right!"""
     centreImage = None
     columns = None
     homePage = "/index.py"
-    styleSheet = "/TheClub/the_club.css"
+    localRoot = '/TheClub/'
+    styleSheet = localRoot + "the_club.css"
 
-    def push_pull_url_kw(self, kw):
-        print('kw before push_url:', kw)
-        kw.update(cherrypy.session.get('same_kw', {}))
-        self.kw = kw
-        self.exception_ = None
-        cherrypy.session['same_kw'] = {}
-        cherrypy.session.setdefault('url_kw_history', []).append((cherrypy.url(), kw))
-        print('kw after push_url:', kw)
-
-    def pop_url_kw(self, depth=2):
-        url_kw_history = cherrypy.session['url_kw_history']
-        for i in range(depth):
-            url, kw = url_kw_history.pop()
-            print ("popped:", url, kw)
-        cherrypy.session['same_kw'] = kw
-        raise cherrypy.HTTPRedirect(url)
+    def _cp_dispatch(self, vpath):
+        print ('vpath', vpath)
 
     @cherrypy.expose
-    def index(self, **kw):
-        self.push_pull_url_kw(kw)
-        yield from self.present()
+    def index(self, *paths, **kw):
+        yield from self.present(self.lowerBanner, self.lowerText, *paths, **kw)
 
-    def present(self):
+    def present(self, bannerFunc, textFunc, *paths, **kw):
+        url = cherrypy.session.get('current_url')
+        print('present: session[current_ur]=', url, 'kw=', kw)
+        if url is True:
+            # special case, coming from e.g.(?) language change.
+            kw = cherrypy.session.get('current_kw', {})
+        else:
+            # normal case, coming from url which generated content.
+            cherrypy.session['current_kw'] = kw
+        cherrypy.session['current_url'] = cherrypy.url()
         sys.stderr = self
         yield str(h.head | self.head())
-        yield str(h.body(bgcolor='white') | self.body())
+        yield str(h.body | self.body(bannerFunc(*paths, **kw), textFunc(*paths, **kw)))
         yield str(h.pre | '\n'.join(self.errOutput))
 
     @cherrypy.expose
-    def set_language(self, language='??', **kw):
-        print('language=', language)
-        self.push_pull_url_kw(kw)
-        cherrypy.session['language'] = language
-        self.pop_url_kw()
+    def set_session(self, key_, value_, **kw):
+        print('key_', key_, 'value+', value_)
+        cherrypy.session[key_] = value_
+        url = cherrypy.session['current_url']
+        cherrypy.session['current_url'] = True
+        raise cherrypy.HTTPRedirect(url)
 
     def gloss(self, dikkie, sep='/'):
         if not isinstance(dikkie, dict):
             return dikkie  # just a string, I presume.
         return dikkie[cherrypy.session.setdefault('language', 'EN')]
 
-    def main(self, config=None):
-        cherrypy.quickstart(self, config=config)
+    def upperBanner(self, *paths, **kw):
+        return h.h1(id='upperbanner') | ('%s - (supplemental) - %s' %(clubName,
+                                   self.gloss({'EN': "Public zone",
+                                               'NL': "Openbare zone"})))
+    def lowerBanner(self, *paths, **kw):
+        return h.h1(id='lowerbanner') | self.gloss({'EN': "Public Homepage",
+                                  'NL': "Homepagina (openbaar)"})
 
-    # our derived classes can esily use them.
-
-    def synopsis(self):
-        return self._synopsis
-
-    def detail(self):
-        return self._detail
-
-    def rightPanel(self):
-        return self._rightPanel
-
-    def lowerBanner(self):
-        return h.h1 | self._lowerBanner
-
-    def upperBanner(self):
-        return h.h1 | self._upperBanner
+    def languageLink(self, language_code, language_text):
+        return h.a(href=self.localRoot+'set_session/language/'+language_code) | language_text
 
     def upperText(self):
         return (
-            h.br, """
-    These pages represent an example of a web-site for a club or society. 
-                """,
+            h.br, self.gloss({
+'EN': (
+    h.ul |(
+        h.li | ("The ", h.a(href=self.localRoot) | "public zone", " contains some general information. ",
+             "This is avaliable ", self.languageLink('EN', 'in English (in hetEngels)'),
+             " and ", self.languageLink('NL', 'in Dutch(Nederlands)'), " - as is all this site. ",
+        ),
+        h.li | ("The information in the ", h.a(href=self.localRoot+'members') | "members zone",
+            " and ", h.a(href=self.localRoot+'admin') | "adminstration zone", " is only intended for authorized"
+            " club members. Hence these zones are protected by passwords."
+            )
+    ),
+    "You are welcome to send feedback and enquiries regarding this supplemental site to ",
+    h.a(href="mailto:hippostech@gmail.com?Subject=(sent%20via%20website)") | "Larry Myerscough", h.br,
+),
+'NL': (
+    "U wordt aangeraden ",
+    h.a(href="http://www.muziekverenigingeindhovenwest.nl") | "De officiële MEW website",
+    " te bezoeken als u dat nog niet gedaan hebt. Daar treft u een schat aan informatie over MEW, "
+    "inclusief onze agenda voor de komende periode plus een aantal Youtube clips. "
+    "Deze webpagina's bevatten aanvullende informatie, verdeeld over drie zones:",
+    h.ul | (
+        h.li | ("De ", h.a(href=self.localRoot) | "openbare zone", " bevat wat algemene informatie. ",
+                "Dit is te bekijken ", self.languageLink('EN', 'in het Engels (in English)'),
+                " and ", self.languageLink('NL', 'in het Nederlands (in Dutch)'),
+                " door middel van deze links. "
+                "Dit is bedoeld om aandacht voor MEW to trekken vanuit een breder publiek, inclusief "
+                "de diverse expat gemeenschap van Eindhoven."
+                ),
+        h.li | ("De inhoud van de ", h.a(href=self.localRoot + 'members') | "leden zone",
+                " en de ", h.a(href=self.localRoot + 'admin') | "adminstratie zone", " is echter alleen bedoeld voor"
+                " geauthoriseerde MEW leden. Daarom zijn deze zones beveiligd met wachtwoorden."
+                )
+    ),
+    "Met feedback en inlichtingen betreffend deze aanvullende website kunt u terecht bij ",
+    h.a(href="mailto:hippostech@gmail.com?Subject=(sent%20via%20MEW%20supplemental%20website)") | "Larry Myerscough",
+    h.br,
+),
+                              }),
             h.br,
-            h.br,
-            """
-Two languages are supported: English and Dutch. Only this section is shown in both together.
-The language used for the rest of the pages can be chosen by the links here:
-            """, h.br, h.br,
-            h.center | (h.h4 | (
-                [((h.a(href='/TheClub/set_language?language=%s' % language_code)) | language_names, '&nbsp ' * 4)
-                 for language_code, language_names in (
-                     ('EN', "English/Engels"),
-                     ('NL', "Nederlands/Dutch"),
-                 )
-                 ]
-            )),
-
-            h.em | """
-    twee talen worden ondersteund: Engels en Nederlands. Alleen deze kop is getoond in beide talen.
-    Welke taal wordt gebruikt voor de rest van de webpagina's mag geselelcteerd worden d.m.v. 
-    de links hierboven.
-                """, h.br, h.br,
-
         )
 
     def colourBarBox(self, header, bgcolor, content):
         return (
-                h.table(width="100%", cellpadding="0",
-                        cellspacing="0") | (
-                    h.tr | (
-                        h.th(bgcolor=bgcolor, valign="top") | (
-                            h.font(color="#FFFFFF", size="2") | (header),
-                        ),
+            h.table | (
+                h.tr | (
+                    h.th | (
+                       ( header),
                     ),
-                    h.tr | (
-                        h.td | content,
-                    ),
-                )
+                ),
+                h.tr | (
+                    h.td | content,
+                ),
+            )
         )
 
-    def lowerText(self):
+    def lowerText(self, **kw):
         return (
-            h | self.synopsis(),
-            h | self.detail()
+             h | ("STUB for lower text; kw: " + str(kw))
         )
 
-    def body(self):
+    def body(self, banner, text):
         return (
             self.colourBarBox(self.upperBanner(), self.upperBarColour,
-                              h | self.upperText()),
-            self.colourBarBox(self.lowerBanner(), self.lowerBarColour,
-                              h | self.lowerText()),
-        )
-
-
-Conf = os.path.join(os.path.dirname(__file__), 'MEW_extra.conf')
+                    h | self.upperText()),
+            self.colourBarBox(banner, self.lowerBarColour,
+                    h | text),
+    )
 
 _clubPage = ClubPage()
-
-if __name__ == "__main__":
-    # CherryPy always starts with app.root when trying to map request URIs
-    # to objects, so we need to mount a request handler root. A request
-    # to '/' will be mapped to HelloWorld().index().
-    _clubPage.main()

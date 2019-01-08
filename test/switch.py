@@ -15,7 +15,7 @@ class Switch(Page):
         self.kw = kw
         sys.stderr = self
         yield  str(h.head | self.head())
-        yield  str(h.body(bgcolor='white') | self.body())
+        yield  str(h.body | self.body())
         yield  str(h.pre | '\n'.join(self.errOutput))
 
     @cherrypy.expose

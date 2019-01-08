@@ -1,3 +1,13 @@
+#upperbanner {
+	font-size: 18px;
+    color: white;
+    background-color: #4242f0;
+}
+#lowerbanner {
+	font-size: 18px;
+    color: white;
+    background-color: #4242f0;
+}
 #members {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
@@ -22,19 +32,19 @@ th {
 }
 label{
     float: left;
-    width: 110px;
+    width: 150px;
     text-align: right;
-    padding: 12px 8px;
+    padding: 12px 4px;
     font-weight: bold;
 }
 
 input[type=text], select {
-    width: 240px;
-    padding: 5px 8px;
-    margin: 8px 0;
+    width: 280px;
+    padding: 5px 6px;
+    margin: 6px 0;
     display: inline-block;
     border: 1px solid #ccc;
-    border-radius: 2px;
+    border-radius: 3px;
     box-sizing: border-box;
 }
 
@@ -74,12 +84,45 @@ h3 {
     text-align: center;
 }
 h4 {
-	font-size: 13px;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 13px;
     text-align: center;
+}
+a {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    text-align: left;
+    line-height: 1.2;
 }
 * {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-	font-size: 12px;
+    font-size: 14px;
     text-align: left;
+    line-height: 1.2;
 }
 
+.hover {
+  position: relative;
+  top: 50px;
+  left: 50px;
+}
+
+.tooltip {
+  /* hide and position tooltip */
+  top: -10px;
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+  opacity: 0;
+  position: absolute;
+  -webkit-transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  -ms-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+
+.hover:hover .tooltip {
+  /* display tooltip on hover */
+  opacity: 1;
+}
