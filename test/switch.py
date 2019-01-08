@@ -78,13 +78,13 @@ if __name__ == '__main__':
             'tools.sessions.storage_path': 'sessions',
             'tools.sessions.timeout': 10,
         },
-    '/TheClub/Members': {
+    '/TheClub/members_zone': {
             'tools.auth_basic.on': True,
             'tools.auth_basic.realm': 'localhost',
             'tools.auth_basic.checkpassword': validator({'club': 'biscuit'}),
             'tools.auth_basic.accept_charset': 'UTF-8',
         },
-    '/TheClub/Admin': {
+    '/TheClub/admin_zone': {
             'tools.auth_basic.on': True,
             'tools.auth_basic.realm': 'localhost',
             'tools.auth_basic.checkpassword': validator({'Admin': 'istrator'}),

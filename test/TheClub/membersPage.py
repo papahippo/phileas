@@ -85,7 +85,7 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
               'base', cherrypy.request.base,
               'script_name', cherrypy.request.script_name,
               'params', cherrypy.request.params, file=self)
-        return h.h1(id='upperbanner')| ('%s - (supplemental) - %s' %(clubName,
+        return h.h1(id='upperbanner')| ('%s - %s' %(clubName,
                                    self.gloss({'EN': "Members zone",
                                                'NL': "Ledenzone"})))
     def lowerBanner(self, *paths, **kw):
