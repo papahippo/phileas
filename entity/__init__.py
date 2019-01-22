@@ -89,7 +89,14 @@ The initial value may be supplies a a read-made list of strings or as a string c
         """
         return iter(self.list_)
 
-class Entity(object):
+class EntityType(type):
+    """
+    The sole (so far) purpose of this metaclass is to make 'len(Class)' work when 'Class' inherits from 'Entity'.
+    """
+    def __len__(cls):
+        return cls.cls__len()
+
+class Entity(object, metaclass=EntityType):
     """
 Class 'Entity' is the start of module 'entity'. Some features of enity obects are:
     (1) initialization values are more stringently checked than is usual within python.
@@ -159,12 +166,17 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
             key_dict = cls.keyLookup.setdefault(k_, {})
             del key_dict[getattr(self, k_)]
 
+    @classmethod
+    def cls__len(cls):
+        # can't just use '__len__' for classes; see 'metaclass' stuff above.
+        return cls.keyLookup and len(cls.keyLookup[cls.keyFields[0]]) or 0
+
+    @classmethod
     def by_key(cls, key_spec):
         if not isinstance(key_spec, (list, tuple)):
             key_spec = cls.keyFields[0], key_spec
         field_name, field_value = key_spec
         return cls.keyLookup[field_name][field_value]
-    by_key = classmethod(by_key)
 
     @classmethod
     def export(cls, file_or_filename=sys.stdout, filter_ =lambda x:x):
@@ -197,7 +209,7 @@ def putLines(el,  *lines):
         el.text(line)
         el.br
 
-if __name__ == "__main__":
+if __name__ == "old __main__":
     # ad hoc testing stuff:
     import pickle
     d = DateOrNone('29-apr-1954')
@@ -207,3 +219,16 @@ if __name__ == "__main__":
 
     sl = StringList('a, b')
     print(', '.join([c+'!' for c in sl]))
+
+if __name__ == "__main__":
+    class MainEntity(Entity):
+        keyFields = ('test',)
+        def __init__(self,
+            test:str='<Default test string>',
+        ):
+            Entity.__init__(self,
+                            test=test)
+
+    print("MainEntity empty length = ", len(MainEntity))
+    firstMainEntity = MainEntity(test='twine')
+    print ("After firstr instance creation, length = ", len(MainEntity))
