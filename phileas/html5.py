@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from .html import HTML
+from .html_ import HTML
 from .element import Element
 
 
@@ -275,19 +275,19 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Label(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'for': 1, 'form': 1})
 
     class Legend(HTML5_Element):
         pass
 
     class Li(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'value': 1,})
 
     class Link(HTML5_Element):
         separate_close = False
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'corssorigin':1, 'href':1, 'hreflang':1, 'media':1,
                      'rel':1, 'sizes': 1,  'target': 1, 'type': 1, })
 
@@ -295,7 +295,7 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Map(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'data': 1, 'form': 1, 'height': 1, 'name': 1,
                       'type': 1, 'width': 1, })
 
@@ -306,17 +306,17 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Menuitem(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'checked': 1, 'command': 1, 'default': 1, 'disabled': 1,
                       'icon': 1, 'label': 1, 'radiogroup': 1, 'type': 1, })
 
     class Meta(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'charset': 1, 'content': 1, 'http-equiv': 1, 'name': 1,
                       'scheme': 1, })
 
     class Menuitem(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'form': 1, 'high': 1, 'low': 1, 'max': 1, 'min': 1,
                       'optimum': 1, 'value': 1, })
 
@@ -324,15 +324,15 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Noscript(HTML5_Element):
-        AttrDicts = (GlobalAttrs,)
+        attr_dict = (GlobalAttrs,)
 
     class Object(HTML5_Element):
-         AttrDicts = (GlobalAndEventAttrs,
+         attr_dict = (GlobalAndEventAttrs,
                      {'data': 1, 'form': 1, 'height': 1, 'name': 1,
                       'type': 1, 'usemap': 1, 'width': 1, })
 
     class Ol(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'reversed': 1, 'start': 1, 'type': 1, })
 
     class Optgroup(HTML5_Element):
@@ -380,14 +380,14 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Script(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'async': 1, 'charset': 1, 'defer': 1, 'src': 1, 'type': 1, })
 
     class Section(HTML5_Element):
         pass
 
     class Select(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'autofocus': 1, 'disabled': 1, 'form': 1, 'multiple': 1,
                       'name': 1, 'required': 1, 'size': 1, })
 
@@ -397,7 +397,7 @@ This class is called HTML5 because its members correspond to HTML5 tags.
 # from here on, not yet fully filled in!
 
     class Source(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'src':1, 'srcset':1, 'sizes': 1, 'type': 1, })
 
     class Span(HTML5_Element):
@@ -422,7 +422,7 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Svg(HTML5_Element):
-        AttrDicts = ({'width': 1, 'height': 1, }, )
+        attr_dict = ({'width': 1, 'height': 1, }, )
 
     class Table(HTML5_Element):
         pass
@@ -431,7 +431,7 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Td(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'colspan': 1, 'headers': 1, 'rowspan': 1, })
 
 
@@ -448,24 +448,24 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Th(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'abbr': 1, 'colspan': 1, 'headers': 1, 'scope': 1, 'sorted': 1,})
 
     class Thead(HTML5_Element):
         pass
 
     class Time(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'datetime': 1, })
 
     class Title(HTML5_Element):
-        AttrDicts = (GlobalAttrs,)
+        attr_dict = (GlobalAttrs,)
 
     class Tr(HTML5_Element):
         pass
 
     class Track(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'default': 1, 'kind': 1, 'label': 1,
                       'src': 1, 'srclang': 1, })
 
@@ -479,7 +479,7 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         pass
 
     class Video(HTML5_Element):
-        AttrDicts = (GlobalAndEventAttrs,
+        attr_dict = (GlobalAndEventAttrs,
                      {'autoplay': 1, 'controls': 1, 'height': 1, 'loop': 1,
                       'muted': 1, 'poster': 1, 'preload': 1, 'src': 1, 'width': 1, })
 

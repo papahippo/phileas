@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name='phileas',
-    version='0.9.0',
-    packages=['phileas'],
+    version='0.9.5',
+    packages=['phileas', 'entity'],
     url='',
     license='',
     author='Larry Myerscough',
