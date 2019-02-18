@@ -63,7 +63,7 @@ class Member(Entity):
                         mailGroups=mailGroups,
                         )
         self.mailGroups_ = [] # note the _!
-        for mGName in self.mailGroups.list_:  # note no _!
+        for mGName in self.mailGroups:  # note no _!
             try:
                 mg = MailGroup.by_key(mGName)
             except KeyError as _exc:
