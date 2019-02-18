@@ -19,6 +19,11 @@ def as_python_name(s):
     return s.replace(' ', '_').replace('-', '__')
 
 
+def cast_as_nec(var, Class=None):
+    if Class is None or isinstance(var, Class):
+        return var
+    return Class(var)
+
 class EntityError(Exception):
     """
 The purpose of EntityError is to intercept exceptions that occur while creating an Entity object and add information do
@@ -94,15 +99,14 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
         for _key, _val in kw.items():
             try:
                 reqd_class = annos.get(_key)
-                #try:
-
-                if (reqd_class is not None) and not isinstance(_val, reqd_class):
-                    if isinstance(reqd_class, tuple):
-                        reqd_class = reqd_class[0]
-                    cast_val = reqd_class(_val)
-                else:
-                    cast_val = _val
-                # cast_val = (((reqd_class is not None) and not isinstance(_val, reqd_class)) and  ) or _val
+                try:
+                    subscripted = reqd_class.__origin__
+                    reqd_class = reqd_class.__args__[0]
+                    if isinstance(_val, str):
+                        _val = [v.strip() for v in _val.split(',')]
+                    cast_val = subscripted([cast_as_nec(var, reqd_class) for var in _val])
+                except AttributeError:
+                    cast_val = cast_as_nec(_val, reqd_class)
                 self.__setattr__(_key, cast_val)
             except (ValueError) as _exc:
                 raise EntityError(_key, _val, _exc)
@@ -201,11 +205,15 @@ if __name__ == "__main__":
     class MainEntity(Entity):
         keyFields = ('test',)
         def __init__(self,
-            test:str='<Default test string>',
-        ):
+            strScalar:str='<Default test string>',
+            strList: List[str] = '<Default string list left>,<Default string list right>',
+                     ):
             Entity.__init__(self,
-                            test=test)
+                            strScalar=strScalar,
+                            strList=strList)
 
     print("MainEntity empty length = ", len(MainEntity))
-    firstMainEntity = MainEntity(test='twine')
+    firstMainEntity = MainEntity(strScalar='twine', strList='twine, rope')
     print ("After firstr instance creation, length = ", len(MainEntity))
+    print(firstMainEntity.strScalar)
+    print(firstMainEntity.strList)
