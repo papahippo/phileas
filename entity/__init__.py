@@ -8,6 +8,7 @@ minimalistic database definition (entity) respectively.
 import sys,os, io
 import datetime
 import inspect
+from typing import List
 from collections import OrderedDict
 from phileas import html4 as h
 import locale
@@ -63,32 +64,6 @@ string representing a date in the format '%d-%b-%Y'. (refer to pythn docs to see
     def __repr__(self):
         return "'%s'" % self.__str__()
 
-class StringList:
-    """
-A 'StringList' is - as the name suggests a list of strings (hmmm... list of names might be more accurate!).
-    """
-    def __init__(self, sl):
-        """
-The initial value may be supplies a a read-made list of strings or as a string comma-separated list of strings(names)
-        :param sl:
-        """
-        if isinstance(sl, list):
-            self.list_ = sl
-        else:
-            self.list_  = [s.strip() for s in sl.split(',') if s]
-
-    def __str__(self):
-        return ', '.join(self.list_)
-
-    def __repr__(self):
-        return '[%s]' % ', '.join(['"%s"' % s for s in self.list_])
-
-    def __iter__(self):
-        """
- '__iter__' makes a  StringList its own iterator for flexibility without intimacy!
-        """
-        return iter(self.list_)
-
 class EntityType(type):
     """
     The sole (so far) purpose of this metaclass is to make 'len(Class)' work when 'Class' inherits from 'Entity'.
@@ -119,6 +94,8 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
         for _key, _val in kw.items():
             try:
                 reqd_class = annos.get(_key)
+                #try:
+
                 if (reqd_class is not None) and not isinstance(_val, reqd_class):
                     if isinstance(reqd_class, tuple):
                         reqd_class = reqd_class[0]
@@ -217,7 +194,7 @@ if __name__ == "old __main__":
     d1 = pickle.load(open("date.p", "rb"))
     print(d, d1)
 
-    sl = StringList('a, b')
+    sl =List[str](['a, b'])
     print(', '.join([c+'!' for c in sl]))
 
 if __name__ == "__main__":
