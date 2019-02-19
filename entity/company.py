@@ -1,51 +1,9 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-from entity import Entity, DateOrNone
+from entity import Entity, DateOrNone, List
+import datetime
 import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
-
-
-class Company(Entity):
-    def __init__(self,
-        number:int=0,
-        name:str='<Default Company Name>',
-        address:list=list(['<Default Address, line %u>' %(n+1) for n in range(4)]),
-        btwNumber:str='', # => don't show BTW number on factuur, do charge BTW
-        reference:str='',
-        paymentTerms:list=[
-                 "Betaling naar bankrekening (zie gegevens boven) binnen 30 dagen wordt op prijs gesteld.",
-                 "Bij betaling svp factuurnummer vermelden.",
-        ],
-        restitutionTerms:list=[
-             "Het positieve van de hierbovengenoemde negatieve totaal wordt vandaag overgeboekt ",
-             "volgens uw instructies.",
-        ],
-        companyLogo:str='',
-        cars:list=[],
-    ):
-        Entity.__init__(self,
-            number=number,
-            name=name,
-            address=address,
-            btwNumber=btwNumber,
-            reference=reference,
-            paymentTerms=paymentTerms,
-            restitutionTerms=restitutionTerms,
-            companyLogo=companyLogo,
-            cars=cars,
-        )
-
-
-class Supplier(Company):
-    pass
-
-
-class Client(Company):
-    pass
-
-
-class Accountant(Company):
-    pass
 
 
 class Car(Entity):
@@ -102,6 +60,50 @@ class Car(Entity):
 money(yearBijTelling),  money(actualBijTelling), euros(actualBijTelling)),
             h.br,
         )
+
+
+class Company(Entity):
+    def __init__(self,
+        number:int=0,
+        name:str='<Default Company Name>',
+        address:List[str]=list(['<Default Address, line %u>' %(n+1) for n in range(4)]),
+        btwNumber:str='', # => don't show BTW number on factuur, do charge BTW
+        reference:str='',
+        paymentTerms:List[str]=[
+                 "Betaling naar bankrekening (zie gegevens boven) binnen 30 dagen wordt op prijs gesteld.",
+                 "Bij betaling svp factuurnummer vermelden.",
+        ],
+        restitutionTerms:List[str]=[
+             "Het positieve van de hierbovengenoemde negatieve totaal wordt vandaag overgeboekt ",
+             "volgens uw instructies.",
+        ],
+        companyLogo:str='',
+        cars:List[Car]=[],
+    ):
+        Entity.__init__(self,
+            number=number,
+            name=name,
+            address=address,
+            btwNumber=btwNumber,
+            reference=reference,
+            paymentTerms=paymentTerms,
+            restitutionTerms=restitutionTerms,
+            companyLogo=companyLogo,
+            cars=cars,
+        )
+
+
+class Supplier(Company):
+    pass
+
+
+class Client(Company):
+    pass
+
+
+class Accountant(Company):
+    pass
+
 
 
 def money(amount):

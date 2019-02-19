@@ -4,8 +4,54 @@ from phileas.page import Page, h
 import TheClub
 import sys, os
 
-class Switch(Page):
+def gloss(dikkie, sep='/'):
+    if not isinstance(dikkie, dict):
+        return dikkie  # just a string, I presume.
+    return dikkie[cherrypy.session.setdefault('language', 'EN')]
+
+
+class Switch:
     styleSheet = 'test.css'
+
+    topDir = os.path.split(__file__)[0]
+    styleSheet = "test.css"
+    errOutput = []
+    metaDict = {'http-equiv': "content-type", 'content': "text/html; charset=utf-8"}
+    _title = '(untitled)'  # => use basename of page as page title - unless overruled.
+
+    _cp_config = {'tools.sessions.on': True}
+
+    def _cp_dispatch(self, vpath):
+        print ('vpath', vpath)
+
+    def title(self):
+        return self._title
+
+    def head(self):
+        return h.meta(**self.metaDict) | (
+            (self.styleSheet and
+             h.link(type="text/css", rel="stylesheet",
+                    href=self.styleSheet)),
+            h.title | (h | self.title()),
+        )
+
+    def write(self, s):
+        """ We provide our own 'write' function so that we can handle
+        our own standard error output.
+        """
+        self.errOutput.append(str(s))
+
+    def body(self):
+        #return "abcdé".encode('ascii','xmlcharrefreplace').decode('ascii')
+        print(
+            "(gratuitous 'error' output) current directory is:",
+            os.getcwd(),
+            file=self
+        )
+        return ('default body of content... abcdéf',
+                h.br,
+                h.p | 'end of content'
+                )
 
     @cherrypy.expose
     def index(self, **kw):
@@ -64,7 +110,7 @@ if __name__ == '__main__':
     config = {
     'global':
     {
-    'server.socket_host': "192.168.2.6",
+    #'server.socket_host': "192.168.2.6",
     'server.socket_host': "127.0.0.1",
     'server.socket_port': 8080,
     'server.thread_pool': 10,

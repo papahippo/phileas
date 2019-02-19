@@ -7,6 +7,11 @@ import cherrypy
 
 clubName = "The Club"
 
+def gloss(dikkie):
+    if not isinstance(dikkie, dict):
+        return dikkie  # just a string, I presume.
+    return dikkie[cherrypy.session.setdefault('language', 'EN')]
+
 
 class ClubPage(Page):
     _title = clubName
@@ -52,17 +57,12 @@ class ClubPage(Page):
         cherrypy.session['current_url'] = True
         raise cherrypy.HTTPRedirect(url)
 
-    def gloss(self, dikkie, sep='/'):
-        if not isinstance(dikkie, dict):
-            return dikkie  # just a string, I presume.
-        return dikkie[cherrypy.session.setdefault('language', 'EN')]
-
     def upperBanner(self, *paths, **kw):
         return h.h1(id='upperbanner') | ('%s - (supplemental) - %s' %(clubName,
-                                   self.gloss({'EN': "Public zone",
+                                   gloss({'EN': "Public zone",
                                                'NL': "Openbare zone"})))
     def lowerBanner(self, *paths, **kw):
-        return h.h1(id='lowerbanner') | self.gloss({'EN': "Public Homepage",
+        return h.h1(id='lowerbanner') | gloss({'EN': "Public Homepage",
                                   'NL': "Homepagina (openbaar)"})
 
     def languageLink(self, language_code, language_text):
@@ -70,26 +70,29 @@ class ClubPage(Page):
 
     def upperText(self):
         return (
-            h.br, self.gloss({
+            h.br, gloss({
 'EN': (
+    "You are urged to visit ",
+     h.a(href="http://www.muziekverenigingeindhovenwest.nl") | "MEW's official website",
+    " if you haven't done so already. There you can find a wealth of information about MEW, "
+    "including our agenda for the coming months and some Youtube clips. "
+    "These web pages here contain supplementary information, divided into three zones:",
     h.ul |(
         h.li | ("The ", h.a(href=self.localRoot) | "public zone", " contains some general information. ",
              "This is avaliable ", self.languageLink('EN', 'in English (in hetEngels)'),
-             " and ", self.languageLink('NL', 'in Dutch(Nederlands)'), " - as is all this site. ",
+             " and ", self.languageLink('NL', 'in Dutch(Nederlands)'), " - as is all this supplementary site "
+             "- via these links. This is aimed at bringing MEW to the attention of a wider public,"
+             "including Eindhoven's diverse expat community."
         ),
-        h.li | ("The information in the ", h.a(href=self.localRoot+'members') | "members zone",
-            " and ", h.a(href=self.localRoot+'admin') | "adminstration zone", " is only intended for authorized"
-            " club members. Hence these zones are protected by passwords."
+        h.li | ("The information in the ", h.a(href=self.localRoot+'members_zone') | "members zone",
+            " and ", h.a(href=self.localRoot+'admin_zone') | "adminstration zone", " is only intended for authorized"
+            " MEW members. Hence these zones are protected by passwords."
             )
     ),
     "You are welcome to send feedback and enquiries regarding this supplemental site to ",
-    h.a(href="mailto:hippostech@gmail.com?Subject=(sent%20via%20website)") | "Larry Myerscough", h.br,
+    h.a(href="mailto:hippostech@gmail.com?Subject=(sent%20via%20MEW%20supplemental%20website)") | "Larry Myerscough", h.br,
 ),
 'NL': (
-    "U wordt aangeraden ",
-    h.a(href="http://www.muziekverenigingeindhovenwest.nl") | "De officiële MEW website",
-    " te bezoeken als u dat nog niet gedaan hebt. Daar treft u een schat aan informatie over MEW, "
-    "inclusief onze agenda voor de komende periode plus een aantal Youtube clips. "
     "Deze webpagina's bevatten aanvullende informatie, verdeeld over drie zones:",
     h.ul | (
         h.li | ("De ", h.a(href=self.localRoot) | "openbare zone", " bevat wat algemene informatie. ",
@@ -99,8 +102,8 @@ class ClubPage(Page):
                 "Dit is bedoeld om aandacht voor MEW to trekken vanuit een breder publiek, inclusief "
                 "de diverse expat gemeenschap van Eindhoven."
                 ),
-        h.li | ("De inhoud van de ", h.a(href=self.localRoot + 'members') | "leden zone",
-                " en de ", h.a(href=self.localRoot + 'admin') | "adminstratie zone", " is echter alleen bedoeld voor"
+        h.li | ("De inhoud van de ", h.a(href=self.localRoot + 'members_zone') | "leden zone",
+                " en de ", h.a(href=self.localRoot + 'admin_zone') | "adminstratie zone", " is echter alleen bedoeld voor"
                 " geauthoriseerde MEW leden. Daarom zijn deze zones beveiligd met wachtwoorden."
                 )
     ),
@@ -128,7 +131,20 @@ class ClubPage(Page):
 
     def lowerText(self, **kw):
         return (
-             h | ("STUB for lower text; kw: " + str(kw))
+             h.p | ( gloss({'EN':
+"""
+There is not much to see in this 'public zone' yet! I'll be working on it in the coming weeks.
+Meanwhile, Please go to the main site or, if authorized, the members' zone, via the links above.
+""",
+                            'NL':
+"""
+Er is helaas nog weinig te zien in deze 'openbare zone'! Ik ga eraan werken in de komende weken.
+In de tussentijd, ga naar de hoofdsitde of, mocht u geauthoiriseerd zijn, naar de ledenzone,
+d.m.v. de links hierboven. 
+""",
+
+                            })
+                     ),
         )
 
     def body(self, banner, text):

@@ -24,6 +24,8 @@
 
 #members tr:hover {background-color: #ddd;}
 
+#tableguide {background-color: orange;}
+
 th {
     padding-top: 6px;
     padding-bottom: 6px;
@@ -32,7 +34,7 @@ th {
 }
 label{
     float: left;
-    width: 150px;
+    width: 160px;
     text-align: right;
     padding: 12px 4px;
     font-weight: bold;

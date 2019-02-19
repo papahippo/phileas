@@ -77,4 +77,4 @@ if __name__ == "__main__":
     #mailGroup = MailGroup('tryers')
     #member = Member(name='test', memberSince='bad date')
     member = Member(name='test')
-    print(Member)
+    print(member)
