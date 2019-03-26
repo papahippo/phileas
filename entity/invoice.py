@@ -47,12 +47,16 @@ class InvoiceItem(Entity):
                             %(self.project,  self.whatDone,  self.whoBy,  self.whenDone))
 
     def details(self):
-        answer = h.tr | (    h.td(width='40%', align='left') | self.description,
-            h.td(width='30%', align='center') | (
+        answer = h.tr | (
+            h.col(style="width:40%"),
+            h.col(style="width:30%"),
+            h.col(style="width:30%"),
+            h.td(style='text-align:left') | self.description,
+            h.td(style='text-align:center') | (
                                  (self.rate is None) and 'n.v.t.' or ("%s %s x %s"
                 %(self.howMany,  self.timesWhat[self.howMany!=1],  money(self.rate)))
             ),
-            h.td(width='30%', align='right',  valign='top') | (
+            h.td(style='text-align:right') | (
                 "%s" %(money(self.cost)), h.br,
             ),
         ),
@@ -170,16 +174,16 @@ class Invoice(Page, Entity):
 
     def headerBlock(self):
         return (h.hr,
-            h.table(width="50%",  style='font-size:12px;') |
+            h.table(style='width:50%;font-size:12px;') |
                 h.tr | (
-                    h.td(width='50%',align='left') | h.br.join([
+                    h.td(style='text-align:left') | h.br.join([
                           "Datum:",
                           "Notanummer:",
                           "Cliëntnummer:",
                           self.client.btwNumber and "Cliënt BTW nummer:",
                           "Cliënt Referentie:",
                     ]),
-                    h.td(width='50%',align='left') |  h.br.join([
+                    h.td(style='text-align:left;width:50%;') |  h.br.join([
                             self.date,
                             self.sequenceNumber,
                             "%03u" %(self.client.number),
@@ -193,17 +197,22 @@ class Invoice(Page, Entity):
     def btw(self):
         return h.tr | (
             self.chargeBtw and (
-                h.td(width='30%', align='center') | h.br,
-                h.td(width='50%', align='right',  valign='top') | (
+                h.col(style="width:30%"),
+                h.col(style="width:50%"),
+                h.col(style="width:20%"),
+
+                h.td(style='text-align:center') | h.br,
+                h.td(style='text-align:right;valign:top') | (
                         "BTW: %s%% x %s ="
                         %(self.percentBtw,  money(self.amountTaxable)),
                 ),
-                h.td(width='20%', align='right',  valign='top') | (
+                h.td(style='text-align:right;valign:top') | (
                     "%s" %(money(self.amountBtw)),
                     h.br,
                 ),
             ) or (
-                h.td(width='30%', align='left',  valign='top') | (
+                h.col(style="width:30%"),
+                h.td(style='text-align:left;valign:top') | (
                     "BTW wordt niet toegepast (ICL regeling)"
                 )
             ),
@@ -212,31 +221,38 @@ class Invoice(Page, Entity):
     def detailBlock(self):
         return (
             h.br,
-            h.table(width="100%",  frame='none',  rules='none',
-                        style='font-size:12px;') | (
+            h.table(style='width:100%;font-size:12px;') | (
 
                 h.tr(style='text-decoration:underline;') | (
-                    h.th(valign='top',  width='30%') | 'Beschrijving',
-                    h.th(valign='top',  width='30%') | 'Aantal   x  Prijs',
-                    h.th(width='40%', align='right') | 'Bedrag (Euros)',
+                    h.col(style="width:30%"),
+                    h.col(style="width:30%"),
+                    h.col(style="width:40%"),
+                    h.th| 'Beschrijving',
+                    h.th | 'Aantal   x  Prijs',
+                    h.th(style='text-align:right') | 'Bedrag (Euros)',
                     h.br,
                     h.br,
                 ),
                 [item.details() for item in self.items],
                 h.tr | (
-                    h.td(width='50%', align='left') | h.br,
-                    h.td(width='30%', align='right', valign='top') | (
+                    h.col(style="width:50%"),
+                    h.col(style="width:30%"),
+                    h.col(style="width:20%"),
+                    h.td(style='text-align:left') | h.br,
+                    h.td(style='text-align:right') | (
                             "Subtotaal = "),
-                    h.td(width='20%', align='right', valign='top') | (
+                    h.td(style='text-align:right') | (
                             "%s" % money(self.amountBruto), h.br),
                 ),
                 self.btw(),
                 h.tr | (
-                    h.th( width='50%', align='left') | h.br,
-                    h.th( width='30%', align='right') | (
+                    h.col(style="width:50%"),
+                    h.col(style="width:30%"),
+                    h.col(style="width:20%"),
+                    h.th(style='text-align:left') | h.br,
+                    h.th(style='text-align:right') | (
                             h.br*2,"TOTAAL = €"),
-                    h.th(width='20%', align='right',  valign='bottom',
-                                style='text-decoration:underline;') |
+                    h.th(style='text-align:left;text-decoration:underline;') |
                                 ("%s" %money(self.amountNetto), h.br),
                 ),
             ),
@@ -248,11 +264,14 @@ class Invoice(Page, Entity):
 
     def body(self):
         return (
-            h.table(width="100%") | (
+            h.table| (
+                h.col(style="width:30%"),
+                h.col(style="width:50%"),
+                h.col(style="width:20%"),
                 h.tr | (
-                    h.td(width='30%') | self.clientDetails(),
-                    h.td(width='50%') | '',
-                    h.td(width='20%') | self.supplierDetails(),
+                    h.td | self.clientDetails(),
+                    h.td | '',
+                    h.td | self.supplierDetails(),
                 ),
             ),
             h.p(style='font-family:Arial;font-size:20px;text-align:center') |
