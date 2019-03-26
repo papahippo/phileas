@@ -153,7 +153,7 @@ HTML objects into strings.
 
     __rmul__ = __mul__  # multiplication is commutative; e.g. h.br*5 and 5*h.br are equivalent
 
-    def __str__(self):
+    def __iter__(self):
         """
 __str__ is used to create a character representation of the Element. For example,
 this is used by 'print'. The character representation in our case is valid HTML.
@@ -166,10 +166,14 @@ this is used by 'print'. The character representation in our case is valid HTML.
             if not self.separate_close:
                 yield '/'
             yield '>'
-        for child in self.children:
+        for child in unravel(self.children):
+            # print ("child =", child)
             if child is False:
                 continue
-            yield from child
+            if isinstance(child, str):
+                yield child
+            else:
+                yield from child
         if self.separate_close:
             yield '</%s>' % self.tag
             if self.tag not in ('span', 'a'):

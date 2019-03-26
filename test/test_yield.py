@@ -1,18 +1,8 @@
-from .html4 import HTML4
-from .html5 import HTML5
-import sys
-
-# create a singleton instance of each html class.
-
-_html40 = html4 = HTML4()  # _html40 is a deprecated alias!
-html5 = HTML5()
-# I recommend that one of the above is imported under a much shorter name, e.g.:
-# 'from phileas import html4 as h'. This usage will be assumed and
-# 'h' referred to as 'the HTML generator' in this code.
+from phileas import html5 as h
+import sys, os
 
 def test_page():
 
-    h = html5 # the local equivalent of 'from phileas import html40 as h'.
     yield from (
         h.html | (
             h.p |
@@ -37,7 +27,6 @@ def test_page():
     )
 
 def little_test_page():
-    h = html5  # the local equivalent of 'from phileas import html40 as h'.
 
     print("yield#1")
     yield  from (h.h4 | ('dsdfs',))
@@ -47,16 +36,9 @@ def little_test_page():
     yield "easy",
 
 def main():
-    h = html5 # the local equivalent of 'from phileas import html5 as h'.
     "Content-type: text/html\n\n",
     #print([[e for e in el] for el in test_page()])
     print([el for el in test_page()])
-
-def main_test():
-    h = html5 # the local equivalent of 'from phileas import html5 as h'.
-    print([el for el in (h.p | (h.h4 | ('dsdfs', "asdf")))])
-    print([el for el in (h.br)])
-
 
 
 if __name__ == '__main__':
