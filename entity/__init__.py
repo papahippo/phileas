@@ -40,6 +40,35 @@ for the exception.
         return ("%s was raised when trying to set %s=%s "
                 % (self.exc_, self.key_, self.val_))
 
+class FloatOrNone:
+    """
+FloatOrNone is is a quick hack because my entity stuff isn't yet compatible with python's
+typing module which may ultimaetly provide a neat solution.
+    """
+    def __new__(cls, wild):
+        """
+The date may be supplied as '' (or equivalently None), as a ready-made datetime.datetime.date instance, or as a
+string representing a date in the format '%d-%b-%Y'. (refer to pythn docs to see what this means!)
+        """
+        if wild is None:
+            return None
+        return float.__new__(float, wild)
+
+
+class BoolOrNone:
+    """
+BoolOrNone is is a quick hack because my entity stuff isn't yet compatible with python's
+typing module which may ultimaetly provide a neat solution.
+    """
+    def __new__(cls, wild):
+        """
+The date may be supplied as '' (or equivalently None), as a ready-made datetime.datetime.date instance, or as a
+string representing a date in the format '%d-%b-%Y'. (refer to pythn docs to see what this means!)
+        """
+        if wild is None:
+            return None
+        return bool.__new__(bool, wild)
+
 
 class DateOrNone(datetime.date):
     """
@@ -104,7 +133,9 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
                     reqd_class = reqd_class.__args__[0]
                     if isinstance(_val, str):
                         _val = [v.strip() for v in _val.split(',')]
-                    cast_val = subscripted([cast_as_nec(var, reqd_class) for var in _val])
+                    # Horrible hack to get tis towork onpython3.6!
+                    # cast_val = subscripted([cast_as_nec(var, reqd_class) for var in _val])
+                    cast_val = list([cast_as_nec(var, reqd_class) for var in _val])
                 except AttributeError:
                     cast_val = cast_as_nec(_val, reqd_class)
                 self.__setattr__(_key, cast_val)

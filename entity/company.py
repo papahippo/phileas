@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- encoding: utf8 -*-
-from entity import Entity, DateOrNone, List
+from entity import Entity, DateOrNone, FloatOrNone, List
 import datetime
 import locale
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')
