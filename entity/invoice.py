@@ -12,7 +12,7 @@ class InvoiceItem(Entity):
         howMany:float=42, # stub!
         timesWhat:list=['uur',  'uren'],
         whenDone:str="St. Juttemas 2099",
-        rate:(float, type(None))=0,
+        rate:FloatOrNone=0,
         percentDiscount:float=0,
         cost:float=0,
         costBtw:float=0,
@@ -110,27 +110,27 @@ class Invoice(Page, Entity):
 
     def h_tr(self):
         tr= h.tr | (
-            h.td(align='left')  | self.date[:6],
-            h.td(align='left')  | "%s" % self.sequenceNumber,
-            h.td(align='left')  | self.composeName(),
-            h.td(align='left')  | self.composeDescription(),
-            h.td(align='right') | "%s" % money(self.amountBruto),
+            h.td(style='text-align:left')  | self.date[:6],
+            h.td(style='text-align:left')  | "%s" % self.sequenceNumber,
+            h.td(style='text-align:left')  | self.composeName(),
+            h.td(style='text-align:left')  | self.composeDescription(),
+            h.td(style='text-align:right') | "%s" % money(self.amountBruto),
         )
         if self.chargeBtw is None:
             tr |= (
-                h.td(align='centre') | "n.v.t.",
-                h.td(align='right')  | " ",
+                h.td(style='text-align:centre') | "n.v.t.",
+                h.td(style='text-align:right')  | " ",
             )
         else:
             tr |= (
-                h.td(align='right') | "%s%%" % (self.percentBtw or 0),
-                h.td(align='right') | money(self.amountBtw),
+                h.td(style='text-align:right') | "%s%%" % (self.percentBtw or 0),
+                h.td(style='text-align:right') | money(self.amountBtw),
             )
         tr |= (
-            h.td(align='right') | "%s" % money(self.amountNetto),
+            h.td(style='text-align:right') | "%s" % money(self.amountNetto),
         )
         if self.paidFromPrivate is not None:
-            tr |= (h.td(align='right') |
+            tr |= (h.td(style='text-align:right') |
                    ((self.paidFromPrivate and money(self.paidFromPrivate)) or ''),
             )
         return tr

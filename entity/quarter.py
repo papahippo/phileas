@@ -33,17 +33,26 @@ class AccountingTable:
             self.totalExtra += item.paidFromPrivate or 0
             
     def accounts(self, showDetail=True):
-        table = h.table(border="1") |(
+        table = h.table(style='border: 1px solid black;') |(
+            h.col(style="width:8%"),
+            h.col(style="width:10%"),
+            h.col(style="width:12%"),
+            h.col(style="width:22%"),
+            h.col(style="width:13%"),
+            h.col(style="width:7%"),
+            h.col(style="width:12%"),
+            h.col(style="width:13%"),
+            h.col(style="width:3%"),
             h.tr | (
-                h.th(width="8%")  | 'Datum',
-                h.th(width="10%") | 'Volgnr',
-                h.th(width="12%") | self.headerName,
-                h.th(width="22%") | 'Beschrijving',
-                h.th(width="13%") | 'Bruto',
-                h.th(width="7%")  | '%BTW',
-                h.th(width="12%") | 'BTW',
-                h.th(width="13%") | 'Netto',
-                self.extraTitle and (h.th(width="3%")  | self.extraTitle),
+                h.th | 'Datum',
+                h.th | 'Volgnr',
+                h.th | self.headerName,
+                h.th | 'Beschrijving',
+                h.th | 'Bruto',
+                h.th | '%BTW',
+                h.th | 'BTW',
+                h.th | 'Netto',
+                self.extraTitle and (h.th | self.extraTitle),
             )
         )
         if showDetail:
@@ -52,18 +61,18 @@ class AccountingTable:
               + [h.tr | (h.td | " ")]*2
             )
         table |= (h.tr | (
-            h.th(align='left')   | "kwartaal",  
-            h.th(align='left')   | "totaal",  
-            h.th(align='centre') | " - ",  
-            h.th(align='left')   | "(alles hierboven)",  
-            h.th(align='right')  | "%s" % money(self.totalBruto),  
-            h.th(align='centre') | " - ",  
-            h.th(align='right')  | money(self.totalBtw),  
-            h.th(align='right')  | "%s" % money(self.totalNetto),  
-            self.extraTitle and h.th(align='right')  | "%s" % money(self.totalExtra),  
+            h.th(style='text-align:left')   | "kwartaal",
+            h.th(style='text-align:left')   | "totaal",
+            h.th(style='text-align:centre') | " - ",
+            h.th(style='text-align:left')   | "(alles hierboven)",
+            h.th(style='text-align:right')  | "%s" % money(self.totalBruto),
+            h.th(style='text-align:centre') | " - ",
+            h.th(style='text-align:right')  | money(self.totalBtw),
+            h.th(style='text-align:right')  | "%s" % money(self.totalNetto),
+            self.extraTitle and h.th(style='text-align:right') | "%s" % money(self.totalExtra),
         ))
         return (
-            h.h4 | (h.center | "%s %s" % (self.name,  self.heading)),
+            h.h4(style='text-align:centre') | "%s %s" % (self.name,  self.heading),
             table,
         )
     
@@ -170,9 +179,9 @@ class Quarter(Entity, Page):
         return h | (
             h.br,
             h.em |
-"laaste kwartaal => autokostenforfait('bijtelling') berekenen...",            h.h4 | (h.center | 
-"Privégebruik auto berekening tbv BTW 4e kwartaal %u" % self.year
-            ),
+"laaste kwartaal => autokostenforfait('bijtelling') berekenen...",
+            h.h4(style='text-align:centre') |
+"Privégebruik auto berekening tbv BTW 4e kwartaal %u" % self.year,
             h.p | (
 "berekening volgens regeling ",
                 h.a(
@@ -194,11 +203,15 @@ href="http://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst
         else:
            kw = dict()
         return h.p(**kw) |(
-            h.table(width="100%") | (
+            h.table | (
+                h.col(style="width:30%"),
+                h.col(style="width:50%"),
+                h.col(style="width:20%"),
+
                 h.tr | (
-                    h.td(width='30%') | self.accountantDetails(),
-                    h.td(width='50%') | '', # leave the middle ground empty.
-                    h.td(width='20%') | self.supplierDetails(),
+                    h.td | self.accountantDetails(),
+                    h.td | '', # leave the middle ground empty.
+                    h.td | self.supplierDetails(),
                 )
             ),
             h.h3(style=

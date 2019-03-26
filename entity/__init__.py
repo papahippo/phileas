@@ -40,6 +40,35 @@ for the exception.
         return ("%s was raised when trying to set %s=%s "
                 % (self.exc_, self.key_, self.val_))
 
+class FloatOrNone:
+    """
+FloatOrNone is is a quick hack because my entity stuff isn't yet compatible with python's
+typing module which may ultimaetly provide a neat solution.
+    """
+    def __new__(cls, wild):
+        """
+The date may be supplied as '' (or equivalently None), as a ready-made datetime.datetime.date instance, or as a
+string representing a date in the format '%d-%b-%Y'. (refer to pythn docs to see what this means!)
+        """
+        if wild is None:
+            return None
+        return float.__new__(float, wild)
+
+
+class BoolOrNone:
+    """
+BoolOrNone is is a quick hack because my entity stuff isn't yet compatible with python's
+typing module which may ultimaetly provide a neat solution.
+    """
+    def __new__(cls, wild):
+        """
+The date may be supplied as '' (or equivalently None), as a ready-made datetime.datetime.date instance, or as a
+string representing a date in the format '%d-%b-%Y'. (refer to pythn docs to see what this means!)
+        """
+        if wild is None:
+            return None
+        return bool.__new__(bool, wild)
+
 
 class DateOrNone(datetime.date):
     """
