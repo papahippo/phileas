@@ -158,27 +158,22 @@ HTML objects into strings.
 __str__ is used to create a character representation of the Element. For example,
 this is used by 'print'. The character representation in our case is valid HTML.
         """
-        if self.children is None:
-            return ''
-        if self.tag is None:  # special case for 'orphan' Elements
-            s = ''
-        else:
-            s = "<%s" % self.tag
+        if self.tag is not None:  # special case for 'orphan' Elements
+            yield "<%s" % self.tag
             for key, val in self.sArgs.items():
                 if val is not None:
-                    s += ' %s="%s"' % (key.lower(), val)
+                    yield ' %s="%s"' % (key.lower(), val)
             if not self.separate_close:
-                s += '/'
-            s += '>'
-        for child in unravel(self.children):
+                yield '/'
+            yield '>'
+        for child in self.children:
             if child is False:
                 continue
-            s += str(child)
+            yield from child
         if self.separate_close:
-            s += '</%s>' % self.tag
+            yield '</%s>' % self.tag
             if self.tag not in ('span', 'a'):
-                s += '\n'
-        return s
+                yield '\n'
 
     def join(self, seq):
         """

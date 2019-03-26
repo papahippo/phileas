@@ -39,6 +39,14 @@ def main_old():
         )
     )
 
+def postit():
+    h = html5 # the local equivalent of 'from phileas import html5 as h'.
+    yield from (h.html | "aha!")
+
+def main():
+    h = html5 # the local equivalent of 'from phileas import html5 as h'.
+    print(h.html)
+
 def iter_test():
     yield "hoppla!"
     yield "humph!"
@@ -54,4 +62,4 @@ def main_test():
     print("hello world!")
     print(list(between()))
 if __name__ == '__main__':
-    main_test()
+    main()
