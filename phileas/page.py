@@ -94,7 +94,7 @@ by 'validate'.
                 )
 
     def html(self):
-        return h.html | (
+        return (
             h.head | self.head(),
             h.body | (self.body(), h.pre | self.errOutput)
         )

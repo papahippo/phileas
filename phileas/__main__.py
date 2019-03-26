@@ -10,7 +10,7 @@ html5 = HTML5()
 # 'from phileas import html4 as h'. This usage will be assumed and
 # 'h' referred to as 'the HTML generator' in this code.
 
-def main():
+def main_old():
 
     h = html5 # the local equivalent of 'from phileas import html40 as h'.
     print(
@@ -39,6 +39,19 @@ def main():
         )
     )
 
+def iter_test():
+    yield "hoppla!"
+    yield "humph!"
 
+def simple_test():
+    return "duh!",
+
+def between():
+    yield from iter_test()
+    yield from simple_test()
+
+def main_test():
+    print("hello world!")
+    print(list(between()))
 if __name__ == '__main__':
-    main()
+    main_test()
