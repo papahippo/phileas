@@ -133,7 +133,9 @@ Class 'Entity' is the start of module 'entity'. Some features of enity obects ar
                     reqd_class = reqd_class.__args__[0]
                     if isinstance(_val, str):
                         _val = [v.strip() for v in _val.split(',')]
-                    cast_val = subscripted([cast_as_nec(var, reqd_class) for var in _val])
+                    # Horrible hack to get tis towork onpython3.6!
+                    # cast_val = subscripted([cast_as_nec(var, reqd_class) for var in _val])
+                    cast_val = list([cast_as_nec(var, reqd_class) for var in _val])
                 except AttributeError:
                     cast_val = cast_as_nec(_val, reqd_class)
                 self.__setattr__(_key, cast_val)

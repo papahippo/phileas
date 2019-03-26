@@ -86,6 +86,7 @@ class ExpenditureTable(AccountingTable):
     extraTitle = "te vergoeden"
 
 class Quarter(Entity, Page):
+    styleSheet = "/home/gill/Hippos/newsite/style.css"
 
     def __init__(self,
         name:str='Accounts',
@@ -203,15 +204,15 @@ href="http://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst
         else:
            kw = dict()
         return h.p(**kw) |(
-            h.table | (
+            h.table(id='page-header') | (
                 h.col(style="width:30%"),
                 h.col(style="width:50%"),
                 h.col(style="width:20%"),
 
                 h.tr | (
-                    h.td | self.accountantDetails(),
-                    h.td | '', # leave the middle ground empty.
-                    h.td | self.supplierDetails(),
+                    h.td(id='page-header') | self.accountantDetails(),
+                    h.td(id='page-header') | '', # leave the middle ground empty.
+                    h.td(id='page-header') | self.supplierDetails(),
                 )
             ),
             h.h3(style=

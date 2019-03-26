@@ -80,7 +80,7 @@ class OutgoingItem(Entity):
         
     def h_tr(self):
         tr= h.tr | (
-            h.td(style='text-align:left') | self.date[:6],
+            h.td(style='border:1px solid black;text-align:left') | self.date[:6],
             h.td(style='text-align:left')  | "%s" % self.sequenceNumber,
             h.td(style='text-align:left')  | self.composeName(),
             h.td(style='text-align:left')  | self.composeDescription(),
