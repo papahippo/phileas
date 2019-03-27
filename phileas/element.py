@@ -1,21 +1,18 @@
-def unravel(seq):
+def jitter(wild):
     """
-Unravel/flatten a sequence of HTML Elements. This is necessary because
-concatenations of Elements may be coded as tuples or lists.
-The unravelling happens when the top level Element is subjected to its own 'str' function.
-In other words, sequencing is a form of deferred concatenation. Earlier versions of phileas didn't
-support the use of '+' to 'concatenate as you go' so many levels of unravelling could
-be required. As one might guess, 'unravel' is a recursive function.
+'jitter' is a recursive iterator function which effectively jumps in and out of
+element context as necessary to unravel a 'tree' of html elements, and strings in
+lists and tuples.
     """
-    ans = []
-    for it in seq:
-        if it is None:
-            continue
-        if isinstance(it, (list, tuple)):
-            ans += unravel(it)
-        else:
-            ans.append(it)
-    return ans
+    if not wild:
+        return
+    elif isinstance(wild, str):
+            yield wild
+    elif isinstance(wild, (list, tuple)):
+        for el in wild:
+            yield from jitter(el)
+    else:
+        yield from wild
 
 
 class Element:
@@ -154,10 +151,6 @@ HTML objects into strings.
     __rmul__ = __mul__  # multiplication is commutative; e.g. h.br*5 and 5*h.br are equivalent
 
     def __iter__(self):
-        """
-__str__ is used to create a character representation of the Element. For example,
-this is used by 'print'. The character representation in our case is valid HTML.
-        """
         if self.tag is not None:  # special case for 'orphan' Elements
             yield "<%s" % self.tag
             for key, val in self.sArgs.items():
@@ -166,14 +159,7 @@ this is used by 'print'. The character representation in our case is valid HTML.
             if not self.separate_close:
                 yield '/'
             yield '>'
-        for child in unravel(self.children):
-            # print ("child =", child)
-            if child is False:
-                continue
-            if isinstance(child, str):
-                yield child
-            else:
-                yield from child
+        yield from jitter(self.children)
         if self.separate_close:
             yield '</%s>' % self.tag
             if self.tag not in ('span', 'a'):

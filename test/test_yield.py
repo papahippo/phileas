@@ -3,8 +3,7 @@ import sys, os
 
 def test_page():
 
-    yield from (
-        h.html | (
+    yield from h.html | (
             h.p |
              ( """ This primitive web-page was produced using 'phileas' (and python of course!).
              """, h.em | ('aha!',),
@@ -24,7 +23,7 @@ def test_page():
             h | ("\n[orphaned Elements' text should look just like any other text.]")
 
         )
-    )
+
 
 def little_test_page():
 
@@ -36,9 +35,9 @@ def little_test_page():
     yield "easy",
 
 def main():
-    "Content-type: text/html\n\n",
-    #print([[e for e in el] for el in test_page()])
+    print("Content-type: text/html\n\n")
     print([el for el in test_page()])
+    # print(''.join([el for el in test_page()]))
 
 
 if __name__ == '__main__':
