@@ -6,7 +6,7 @@ def test_page():
     yield from h.html | (
             h.p |
              ( """ This primitive web-page was produced using 'phileas' (and python of course!).
-             """, h.em | ('aha!',),
+             """, h.em | ('aha!',), "more"
              ),
              h.p | (
              h.br * 2,
