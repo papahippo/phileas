@@ -10,10 +10,10 @@ html5 = HTML5()
 # 'from phileas import html4 as h'. This usage will be assumed and
 # 'h' referred to as 'the HTML generator' in this code.
 
-def test_page():
+def main():
 
     h = html5 # the local equivalent of 'from phileas import html40 as h'.
-    yield from (
+    print (
         h.html | (
             h.p |
              ( """ This primitive web-page was produced using 'phileas' (and python of course!).
@@ -35,29 +35,6 @@ def test_page():
 
         )
     )
-
-def little_test_page():
-    h = html5  # the local equivalent of 'from phileas import html40 as h'.
-
-    print("yield#1")
-    yield  from (h.h4 | ('dsdfs',))
-
-    print("yield#2")
-    yield from  (h.p | (h.em | (h.strong | ('aha!', "asdf"))))
-    yield "easy",
-
-def main():
-    h = html5 # the local equivalent of 'from phileas import html5 as h'.
-    "Content-type: text/html\n\n",
-    #print([[e for e in el] for el in test_page()])
-    print([el for el in test_page()])
-
-def main_test():
-    h = html5 # the local equivalent of 'from phileas import html5 as h'.
-    print([el for el in (h.p | (h.h4 | ('dsdfs', "asdf")))])
-    print([el for el in (h.br)])
-
-
 
 if __name__ == '__main__':
     main()

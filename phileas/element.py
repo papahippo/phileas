@@ -175,3 +175,6 @@ sequence with the value 'None' are ignored completely
         """
         return self.__class__( tag=None, separate_close=False,
                                children=(seq[:1] + [(self+term) for term in seq[1:]]))
+
+    def __str__(self, glue=''):
+        return glue.join(str(el) for el in self)
