@@ -122,7 +122,7 @@ This member function facilitates the use of & (usually a bit-wise 'and') to cond
 apply HTML operators, e.g.:
 '(this_user==selected_user)&h.em | "this is highlighted when it relates to selected user"'.
         """
-        return self if other is None else self.__class__()  # if false, return 'lame' html tag.
+        return self if other else self.__class__(tag=None, separate_close=False)  # if false, return 'lame' html tag.
 
     __rand__ = __and__  # '&' operator is symmetrical
 

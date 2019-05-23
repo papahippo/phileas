@@ -27,7 +27,7 @@ def main():
               100% up to date!) background info on 'phileas' by clicking """,
              h.br,  (h.a(href="http://larry.myerscough.nl/phileas_project/") | 'this text'),
              '.' ,
-             (False & h.em | 'plain '), (True & h.em | "italic")
+             (False & h.em | 'plain '), (True & h.em) | "italic"
              ),
             h.br.join(sys.path[:3]), h.br * 2,
             # let's check the creation of 'deliberately orphaned html Elements:

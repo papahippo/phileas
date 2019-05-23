@@ -3,7 +3,7 @@ import sys, os
 
 def test_page():
 
-    yield from h.html | (
+    return h.html | (
             h.p |
              ( """ This primitive web-page was produced using 'phileas' (and python of course!).
              """, h.em | ('aha!',), "more"
@@ -36,8 +36,7 @@ def little_test_page():
 
 def main():
     print("Content-type: text/html\n\n")
-    print([el for el in test_page()])
-    # print(''.join([el for el in test_page()]))
+    print(test_page())
 
 
 if __name__ == '__main__':
