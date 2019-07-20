@@ -166,6 +166,9 @@ This class is called HTML5 because its members correspond to HTML5 tags.
         attr_dict = (GlobalAndEventAttrs,
                      {'cite':1, 'datetime':1, })
 
+    class DEL(Del):
+        pass    # quick fix for the problem that 'h.del' gives syntax error; must use 'h.dEL'!
+
     class Details(HTML5_Element):
         attr_dict = (GlobalAndEventAttrs,
                      {'open':1, })

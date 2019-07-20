@@ -35,7 +35,7 @@ and hence automatically returned by the standard 'getattribute' handler on subse
         if attr_name.startswith('__'):
             return object.__getattribute__(self, attr_name)
 
-        if not attr_name.islower():
+        if not attr_name[0].islower():
             # This seems to be the easiest way to pick up invalid
             # tags BEFORE a run-time recursion error occurs!
             # src'. Note that (e.g) 'h.invalid' will get here
