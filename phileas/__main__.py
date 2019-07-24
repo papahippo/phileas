@@ -12,7 +12,7 @@ html5 = HTML5()
 
 def main():
 
-    h = html5 # the local equivalent of 'from phileas import html40 as h'.
+    h = html5 # the local equivalent of 'from phileas import html5 as h'.
     print (
         h.html | (
             h.p |

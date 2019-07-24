@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
-import sys, os
+import os
 from collections import OrderedDict
 from .clubPage import clubName, ClubPage, h, gloss
 from entity.club import Member, EntityError
-from .mailgroups import *
 from . import members
 import cherrypy
 
@@ -96,7 +95,7 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
             print("exporting updated members file (python module)")
             self.EntityClass.export((members.__file__))
             print("exporting updated members file (csv for import to spreadsheet)")
-            self.export_csv(self.EntityClass,os.path.splitext(members.__file__)[0]+'.csv')
+            self.export_csv(self.EntityClass, os.path.splitext(members.__file__)[0] + '.csv')
         print("successful change (or just cancel): redirecting from %s ..." %cherrypy.url())
         raise cherrypy.HTTPRedirect('../list')
 

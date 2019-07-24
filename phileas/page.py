@@ -23,7 +23,7 @@ def modulename2text(name):
 
 class Page(object):
     topDir = os.path.split(__file__)[0]
-    styleSheet = "/.style/mew.css"
+    styleSheet = "/.style/phileas.css"
     errOutput = []
     dateTimeFormat = "%Y %b %d %a %H:%M"
     dateTime = None
@@ -39,7 +39,7 @@ class Page(object):
                 self.dateTime = time.strftime('%Y %b %d %a %H:%M', time.gmtime(*pTime))
             self.nameToPrint = modulename2text(
                 os.path.splitext(os.path.split(sys.argv[0])[1])[0])
-        except FileNotFoundError:
+        except (FileNotFoundError, IndexError):
             self.dateTime = self.nameToPrint = ''
 
         self.resolveData()

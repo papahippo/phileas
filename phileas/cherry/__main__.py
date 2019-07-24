@@ -1,7 +1,7 @@
 import cherrypy
 from cherrypy.lib import auth_basic
-from phileas.page import Page, h
-import TheClub
+from ..page import Page, h
+from .TheClub import _indexPage
 import sys, os
 
 def gloss(dikkie, sep='/'):
@@ -87,7 +87,7 @@ class Switch:
                       )
 
 _switch = Switch()
-_switch.TheClub = TheClub._indexPage
+_switch.TheClub = _indexPage
 print(_switch.TheClub)
 _switch.me = _switch
 
@@ -106,7 +106,8 @@ if __name__ == '__main__':
     # _switch.main(config=phileasConfig)
     #testConfig = os.path.join(os.path.dirname(__file__), 'test.conf')
 
-
+    SESSION_PATH = '/tmp/sessions'
+    os.makedirs(SESSION_PATH, exist_ok=True)
     config = {
     'global':
     {
@@ -118,10 +119,10 @@ if __name__ == '__main__':
     '/':
         {
             'tools.staticdir.on': True,
-            'tools.staticdir.dir': "/home/gill/PycharmProjects/phileas/test",
+            'tools.staticdir.dir': "/home/gill/PycharmProjects/phileas/phileas/cherry",
             'tools.sessions.on': True,
             'tools.sessions.storage_class': cherrypy.lib.sessions.FileSession,
-            'tools.sessions.storage_path': 'sessions',
+            'tools.sessions.storage_path': SESSION_PATH,
             'tools.sessions.timeout': 10,
         },
     '/TheClub/members_zone': {
