@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
-import os
+import sys, os
 from collections import OrderedDict
 from .clubPage import clubName, ClubPage, h, gloss
-from entity.club import Member, EntityError
+from entity.club import Member, EntityError, DateOrNone
+from .mailgroups import *
 from . import members
 import cherrypy
 
@@ -11,11 +12,6 @@ def strRef(text):
     def fn(stringList):
         return  h.br.join([h.a(href=text + string) | string for string in stringList])
     return fn
-
-def one_per_row(s):
-    if isinstance(s, (list, tuple)):
-        return h.br.join(s)
-    return s
 
 def comma_sep(s):
     if isinstance(s, (list, tuple)):
@@ -28,8 +24,10 @@ def as_html_text(s):
 def map_url_str(s):
     return h.a(href='https://www.google.com/maps/place/'+s) | '?'
 
-#def mailStr(mailAddressList):
-#    return h.br.join([h.a(href='mailto:'+mailAddress) | mailAddress for mailAddress in mailAddressList])
+def one_per_row(s):
+    if isinstance(s, (list, tuple)):
+        return h.br.join([str(s1) for s1 in s])
+    return s
 
 
 class MembersPage(ClubPage):
@@ -44,13 +42,10 @@ class MembersPage(ClubPage):
 ('cityAddress',     ({'EN':'Town/City',        'NL':'gemeente'},         {'EN': 'e.g. Eindhoven',         'NL': 'b.v. Eindhoven'})),
 ('_locator',         ({'EN':'show map',        'NL':'toon kaart'},      {'EN': 'show in google maps',    'NL': 'toon met googel maps'})),
 ('phone',           ({'EN':'telephone',        'NL':'telefoon'},         {'EN': 'e.g. 040-2468135',       'NL': 'b.v. 040-2468135'})),
-# ('mobile',          ({'EN':'mobile',           'NL':'mobiel'},           {'EN': 'e.g. 06-24681357',       'NL': 'b.v. 06-24681357'})),
 ('emailAddress',    ({'EN':'email address(es)','NL':'email addres(sen)'},{'EN': 'e.g. 06-24681357',       'NL': 'b.v. 06-24681357'})),
 ('birthDate',       ({'EN':'date__of__birth',  'NL':'geboortedtatum'},   {'EN': 'e.g. 15-mrt-1963',       'NL': 'b.v. 15-mrt-1963'})),
 ('memberSince',     ({'EN':'membership date(s)','NL':'lidmaatschapsdatum(s)'},        {'EN': 'e.g. 15-okt-2003',       'NL': 'b.v. 15-okt-2003'})),
 ('instrument',      ({'EN':'instrument',       'NL':'instrument'},       {'EN': 'e.g. Clarinet',          'NL': 'b.v. Klarinet'})),
-#('altEmailAddress', 'opt. 2nd email address', 'optional'),
-#('mailGroups', 'mail groups', 'e.g. Musicians, Hoorns'),
     ])
     formatDict = {'emailAddress': strRef('mailto:'),
                   'phone': strRef('tel:'),
@@ -91,11 +86,12 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
                     print("Exception while validating!", ee)
                     if button_ in ('Modify', 'Accepteer', ):
                         inst.attach()
-                    return self.edit_one_(*paths, exception_=ee, **kw)
+                    yield from self.edit_one(key, *paths, exception_=ee, **kw)
+                    return
             print("exporting updated members file (python module)")
             self.EntityClass.export((members.__file__))
             print("exporting updated members file (csv for import to spreadsheet)")
-            self.export_csv(self.EntityClass, os.path.splitext(members.__file__)[0] + '.csv')
+            self.export_csv(self.EntityClass,os.path.splitext(members.__file__)[0]+'.csv')
         print("successful change (or just cancel): redirecting from %s ..." %cherrypy.url())
         raise cherrypy.HTTPRedirect('../list')
 
@@ -111,26 +107,21 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
 
 
     def upperBanner(self, *paths, **kw):
-        if 0:
-            print("paths", paths,
-              "kw", kw,
-              "url", cherrypy.url(),
-              'base', cherrypy.request.base,
-              'script_name', cherrypy.request.script_name,
-              'params', cherrypy.request.params, file=self)
-        return h.h1(id='upperbanner')| ('%s - (supplemental) - %s' %(clubName,
+        yield from h.h1(id='upperbanner')| ('%s - (supplemental) - %s' %(clubName,
                                    gloss({'EN': "Members zone",
                                                'NL': "Ledenzone"})))
 
     def lowerBanner(self, *paths, **kw):
-        return h.h2(id="lowerbanner") | gloss({'EN': "Members' zone -  index page",
+        yield from h.h2(id="lowerbanner") | gloss({'EN': "Members' zone -  index page",
                                                'NL': "Ledenzone - indexpagina"})
 
     def lowerText(self, **kw):
-        return (
+        yield from h | (
                 h.p | (gloss({'EN':(
-"This index page curently only functions as a stepping-stone to the ",
+"This is the index page of the members' zone. Click one of the followng links to get to the ",
 h.a(href=cherrypy.url()+'list') | "membership list",
+" or the ",
+h.a(href=cherrypy.url() + 'music') | "music collection",
 ". More goodies will be added later as and when needed.",
                                     ),
                               'NL':(
@@ -141,6 +132,8 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
                        ),
                 #h.p | "2nd paragraph?"
             )
+        # yield "more stuff just for testing!"
+
 
     def listLowerBanner(self, *paths, **kw):
         bannerStart =  gloss({
@@ -149,26 +142,29 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
         })
         sortKey = cherrypy.session.get('sortby', 'name')
         sortName = gloss(self.fieldDisplay[sortKey][0])
-        return h.h2(id="lowerbanner") | ("%s '%s'"       %(bannerStart, sortName))
+        yield from h.h2(id="lowerbanner") | ("%s '%s'"       %(bannerStart, sortName))
 
     def list_(self, *paths, **kw):
         sortKey = cherrypy.session.get('sortby', 'name')
         self.row_count = -1
-        return (
-            "number of members = %d" % len(Member), h.br,
-            h.table(id="members") | [(self.rows_per_member(member))
+        self.count_line = h | "number of members = "
+        #yield self.count_line
+        # yield from h.br
+        yield from h.table(id="members") | [(self.rows_per_member(member))
                                      for name, member in
                                          sorted(self.EntityClass.keyLookup[sortKey].items())]
-                )
+        #self.count_line |= ('%d' %  self.row_count)
+        #yield ''
 
     def rows_per_member(self, member):
         # print(h.th | gloss({'EN': 'full name', 'NL': 'naam'}), file=sys.stderr)
         # return h.br, "abc", h.br
         member._locator = (member.streetAddress + '+' + member.postCode + '+' + member.cityAddress).replace(' ', '+')
-        if not member.memberSince and not self.admin:
+        current = len(member.memberSince) & 1  # false for departed members
+        if not current and not self.admin:
             return ''  # don't show borrowed members, except in admin mode
         self.row_count += 1
-        return (
+        yield from h | (
             (self.row_count % 15 == 0) and (h.tr(id='tableguide') | (
                 h.th | (self.admin and (h.a(href='./edit_one/__new__') | gloss({'EN':'new', 'NL':'nieuw',}))
                         or '...'),
@@ -183,7 +179,8 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
                                   getattr(member, member.keyFields[0]))
                          | (self.admin and (gloss({'EN': 'edit', 'NL': 'wijzig'}))
                             or (gloss({'EN': 'view', 'NL': 'toon'}))))),
-                [(h.td | self.formatDict.get(attr_name, one_per_row)(getattr(member, attr_name)))
+                [h.td | ((current and h or h.dEL) |
+                         (self.formatDict.get(attr_name, one_per_row)(getattr(member, attr_name))))
                  for attr_name, (heading, tip_text) in self.fieldDisplay.items()],
             )
         )
@@ -194,7 +191,7 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
                 'EN': "Viewing details of member '%s'",
                 'NL': "Gegevens van lid '%s' zijn hieronder getoond",
         })
-        return h.h2(id="lowerbanner") | (bannerFormat % key)
+        yield from h.h2(id="lowerbanner") | (bannerFormat % key)
 
     def edit_oneBanner(self, key, *paths, exception_=None, **kw):
         bannerText = gloss(
@@ -208,14 +205,13 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
                 'NL': "Aanpassen gegevens van lid '%s'" %key,
             }
         )
-        return h.h2(id="lowerbanner") | bannerText
+        yield from h.h2(id="lowerbanner") | bannerText
 
     def edit_one_(self, key, *paths, exception_=None, **kw):
-        print('key', key )
+        # print('key', key )
         inst = (key != '__new__')  and not exception_ and self.EntityClass.by_key(key)
         colour = '#000000'  # black is default
-        return (
-            h.form(action=os.path.join('../validate/'+key, *paths), method='get')| (
+        yield from h.form(action=os.path.join('../validate/'+key, *paths), method='get')| (
             [   (h.label(For='%s' %attr_name)|as_html_text(gloss(displayed_name)),
                          '<input type = "text" title="testing!" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
                 % (colour, attr_name, comma_sep(inst and getattr(inst, attr_name) or kw.get(attr_name, ''))))
@@ -233,8 +229,8 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
                                    'NL': "Verwijder"}), "red"),
             )[:self.admin and 3 or 1])],
             h.br*2,
-            h.a(STYLE="color:#ff0000;") | (exception_ or ''),
-        ))
+            h.a(STYLE="color:#ff0000;") | (exception_ and str(exception_) or ''),
+        )
 
 
 _membersPage = MembersPage()
