@@ -1,1 +1,1 @@
-from .__main__ import (McPage, gloss, validator, h)
+from .__main__ import (CherryPage, gloss, validator, h)
