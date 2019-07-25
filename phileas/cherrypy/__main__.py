@@ -1,8 +1,8 @@
 import cherrypy
 from cherrypy.lib import auth_basic
 from ..page import Page, h
-from .TheClub import _indexPage
 import sys, os
+
 
 def gloss(dikkie, sep='/'):
     if not isinstance(dikkie, dict):
@@ -10,48 +10,15 @@ def gloss(dikkie, sep='/'):
     return dikkie[cherrypy.session.setdefault('language', 'EN')]
 
 
-class Switch:
-    styleSheet = 'test.css'
+def validator(dick):
+    def validate_password(realm, username, password):
+        if username in dick and dick[username] == password:
+            return True
+        return False
+    return validate_password
 
-    topDir = os.path.split(__file__)[0]
-    styleSheet = "test.css"
-    errOutput = []
-    metaDict = {'http-equiv': "content-type", 'content': "text/html; charset=utf-8"}
-    _title = '(untitled)'  # => use basename of page as page title - unless overruled.
 
-    _cp_config = {'tools.sessions.on': True}
-
-    def _cp_dispatch(self, vpath):
-        print ('vpath', vpath)
-
-    def title(self):
-        return self._title
-
-    def head(self):
-        return h.meta(**self.metaDict) | (
-            (self.styleSheet and
-             h.link(type="text/css", rel="stylesheet",
-                    href=self.styleSheet)),
-            h.title | (h | self.title()),
-        )
-
-    def write(self, s):
-        """ We provide our own 'write' function so that we can handle
-        our own standard error output.
-        """
-        self.errOutput.append(str(s))
-
-    def body(self):
-        #return "abcdé".encode('ascii','xmlcharrefreplace').decode('ascii')
-        print(
-            "(gratuitous 'error' output) current directory is:",
-            os.getcwd(),
-            file=self
-        )
-        return ('default body of content... abcdéf',
-                h.br,
-                h.p | 'end of content'
-                )
+class McPage(Page):
 
     @cherrypy.expose
     def index(self, **kw):
@@ -72,32 +39,10 @@ class Switch:
         # redirect back to index tha twas on view before language select:
         raise cherrypy.HTTPRedirect(cherrypy.session['index_url'])
 
-    def gloss(self, dikkie, sep='/'):
-        if not isinstance(dikkie, dict):
-            return dikkie  # just a string, I presume.
-        return dikkie[cherrypy.session.setdefault('language', 'EN')]
-
-
-    def main(self, config=None):
-        cherrypy.quickstart(self, config=config)
-
     def body(self):
         return h.p | ("hurrah for Cherrypy!", h.br,
                       "This top-level page is (so far!) simply a place holder for other pages to sit under.",
                       )
-
-_switch = Switch()
-_switch.TheClub = _indexPage
-print(_switch.TheClub)
-_switch.me = _switch
-
-
-def validator(dick):
-    def validate_password(realm, username, password):
-        if username in dick and dick[username] == password:
-            return True
-        return False
-    return validate_password
 
 if __name__ == '__main__':
     # CherryPy always starts with app.root when trying to map request URIs
@@ -106,12 +51,15 @@ if __name__ == '__main__':
     # _switch.main(config=phileasConfig)
     #testConfig = os.path.join(os.path.dirname(__file__), 'test.conf')
 
+    from .TheClub import _indexPage
+    _mcPage = McPage()
+    _mcPage.TheClub = _indexPage
+    print(_mcPage.TheClub)
     SESSION_PATH = '/tmp/sessions'
     os.makedirs(SESSION_PATH, exist_ok=True)
     config = {
     'global':
     {
-    #'server.socket_host': "192.168.2.6",
     'server.socket_host': "127.0.0.1",
     'server.socket_port': 8080,
     'server.thread_pool': 10,
@@ -139,4 +87,4 @@ if __name__ == '__main__':
         },
     }
 
-    cherrypy.quickstart(_switch, config=config)
+    cherrypy.quickstart(_mcPage, config=config)

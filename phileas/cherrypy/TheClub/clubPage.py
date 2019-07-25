@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 # -*- encoding: utf8 -*-
 import sys, os
-from phileas.page import Page, h
 import cherrypy
+from ...cherrypy import McPage, h, gloss, validator
 
 
 clubName = "The Club"
@@ -13,7 +13,7 @@ def gloss(dikkie):
     return dikkie[cherrypy.session.setdefault('language', 'EN')]
 
 
-class ClubPage(Page):
+class ClubPage(McPage):
     _title = clubName
     _upperBanner = clubName
     upperBarColour = 'SlateBlue'  # '#6060f0'
