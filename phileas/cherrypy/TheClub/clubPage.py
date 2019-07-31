@@ -23,18 +23,16 @@ class ClubPage(CherryPage):
     styleSheet = "/theClub.css"
 
     def upperBanner(self, *paths, **kw):
-        return h.h1(id='upperbanner') | ('%s - (supplemental) - %s' %(clubName,
-                                   gloss({'EN': "Public zone",
-                                               'NL': "Openbare zone"})))
+        return h.h1(id='upperbanner') | ('%s  - %s' %(clubName, gloss(EN="Public zone",
+                                                                      NL="Openbare zone")))
     def lowerBanner(self, *paths, **kw):
-        return h.h1(id='lowerbanner') | gloss({'EN': "Public Homepage",
-                                  'NL': "Homepagina (openbaar)"})
+        return h.h1(id='lowerbanner') | gloss(EN="Public Homepage",
+                                              NL="Homepagina (openbaar)")
 
     def upperText(self):
         return (
-            h.br, gloss({
-'EN': (
-
+            h.br, gloss(
+EN=(
     "These web pages here contain information about 'The (fictitious) Club', divided into three zones:",
     h.ul |(
         h.li | ("The ", h.a(href=self.localRoot) | "public zone", " contains some general information. ",
@@ -52,7 +50,7 @@ class ClubPage(CherryPage):
     "You are welcome to send feedback and enquiries regarding this supplemental site to ",
     h.a(href="mailto:hippostech@gmail.com?Subject=(sent%20via%20phileas/cherrypy%20sample%20page)") | "Larry Myerscough", h.br,
 ),
-'NL': (
+NL=(
     "Deze webpagina's bevatten aanvullende informatie, verdeeld over drie zones:",
     h.ul | (
         h.li | ("De ", h.a(href=self.localRoot) | "openbare zone", " bevat wat algemene informatie. ",
@@ -69,7 +67,7 @@ class ClubPage(CherryPage):
     h.a(href="mailto:hippostech@gmail.com?Subject=(sent%20via%20phileas/cherrypy%20sample%20page)") | "Larry Myerscough",
     h.br,
 ),
-                              }),
+                              ),
             h.br,
     )
 
@@ -88,17 +86,17 @@ class ClubPage(CherryPage):
         )
 
     def lowerText(self, **kw):
-        return (
-             h.p | ( gloss({'EN':
-"""
-There is not much to see in this 'public zone. Actually, it's not much of a club.
-""",
-                            'NL':
-"""
-Er is helaas  weinig te zien in deze 'openbare zone'. Eigenlijk stelt de hele club weinig voor!
-""",
-
-                            })
+        return h.p | ( gloss(
+EN=(
+    """
+    There is not much to see in this 'public zone. Actually, it's not much of a club.
+    """
+),
+NL=(
+    """
+    Er is helaas weinig te zien in deze 'openbare zone'. Eigenlijk stelt de hele club weinig voor!
+    """
+)
                      ),
         )
 

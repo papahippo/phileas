@@ -4,10 +4,13 @@ from ..page import Page, h
 import sys, os
 
 
-def gloss(dikkie, sep='/'):
+def gloss0(dikkie, sep='/'):
     if not isinstance(dikkie, dict):
         return dikkie  # just a string, I presume.
     return dikkie[cherrypy.session.setdefault('language', 'EN')]
+
+def gloss(s="(can't translate!)", **kw):
+    return kw.get(cherrypy.session.setdefault('language', 'EN'), s)
 
 
 def validator(dick):
@@ -84,54 +87,41 @@ class CherryPage(Page):
 
     def upperText(self):
         return (
-            h.br, gloss({
-                'EN': (
+            h.br, gloss(
+                EN=(
 
-                    "These web pages here contain information about 'The (fictitious) Club', divided into three zones:",
-                    h.ul | (
-                        h.li | (
-                        "The ", h.a(href=self.localRoot) | "public zone", " contains some general information. ",
-                        "This is avaliable ", self.languageLink('EN', 'in English (in het Engels)'),
-                        " and ", self.languageLink('NL', 'in Dutch(Nederlands)'), " - as is all this site "
-                                                                                  "- via these links. "
-                        ),
-                        h.li | (
-                        "The information in the ", h.a(href=self.localRoot + 'members_zone') | "members zone",
-                        " and ", h.a(href=self.localRoot + 'admin_zone') | "adminstration zone",
-                        " is only intended for authorized"
-                        " members. Hence these zones are protected by passwords."
-                        " Since this is a fictitious club, there's no harm in telling you that the relevant"
-                        " user names and passwords are visible in the source file of this page!"
-                        )
-                    ),
-                    "You are welcome to send feedback and enquiries regarding this supplemental site to ",
-                    h.a(
-                        href="mailto:hippostech@gmail.com?Subject=(sent%20via%20phileas/cherrypy%20sample%20page)") | "Larry Myerscough",
+                    "This content is determined by the 'upperText' member function of the page class.",
+                    h.br,
                     h.br,
                 ),
-                'NL': (
-                    "Deze webpagina's bevatten aanvullende informatie, verdeeld over drie zones:",
-                    h.ul | (
-                        h.li | (
-                        "De ", h.a(href=self.localRoot) | "openbare zone", " bevat wat algemene informatie. ",
-                        "Dit is te bekijken ", self.languageLink('EN', 'in het Engels (in English)'),
-                        " and ", self.languageLink('NL', 'in het Nederlands (in Dutch)'),
-                        " door middel van deze links. "
-                        ),
-                        h.li | ("De inhoud van de ", h.a(href=self.localRoot + 'members_zone') | "leden zone",
-                                " en de ", h.a(href=self.localRoot + 'admin_zone') | "adminstratie zone",
-                                " is echter alleen bedoeld voor"
-                                " geauthoriseerde leden. Daarom zijn deze zones beveiligd met wachtwoorden."
-                                )
-                    ),
-                    "Met feedback en inlichtingen betreffend deze website kunt u terecht bij ",
-                    h.a(
-                        href="mailto:hippostech@gmail.com?Subject=(sent%20via%20phileas/cherrypy%20sample%20page)") | "Larry Myerscough",
+                NL=(
+
+                    "Deze inhouod wordt bepaald door de 'upperText' member function van de page class.",
+                    h.br,
                     h.br,
                 ),
-            }),
+            ),
             h.br,
         )
+    def lowerText(self):
+        return (
+            h.br, gloss(
+                EN=(
+
+                    "This content is determined by the 'lowerText' member function of the page class.",
+                    h.br,
+                    h.br,
+                ),
+                NL=(
+
+                    "Deze inhouod wordt bepaald door de 'lowerText' member function van de page class.",
+                    h.br,
+                    h.br,
+                ),
+            ),
+            h.br,
+        )
+
     def colourBarBox(self, header, bgcolor, content):
         yield from h | (
             h.table | (
@@ -149,15 +139,15 @@ class CherryPage(Page):
     def lowerText(self, *p,  **kw):
         # print('lowerText', file=self)
         yield from h | (
-             h.p | ( gloss({'EN':
+             h.p | ( gloss(EN=
 """
 Body of web-page goes here!
 """,
-                            'NL':
+                            NL=
 """
 Echte webinoud komt hier terecht!
 """,
-                            })
+                            )
                      ),
         )
 
@@ -172,7 +162,7 @@ if __name__ == '__main__':
     _cherryPage = CherryPage()
     _cherryPage.TheClub = _indexPage
     print(_cherryPage.TheClub)
-    SESSION_PATH = '/tmp/sessions'
+    SESSION_PATH = '/home/gill//tmp/sessions'
     os.makedirs(SESSION_PATH, exist_ok=True)
     config = {
     'global':
