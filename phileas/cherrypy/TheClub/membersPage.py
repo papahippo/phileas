@@ -98,7 +98,7 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
     def export_csv(self, cls, out_file):
         sortKey = cherrypy.session.get('sortby', 'name')
         with open(out_file, 'w') as file_:
-            print(';'.join([gloss(heading) for attr_name, (heading, tip_text) in self.fieldDisplay.items()]),
+            print(';'.join([gloss(**heading) for attr_name, (heading, tip_text) in self.fieldDisplay.items()]),
                   file=file_)
             print (*[';'.join([str(getattr(member, attr_name))
                  for attr_name, (heading, tip_text) in self.fieldDisplay.items() if not attr_name.startswith('_')])
@@ -108,27 +108,28 @@ This is where validate a members details form, or simply recognize a 'cancel' (w
 
     def upperBanner(self, *paths, **kw):
         yield from h.h1(id='upperbanner')| ('%s - (supplemental) - %s' %(clubName,
-                                   gloss({'EN': "Members zone",
-                                               'NL': "Ledenzone"})))
+                                   gloss(EN="Members zone",
+                                         NL="Ledenzone")))
 
     def lowerBanner(self, *paths, **kw):
-        yield from h.h2(id="lowerbanner") | gloss({'EN': "Members' zone -  index page",
-                                               'NL': "Ledenzone - indexpagina"})
+        yield from h.h2(id="lowerbanner") | gloss(EN="Members' zone -  index page",
+                                                  NL="Ledenzone - indexpagina")
 
     def lowerText(self, **kw):
         yield from h | (
-                h.p | (gloss({'EN':(
+                h.p | (gloss(
+EN=(
 "This is the index page of the members' zone. Click one of the followng links to get to the ",
 h.a(href=cherrypy.url()+'list') | "membership list",
 " or the ",
 h.a(href=cherrypy.url() + 'music') | "music collection",
 ". More goodies will be added later as and when needed.",
-                                    ),
-                              'NL':(
+),
+NL=(
 "Deze indexpagina dient momenteel alleen als tussenstop richting de ",
 h.a(href=cherrypy.url() + 'list') | "ledenlist",
 ". Meer splullen zullen t.z.t. toegevoegd worden.",
-                              )})
+))
                        ),
                 #h.p | "2nd paragraph?"
             )
@@ -136,12 +137,10 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
 
 
     def listLowerBanner(self, *paths, **kw):
-        bannerStart =  gloss({
-                'EN': "Membership list ordered according to field",
-                'NL': "Ledenlijst gesorteerd op veld",
-        })
+        bannerStart =  gloss(EN="Membership list ordered according to field",
+                             NL="Ledenlijst gesorteerd op veld",)
         sortKey = cherrypy.session.get('sortby', 'name')
-        sortName = gloss(self.fieldDisplay[sortKey][0])
+        sortName = gloss(**self.fieldDisplay[sortKey][0])
         yield from h.h2(id="lowerbanner") | ("%s '%s'"       %(bannerStart, sortName))
 
     def list_(self, *paths, **kw):
@@ -157,8 +156,6 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
         #yield ''
 
     def rows_per_member(self, member):
-        # print(h.th | gloss({'EN': 'full name', 'NL': 'naam'}), file=sys.stderr)
-        # return h.br, "abc", h.br
         member._locator = (member.streetAddress + '+' + member.postCode + '+' + member.cityAddress).replace(' ', '+')
         current = len(member.memberSince) & 1  # false for departed members
         if not current and not self.admin:
@@ -166,19 +163,19 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
         self.row_count += 1
         yield from h | (
             (self.row_count % 15 == 0) and (h.tr(id='tableguide') | (
-                h.th | (self.admin and (h.a(href='./edit_one/__new__') | gloss({'EN':'new', 'NL':'nieuw',}))
+                h.th | (self.admin and (h.a(href='./edit_one/__new__') | gloss(EN='new', NL='nieuw',))
                         or '...'),
                 [h.th | ((attr_name in self.EntityClass.keyFields and
                           h.a(href=self.localRoot+'set_session/sortby/'+attr_name)
-                          or h) | as_html_text(gloss(heading)))
+                          or h) | as_html_text(gloss(**heading)))
                  for attr_name, (heading, tip_text) in self.fieldDisplay.items()
                  ])),
             h.tr | (
                 (h.td | (h.a(id='%s' % getattr(member, member.keyFields[0]),
                              href=(self.admin and './edit_one/' or './view_one/') +
                                   getattr(member, member.keyFields[0]))
-                         | (self.admin and (gloss({'EN': 'edit', 'NL': 'wijzig'}))
-                            or (gloss({'EN': 'view', 'NL': 'toon'}))))),
+                         | (self.admin and (gloss(EN='edit', NL='wijzig'))
+                            or (gloss(EN='view', NL='toon'))))),
                 [h.td | ((current and h or h.dEL) |
                          (self.formatDict.get(attr_name, one_per_row)(getattr(member, attr_name))))
                  for attr_name, (heading, tip_text) in self.fieldDisplay.items()],
@@ -187,23 +184,19 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
 
 
     def view_oneBanner(self, key, *paths, exception_=None, **kw):
-        bannerFormat =  gloss({
-                'EN': "Viewing details of member '%s'",
-                'NL': "Gegevens van lid '%s' zijn hieronder getoond",
-        })
+        bannerFormat =  gloss(EN="Viewing details of member '%s'",
+                              NL="Gegevens van lid '%s' zijn hieronder getoond",)
         yield from h.h2(id="lowerbanner") | (bannerFormat % key)
 
     def edit_oneBanner(self, key, *paths, exception_=None, **kw):
+        new = key == '__new__'  # to be improved?
         bannerText = gloss(
-            (key == '__new__') and  {
-                    'EN': ("Adding details of new member",
-                           (key == '__new__') and 'new member'),
-                    'NL': ("Toevoegen gegevens nieuw lid"),
-            }
-            or {
-                'EN': "Editing details of member '%s'" % key,
-                'NL': "Aanpassen gegevens van lid '%s'" %key,
-            }
+EN=(
+    new and "Adding details of new member" or "Editing details of member '%s'" % key
+   ),
+NL=(
+    new and "Toevoegen gegevens nieuw lid" or "Aanpassen gegevens van lid '%s'" %key
+)
         )
         yield from h.h2(id="lowerbanner") | bannerText
 
@@ -212,21 +205,17 @@ h.a(href=cherrypy.url() + 'list') | "ledenlist",
         inst = (key != '__new__')  and not exception_ and self.EntityClass.by_key(key)
         colour = '#000000'  # black is default
         yield from h.form(action=os.path.join('../validate/'+key, *paths), method='get')| (
-            [   (h.label(For='%s' %attr_name)|as_html_text(gloss(displayed_name)),
+            [   (h.label(For='%s' %attr_name)|as_html_text(gloss(**displayed_name)),
                          '<input type = "text" title="testing!" STYLE="color:%s;" name = "%s" value="%s"><br />\n'
                 % (colour, attr_name, comma_sep(inst and getattr(inst, attr_name) or kw.get(attr_name, ''))))
              for (attr_name, (displayed_name, placeholder)) in self.fieldDisplay.items() if not attr_name.startswith('_')],
 
             [(ix_<2 or (key != '__new__')) and (h.input(type = "submit", name="button_", STYLE="background-color:%s" % colour, value=val_) | '')
              for ix_, (val_, colour) in enumerate((
-                (gloss({'EN': "Cancel",
-                             'NL': "Terug"}), "green"),
-                ((key != '__new__') and gloss({'EN': "Modify",
-                                     'NL': "Accepteer"})
-                    or gloss({'EN': "Add",
-                                   'NL': "Voeg toe"}), "orange"),
-                (gloss({'EN': "Delete",
-                                   'NL': "Verwijder"}), "red"),
+                (gloss(EN="Cancel", NL="Terug"), "green"),
+                ((key != '__new__') and gloss(EN="Modify",NL="Accepteer")
+                    or gloss(EN="Add", NL="Voeg toe"), "orange"),
+                (gloss(EN="Delete", NL="Verwijder"), "red"),
             )[:self.admin and 3 or 1])],
             h.br*2,
             h.a(STYLE="color:#ff0000;") | (exception_ and str(exception_) or ''),
